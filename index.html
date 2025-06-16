@@ -972,6 +972,7 @@
                 0 0 15px rgba(255, 255, 255, 0.3),
                 inset 0 2px 6px rgba(255, 255, 255, 0.4);
             border: 1px solid rgba(255, 255, 255, 0.3);
+            contain: layout style paint; /* Performance optimization */
         }
 
         .floating-shape .shape-block.empty {
@@ -1469,7 +1470,65 @@
         }
 
         /* RESPONSIVE DESIGN */
+        /* MOBILE OPTIMIZATIONS */
         @media (max-width: 480px) {
+            /* Reduce animations for better performance */
+            * {
+                animation-duration: 0.2s !important;
+                transition-duration: 0.2s !important;
+            }
+
+            .cell.filled {
+                animation: none; /* Remove heavy animations on mobile */
+            }
+
+            .cell.preview {
+                animation: mobilePreviewPulse 0.8s ease-in-out infinite;
+            }
+
+            @keyframes mobilePreviewPulse {
+                0%, 100% { opacity: 0.6; }
+                50% { opacity: 0.9; }
+            }
+
+            .shape:hover {
+                transform: scale(1.1); /* Simpler hover effect */
+                filter: brightness(1.2);
+            }
+
+            /* Mobile touch feedback */
+            .shape:active {
+                transform: scale(0.95);
+                filter: brightness(0.9);
+                transition: all 0.1s ease;
+            }
+
+            /* Improve preview visibility on mobile */
+            .cell.preview {
+                border: 3px solid rgba(255, 255, 255, 0.9);
+                background: rgba(255, 255, 255, 0.5);
+                z-index: 10;
+            }
+
+            /* Better visual feedback for touch */
+            .game-booster:active,
+            .shop-item:active,
+            .play-button:active {
+                transform: scale(0.95);
+                transition: transform 0.1s ease;
+            }
+
+            .floating-shape {
+                will-change: transform; /* Optimize for transforms */
+                transform: scale(1.4); /* Larger for mobile */
+                filter: drop-shadow(0 6px 15px rgba(0, 0, 0, 0.7)) brightness(1.3);
+            }
+
+            .floating-shape .shape-block {
+                width: 30px;
+                height: 30px;
+            }
+
             .header-content {
                 gap: 10px;
             }
@@ -1506,15 +1565,6 @@
                 height: 16px;
             }
 
-            .floating-shape {
-                transform: scale(1.2);
-            }
-
-            .floating-shape .shape-block {
-                width: 28px;
-                height: 28px;
-            }
-
             .shop-grid {
                 grid-template-columns: 1fr;
             }
@@ -1536,6 +1586,11 @@
             .play-button {
                 padding: 20px;
                 font-size: 16px;
+            }
+
+            /* Optimize grid rendering */
+            .cell {
+                contain: layout style paint;
             }
         }
 
@@ -2237,32 +2292,47 @@
             }
         }
 
-        // UI Updates
+        // UI Updates with debouncing for better performance
+        let updateUITimeout = null;
         function updateAllUI() {
             if (!AppState.gameState) return;
             
-            const gs = AppState.gameState;
+            // Debounce UI updates to prevent excessive DOM manipulation
+            if (updateUITimeout) {
+                clearTimeout(updateUITimeout);
+            }
             
-            // Header stats
-            document.getElementById('headerEnergy').textContent = `${gs.energy.current}/${gs.energy.max}`;
-            document.getElementById('headerCoins').textContent = gs.coins.toLocaleString();
-            document.getElementById('profileLevel').textContent = gs.level.current;
-            document.getElementById('playerLevelLarge').textContent = gs.level.current;
-            
-            // Player screen
-            document.getElementById('playerXpFill').style.width = gs.level.getProgress() + '%';
-            document.getElementById('playerXpText').textContent = 
-                `${gs.level.currentXP} / ${gs.level.getXPRequired(gs.level.current)} XP`;
-            document.getElementById('playerBestScore').textContent = gs.bestScore.toLocaleString();
-            document.getElementById('playerGamesPlayed').textContent = gs.stats.gamesPlayed;
-            document.getElementById('playerTotalLines').textContent = gs.stats.totalLinesCleared;
-            document.getElementById('playerMaxCombo').textContent = gs.stats.maxCombo;
-            
-            // Friends screen
-            document.getElementById('invitesSent').textContent = gs.referrals.invitesSent;
-            document.getElementById('friendsJoined').textContent = gs.referrals.friendsJoined;
-            
-            updatePlayButton();
+            updateUITimeout = setTimeout(() => {
+                const gs = AppState.gameState;
+                
+                // Batch DOM updates
+                const updates = [
+                    () => document.getElementById('headerEnergy').textContent = `${gs.energy.current}/${gs.energy.max}`,
+                    () => document.getElementById('headerCoins').textContent = gs.coins.toLocaleString(),
+                    () => document.getElementById('profileLevel').textContent = gs.level.current,
+                    () => document.getElementById('playerLevelLarge').textContent = gs.level.current,
+                    () => document.getElementById('playerXpFill').style.width = gs.level.getProgress() + '%',
+                    () => document.getElementById('playerXpText').textContent = `${gs.level.currentXP} / ${gs.level.getXPRequired(gs.level.current)} XP`,
+                    () => document.getElementById('playerBestScore').textContent = gs.bestScore.toLocaleString(),
+                    () => document.getElementById('playerGamesPlayed').textContent = gs.stats.gamesPlayed,
+                    () => document.getElementById('playerTotalLines').textContent = gs.stats.totalLinesCleared,
+                    () => document.getElementById('playerMaxCombo').textContent = gs.stats.maxCombo,
+                    () => document.getElementById('invitesSent').textContent = gs.referrals.invitesSent,
+                    () => document.getElementById('friendsJoined').textContent = gs.referrals.friendsJoined
+                ];
+                
+                // Execute all updates in one frame
+                requestAnimationFrame(() => {
+                    updates.forEach(update => {
+                        try {
+                            update();
+                        } catch (e) {
+                            // Silent fail for missing elements
+                        }
+                    });
+                    updatePlayButton();
+                });
+            }, 50); // 50ms debounce
         }
 
         function updateGameUI() {
@@ -2270,31 +2340,36 @@
             
             const gs = AppState.gameState;
             
-            // Game stats
-            document.getElementById('gameScore').textContent = gs.score.toLocaleString();
-            document.getElementById('gameLines').textContent = gs.linesCleared;
-            
-            // Boosters
-            Object.keys(gs.boosters.inventory).forEach(type => {
-                const countElement = document.getElementById(`gameCount_${type}`);
-                const boosterElement = document.getElementById(`gameBooster_${type}`);
-                if (countElement) {
-                    countElement.textContent = gs.boosters.inventory[type];
-                    if (gs.boosters.inventory[type] === 0) {
-                        boosterElement.classList.add('disabled');
+            // Batch DOM updates for game UI
+            requestAnimationFrame(() => {
+                try {
+                    document.getElementById('gameScore').textContent = gs.score.toLocaleString();
+                    document.getElementById('gameLines').textContent = gs.linesCleared;
+                    
+                    // Update boosters efficiently
+                    Object.keys(gs.boosters.inventory).forEach(type => {
+                        const countElement = document.getElementById(`gameCount_${type}`);
+                        const boosterElement = document.getElementById(`gameBooster_${type}`);
+                        if (countElement && boosterElement) {
+                            countElement.textContent = gs.boosters.inventory[type];
+                            const hasBooster = gs.boosters.inventory[type] > 0;
+                            boosterElement.classList.toggle('disabled', !hasBooster);
+                        }
+                    });
+                    
+                    // Update combo display
+                    const comboDisplay = document.getElementById('comboDisplay');
+                    const comboValue = document.getElementById('comboValue');
+                    if (gs.combo > 1) {
+                        comboDisplay.classList.add('active');
+                        comboValue.textContent = Math.min(gs.combo, 10);
                     } else {
-                        boosterElement.classList.remove('disabled');
+                        comboDisplay.classList.remove('active');
                     }
+                } catch (e) {
+                    // Silent fail for missing elements
                 }
             });
-            
-            // Combo
-            if (gs.combo > 1) {
-                document.getElementById('comboDisplay').classList.add('active');
-                document.getElementById('comboValue').textContent = Math.min(gs.combo, 10);
-            } else {
-                document.getElementById('comboDisplay').classList.remove('active');
-            }
         }
 
         // Simplified Game Class for new architecture
@@ -2312,6 +2387,7 @@
                 this.draggedShape = null;
                 this.floatingShape = null;
                 this.dragOffset = { x: 0, y: 0 };
+                this.gameOverCheckTimeout = null; // For debouncing game over checks
 
                 // Systems
                 this.energy = this.initEnergySystem();
@@ -2327,8 +2403,10 @@
 
                 this.colors = ['red', 'blue', 'green', 'purple', 'orange'];
                 this.shapeTemplates = [
-                    // Dots and lines
+                    // Basic shapes like in original Block Blast
                     { pattern: [[1]], name: 'dot' },
+                    
+                    // Lines
                     { pattern: [[1, 1]], name: 'line2h' },
                     { pattern: [[1, 1, 1]], name: 'line3h' },
                     { pattern: [[1, 1, 1, 1]], name: 'line4h' },
@@ -2342,56 +2420,25 @@
                     { pattern: [[1, 1], [1, 1]], name: 'square2' },
                     { pattern: [[1, 1, 1], [1, 1, 1], [1, 1, 1]], name: 'square3' },
                     
-                    // L-shapes (all rotations)
+                    // L-shapes (4 rotations)
                     { pattern: [[1, 1, 1], [1, 0, 0]], name: 'L1' },
                     { pattern: [[1, 1, 1], [0, 0, 1]], name: 'L2' },
-                    { pattern: [[1, 0, 0], [1, 1, 1]], name: 'L3' },
-                    { pattern: [[0, 0, 1], [1, 1, 1]], name: 'L4' },
-                    { pattern: [[1, 1], [1, 0], [1, 0]], name: 'L5' },
-                    { pattern: [[1, 1], [0, 1], [0, 1]], name: 'L6' },
-                    { pattern: [[0, 1], [0, 1], [1, 1]], name: 'L7' },
-                    { pattern: [[1, 0], [1, 0], [1, 1]], name: 'L8' },
+                    { pattern: [[1, 0], [1, 0], [1, 1]], name: 'L3' },
+                    { pattern: [[0, 1], [0, 1], [1, 1]], name: 'L4' },
                     
-                    // Big L-shapes
-                    { pattern: [[1, 1, 1, 1], [1, 0, 0, 0]], name: 'bigL1' },
-                    { pattern: [[1, 1, 1, 1], [0, 0, 0, 1]], name: 'bigL2' },
-                    { pattern: [[1, 0, 0, 0], [1, 1, 1, 1]], name: 'bigL3' },
-                    { pattern: [[0, 0, 0, 1], [1, 1, 1, 1]], name: 'bigL4' },
-                    
-                    // T-shapes (all rotations)
+                    // T-shapes (4 rotations)
                     { pattern: [[1, 1, 1], [0, 1, 0]], name: 'T1' },
-                    { pattern: [[0, 1, 0], [1, 1, 1]], name: 'T2' },
-                    { pattern: [[1, 0], [1, 1], [1, 0]], name: 'T3' },
-                    { pattern: [[0, 1], [1, 1], [0, 1]], name: 'T4' },
+                    { pattern: [[0, 1], [1, 1], [0, 1]], name: 'T2' },
+                    { pattern: [[0, 1, 0], [1, 1, 1]], name: 'T3' },
+                    { pattern: [[1, 0], [1, 1], [1, 0]], name: 'T4' },
                     
-                    // Z-shapes (both directions)
+                    // Z-shapes (2 rotations)
                     { pattern: [[1, 1, 0], [0, 1, 1]], name: 'Z1' },
-                    { pattern: [[0, 1, 1], [1, 1, 0]], name: 'Z2' },
-                    { pattern: [[1, 0], [1, 1], [0, 1]], name: 'Z3' },
-                    { pattern: [[0, 1], [1, 1], [1, 0]], name: 'Z4' },
+                    { pattern: [[0, 1], [1, 1], [1, 0]], name: 'Z2' },
                     
-                    // Plus/Cross shapes
-                    { pattern: [[0, 1, 0], [1, 1, 1], [0, 1, 0]], name: 'plus' },
-                    
-                    // Corner shapes
+                    // Corner pieces
                     { pattern: [[1, 1], [1, 0]], name: 'corner1' },
-                    { pattern: [[1, 1], [0, 1]], name: 'corner2' },
-                    { pattern: [[1, 0], [1, 1]], name: 'corner3' },
-                    { pattern: [[0, 1], [1, 1]], name: 'corner4' },
-                    
-                    // S-shapes
-                    { pattern: [[1, 1, 1], [1, 0, 1]], name: 'S1' },
-                    { pattern: [[1, 0, 1], [1, 1, 1]], name: 'S2' },
-                    
-                    // V-shapes
-                    { pattern: [[1, 0, 1], [1, 1, 1]], name: 'V1' },
-                    { pattern: [[1, 1, 1], [1, 0, 1]], name: 'V2' },
-                    
-                    // Small complex shapes
-                    { pattern: [[1, 1, 0], [1, 1, 1]], name: 'boot1' },
-                    { pattern: [[0, 1, 1], [1, 1, 1]], name: 'boot2' },
-                    { pattern: [[1, 1, 1], [1, 1, 0]], name: 'boot3' },
-                    { pattern: [[1, 1, 1], [0, 1, 1]], name: 'boot4' }
+                    { pattern: [[1, 1], [0, 1]], name: 'corner2' }
                 ];
 
                 this.init();
@@ -2613,12 +2660,16 @@
 
                 this.renderShapes();
                 
-                // Check Game Over after generating new shapes
-                setTimeout(() => {
+                // Debounced Game Over check for better performance
+                if (this.gameOverCheckTimeout) {
+                    clearTimeout(this.gameOverCheckTimeout);
+                }
+                
+                this.gameOverCheckTimeout = setTimeout(() => {
                     if (this.gameStarted && this.checkGameOver()) {
                         this.gameOver();
                     }
-                }, 100);
+                }, 200); // Check after 200ms delay
             }
 
             renderShapes() {
@@ -2678,6 +2729,8 @@
             setupDragAndDrop() {
                 let isDragging = false;
                 let touchIdentifier = null;
+                let lastMoveTime = 0;
+                const moveThrottle = window.innerWidth <= 480 ? 16 : 8; // Throttle more on mobile (60fps vs 120fps)
 
                 const getCoords = (e) => {
                     if (e.touches) {
@@ -2731,7 +2784,7 @@
                     // Position floating shape significantly above cursor (like in original Block Blast)
                     this.dragOffset = {
                         x: totalWidth / 2,
-                        y: totalHeight + (isMobile ? 50 : 40) // Higher on mobile
+                        y: totalHeight + (isMobile ? 80 : 60) // Much higher - 80px on mobile, 60px on desktop
                     };
 
                     this.createFloatingShape(shape, coords);
@@ -2741,14 +2794,22 @@
                 const handleMove = (e) => {
                     if (!isDragging || !this.floatingShape) return;
 
+                    // Throttle movement updates for better performance
+                    const now = Date.now();
+                    if (now - lastMoveTime < moveThrottle) return;
+                    lastMoveTime = now;
+
                     const coords = getCoords(e);
                     if (!coords) return;
 
-                    // Center floating shape exactly under cursor/finger
-                    this.floatingShape.style.left = (coords.x - this.dragOffset.x) + 'px';
-                    this.floatingShape.style.top = (coords.y - this.dragOffset.y) + 'px';
-
-                    this.showPlacementPreview(coords);
+                    // Use requestAnimationFrame for smooth positioning
+                    requestAnimationFrame(() => {
+                        if (this.floatingShape) {
+                            this.floatingShape.style.left = (coords.x - this.dragOffset.x) + 'px';
+                            this.floatingShape.style.top = (coords.y - this.dragOffset.y) + 'px';
+                            this.showPlacementPreview(coords);
+                        }
+                    });
                 };
 
                 const endDrag = (e) => {
@@ -2783,13 +2844,14 @@
                     isDragging = false;
                     this.draggedShape = null;
                     touchIdentifier = null;
+                    lastMoveTime = 0;
                 };
 
                 const shapesArea = document.getElementById('shapesArea');
                 shapesArea.addEventListener('mousedown', startDrag);
                 shapesArea.addEventListener('touchstart', startDrag, { passive: false });
                 
-                document.addEventListener('mousemove', handleMove);
+                document.addEventListener('mousemove', handleMove, { passive: false });
                 document.addEventListener('touchmove', handleMove, { passive: false });
                 
                 document.addEventListener('mouseup', endDrag);
@@ -2808,26 +2870,29 @@
                 
                 // Responsive block size
                 const isMobile = window.innerWidth <= 480;
-                const blockSize = isMobile ? 28 : 32;
+                const blockSize = isMobile ? 30 : 32; // Slightly larger on mobile for better touch
                 
                 // Set up grid layout
                 this.floatingShape.style.gridTemplateColumns = `repeat(${cols}, ${blockSize}px)`;
                 this.floatingShape.style.gridTemplateRows = `repeat(${rows}, ${blockSize}px)`;
                 this.floatingShape.style.gap = '2px';
                 
-                // Mobile scaling
+                // Mobile optimizations
                 if (isMobile) {
-                    this.floatingShape.style.transform = 'scale(1.2)';
+                    this.floatingShape.style.transform = 'scale(1.4)';
+                    this.floatingShape.style.willChange = 'transform'; // Optimize for transforms
                 }
                 
-                // Create blocks
+                // Create blocks efficiently
+                const fragment = document.createDocumentFragment();
                 for (let row = 0; row < rows; row++) {
                     for (let col = 0; col < cols; col++) {
                         const block = document.createElement('div');
                         block.className = pattern[row][col] ? 'shape-block' : 'shape-block empty';
-                        this.floatingShape.appendChild(block);
+                        fragment.appendChild(block);
                     }
                 }
+                this.floatingShape.appendChild(fragment);
                 
                 // Position the floating shape
                 this.floatingShape.style.position = 'fixed';
@@ -2846,7 +2911,7 @@
                 }
             }
 
-            // FIXED: Completely rewritten preview logic for perfect sync with floating shape
+            // OPTIMIZED: More forgiving placement logic for mobile
             showPlacementPreview(coords) {
                 this.clearPreview();
 
@@ -2854,7 +2919,7 @@
 
                 const gridElement = document.getElementById('gameGrid');
                 const gridRect = gridElement.getBoundingClientRect();
-                const cellSize = (gridRect.width - 16) / this.gridSize; // Account for grid padding
+                const cellSize = (gridRect.width - 16) / this.gridSize;
                 const pattern = this.draggedShape.pattern;
 
                 // Get floating shape position (center point)
@@ -2862,12 +2927,18 @@
                 const floatingCenterX = floatingRect.left + floatingRect.width / 2;
                 const floatingCenterY = floatingRect.top + floatingRect.height / 2;
 
+                // Add small offset to preview so it appears slightly above floating shape for better mobile visibility
+                const previewOffset = window.innerWidth <= 480 ? 10 : 5; // 10px on mobile, 5px on desktop
+                const adjustedCenterY = floatingCenterY - previewOffset;
+
                 // Calculate which grid cell the floating shape center is over
-                const relativeX = floatingCenterX - gridRect.left - 8; // Account for grid padding
-                const relativeY = floatingCenterY - gridRect.top - 8;
+                const relativeX = floatingCenterX - gridRect.left - 8;
+                const relativeY = adjustedCenterY - gridRect.top - 8;
                 
-                const centerGridCol = Math.floor(relativeX / cellSize);
-                const centerGridRow = Math.floor(relativeY / cellSize);
+                // More forgiving grid positioning - use larger tolerance
+                const tolerance = window.innerWidth <= 480 ? 0.3 : 0.2; // More forgiving on mobile
+                const centerGridCol = Math.floor(relativeX / cellSize + tolerance);
+                const centerGridRow = Math.floor(relativeY / cellSize + tolerance);
 
                 // Calculate shape bounds
                 let minRow = pattern.length, maxRow = -1;
@@ -2884,21 +2955,31 @@
                     }
                 }
                 
-                // Calculate shape center offset
                 const shapeCenterRow = (minRow + maxRow) / 2;
                 const shapeCenterCol = (minCol + maxCol) / 2;
 
-                // Calculate top-left grid position
+                // Try multiple positioning options for more forgiving placement
                 const gridStartCol = Math.round(centerGridCol - shapeCenterCol);
                 const gridStartRow = Math.round(centerGridRow - shapeCenterRow);
 
-                // Show preview if placement is valid
-                if (this.canPlaceShape(pattern, gridStartRow, gridStartCol)) {
-                    this.highlightCells(pattern, gridStartRow, gridStartCol, 'preview');
+                // Try exact position first, then nearby positions
+                const positions = [
+                    [gridStartRow, gridStartCol],
+                    [gridStartRow - 1, gridStartCol],
+                    [gridStartRow + 1, gridStartCol],
+                    [gridStartRow, gridStartCol - 1],
+                    [gridStartRow, gridStartCol + 1]
+                ];
+
+                for (let [row, col] of positions) {
+                    if (this.canPlaceShape(pattern, row, col)) {
+                        this.highlightCells(pattern, row, col, 'preview');
+                        break;
+                    }
                 }
             }
 
-            // FIXED: Updated placement logic to match preview exactly
+            // OPTIMIZED: More forgiving placement logic matching preview
             tryPlaceShape(coords) {
                 if (!this.draggedShape || !this.floatingShape) return false;
 
@@ -2912,12 +2993,18 @@
                 const floatingCenterX = floatingRect.left + floatingRect.width / 2;
                 const floatingCenterY = floatingRect.top + floatingRect.height / 2;
 
+                // Same offset as preview
+                const previewOffset = window.innerWidth <= 480 ? 10 : 5;
+                const adjustedCenterY = floatingCenterY - previewOffset;
+
                 // Calculate which grid cell the floating shape center is over
                 const relativeX = floatingCenterX - gridRect.left - 8;
-                const relativeY = floatingCenterY - gridRect.top - 8;
+                const relativeY = adjustedCenterY - gridRect.top - 8;
                 
-                const centerGridCol = Math.floor(relativeX / cellSize);
-                const centerGridRow = Math.floor(relativeY / cellSize);
+                // Same forgiving positioning as preview
+                const tolerance = window.innerWidth <= 480 ? 0.3 : 0.2;
+                const centerGridCol = Math.floor(relativeX / cellSize + tolerance);
+                const centerGridRow = Math.floor(relativeY / cellSize + tolerance);
 
                 // Calculate shape bounds (same logic as preview)
                 let minRow = pattern.length, maxRow = -1;
@@ -2937,13 +3024,23 @@
                 const shapeCenterRow = (minRow + maxRow) / 2;
                 const shapeCenterCol = (minCol + maxCol) / 2;
 
-                // Calculate top-left grid position (same logic as preview)
+                // Try same positions as preview for consistency
                 const gridStartCol = Math.round(centerGridCol - shapeCenterCol);
                 const gridStartRow = Math.round(centerGridRow - shapeCenterRow);
 
-                if (this.canPlaceShape(pattern, gridStartRow, gridStartCol)) {
-                    this.placeShape(this.draggedShape, gridStartRow, gridStartCol);
-                    return true;
+                const positions = [
+                    [gridStartRow, gridStartCol],
+                    [gridStartRow - 1, gridStartCol],
+                    [gridStartRow + 1, gridStartCol],
+                    [gridStartRow, gridStartCol - 1],
+                    [gridStartRow, gridStartCol + 1]
+                ];
+
+                for (let [row, col] of positions) {
+                    if (this.canPlaceShape(pattern, row, col)) {
+                        this.placeShape(this.draggedShape, row, col);
+                        return true;
+                    }
                 }
                 return false;
             }
@@ -3042,8 +3139,9 @@
             }
 
             clearPreview() {
-                const cells = document.getElementById('gameGrid').querySelectorAll('.cell');
-                cells.forEach(cell => cell.classList.remove('preview'));
+                // Optimized: Only remove preview class from cells that have it
+                const previewCells = document.getElementById('gameGrid').querySelectorAll('.cell.preview');
+                previewCells.forEach(cell => cell.classList.remove('preview'));
             }
 
             clearCompletedLines() {
