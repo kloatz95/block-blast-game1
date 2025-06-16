@@ -34,8 +34,6 @@
             -webkit-user-select: none;
         }
 
-        // Utility Functions
-
         @import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@400;700;900&display=swap');
 
         /* CSS Variables for easy theming */
@@ -768,9 +766,10 @@
             background-image: url('./assets/images/preview-cell.png');
             background-size: cover;
             background-position: center;
-            border-color: rgba(255, 255, 255, 0.8);
+            border: 2px solid rgba(255, 255, 255, 0.8);
             animation: previewDance 0.6s ease-in-out infinite;
-            box-shadow: 0 0 25px rgba(255, 255, 255, 0.6);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.6);
+            z-index: 5;
         }
 
         .cell.clearing {
@@ -956,24 +955,64 @@
             position: fixed;
             pointer-events: none;
             z-index: 2000;
-            /* transform: scale() - устанавливается динамически в JS */
             opacity: 0.9;
-            filter: drop-shadow(0 15px 35px rgba(0, 0, 0, 0.8)) brightness(1.2);
+            filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.6)) brightness(1.2);
             transition: none;
+            display: grid;
+            gap: 2px;
+            padding: 3px;
         }
 
         .floating-shape .shape-block {
-            /* width/height - устанавливается динамически в JS */
+            width: 32px;
+            height: 32px;
+            border-radius: 4px;
             box-shadow: 
-                0 8px 20px rgba(0, 0, 0, 0.6),
-                0 0 25px rgba(255, 255, 255, 0.4),
-                inset 0 3px 8px rgba(255, 255, 255, 0.6);
+                0 4px 12px rgba(0, 0, 0, 0.5),
+                0 0 15px rgba(255, 255, 255, 0.3),
+                inset 0 2px 6px rgba(255, 255, 255, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.3);
         }
 
         .floating-shape .shape-block.empty {
             background: transparent !important;
             box-shadow: none !important;
             border: none !important;
+        }
+
+        .floating-shape[data-color="red"] .shape-block:not(.empty) {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+            background-image: url('./assets/images/shape-block-red.png');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .floating-shape[data-color="blue"] .shape-block:not(.empty) {
+            background: linear-gradient(135deg, #48dbfb 0%, #0abde3 100%);
+            background-image: url('./assets/images/shape-block-blue.png');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .floating-shape[data-color="green"] .shape-block:not(.empty) {
+            background: linear-gradient(135deg, #1dd1a1 0%, #10ac84 100%);
+            background-image: url('./assets/images/shape-block-green.png');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .floating-shape[data-color="purple"] .shape-block:not(.empty) {
+            background: linear-gradient(135deg, #a55eea 0%, #8854d0 100%);
+            background-image: url('./assets/images/shape-block-purple.png');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .floating-shape[data-color="orange"] .shape-block:not(.empty) {
+            background: linear-gradient(135deg, #feca57 0%, #ff9ff3 100%);
+            background-image: url('./assets/images/shape-block-orange.png');
+            background-size: cover;
+            background-position: center;
         }
 
         /* COMBO DISPLAY */
@@ -1467,6 +1506,15 @@
                 height: 16px;
             }
 
+            .floating-shape {
+                transform: scale(1.2);
+            }
+
+            .floating-shape .shape-block {
+                width: 28px;
+                height: 28px;
+            }
+
             .shop-grid {
                 grid-template-columns: 1fr;
             }
@@ -1475,7 +1523,7 @@
                 grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
             }
 
-            /* Лучшие touch targets на мобильных */
+            /* Better touch targets on mobile */
             .nav-item {
                 padding: 18px 8px;
             }
@@ -1517,7 +1565,7 @@
             }
 
             .floating-shape {
-                transform: scale(1.6); /* Smaller on short screens */
+                transform: scale(1.6);
             }
         }
 
@@ -2666,20 +2714,24 @@
                     const coords = getCoords(e);
                     if (!coords) return;
 
-                    // Calculate floating shape offset (ВЫШЕ курсора!)
+                    // Calculate shape dimensions for positioning
                     const pattern = shape.pattern;
-                    const isMobile = window.innerWidth <= 480 || 'ontouchstart' in window;
-                    const blockSize = isMobile ? 16 : 18; // Адаптивный размер блоков
-                    const gap = 1.5; // Gap between blocks
+                    const rows = pattern.length;
+                    const cols = pattern[0].length;
                     
-                    const shapeWidth = pattern[0].length * (blockSize + gap) - gap;
-                    const shapeHeight = pattern.length * (blockSize + gap) - gap;
+                    // Responsive block size based on screen width
+                    const isMobile = window.innerWidth <= 480;
+                    const blockSize = isMobile ? 28 : 32; // Mobile: 28px, Desktop: 32px
+                    const gap = 2; // Gap between blocks in floating shape
                     
-                    const verticalOffset = isMobile ? 60 : 40; // Больше offset на мобильных
+                    // Calculate total floating shape dimensions
+                    const totalWidth = cols * blockSize + (cols - 1) * gap;
+                    const totalHeight = rows * blockSize + (rows - 1) * gap;
                     
+                    // Position floating shape significantly above cursor (like in original Block Blast)
                     this.dragOffset = {
-                        x: shapeWidth / 2,
-                        y: shapeHeight + verticalOffset // ЗНАЧИТЕЛЬНО ВЫШЕ курсора!
+                        x: totalWidth / 2,
+                        y: totalHeight + (isMobile ? 50 : 40) // Higher on mobile
                     };
 
                     this.createFloatingShape(shape, coords);
@@ -2692,7 +2744,7 @@
                     const coords = getCoords(e);
                     if (!coords) return;
 
-                    // Position floating shape ВЫШЕ cursor
+                    // Center floating shape exactly under cursor/finger
                     this.floatingShape.style.left = (coords.x - this.dragOffset.x) + 'px';
                     this.floatingShape.style.top = (coords.y - this.dragOffset.y) + 'px';
 
@@ -2744,73 +2796,45 @@
                 document.addEventListener('touchend', endDrag);
             }
 
-            // ИСПРАВЛЕНО: Правильное создание floating shape
             createFloatingShape(shape, coords) {
-                // Create floating shape exactly like the original but with correct structure
+                // Create floating shape element with proper grid structure
                 this.floatingShape = document.createElement('div');
                 this.floatingShape.className = 'floating-shape';
+                this.floatingShape.dataset.color = shape.color;
+                
+                const pattern = shape.pattern;
+                const cols = pattern[0].length;
+                const rows = pattern.length;
+                
+                // Responsive block size
+                const isMobile = window.innerWidth <= 480;
+                const blockSize = isMobile ? 28 : 32;
+                
+                // Set up grid layout
+                this.floatingShape.style.gridTemplateColumns = `repeat(${cols}, ${blockSize}px)`;
+                this.floatingShape.style.gridTemplateRows = `repeat(${rows}, ${blockSize}px)`;
+                this.floatingShape.style.gap = '2px';
+                
+                // Mobile scaling
+                if (isMobile) {
+                    this.floatingShape.style.transform = 'scale(1.2)';
+                }
+                
+                // Create blocks
+                for (let row = 0; row < rows; row++) {
+                    for (let col = 0; col < cols; col++) {
+                        const block = document.createElement('div');
+                        block.className = pattern[row][col] ? 'shape-block' : 'shape-block empty';
+                        this.floatingShape.appendChild(block);
+                    }
+                }
+                
+                // Position the floating shape
                 this.floatingShape.style.position = 'fixed';
                 this.floatingShape.style.left = (coords.x - this.dragOffset.x) + 'px';
                 this.floatingShape.style.top = (coords.y - this.dragOffset.y) + 'px';
                 this.floatingShape.style.pointerEvents = 'none';
                 this.floatingShape.style.zIndex = '2000';
-                
-                // Set correct grid layout to match shape pattern
-                const pattern = shape.pattern;
-                const cols = pattern[0].length;
-                const rows = pattern.length;
-                
-                this.floatingShape.style.display = 'grid';
-                this.floatingShape.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
-                this.floatingShape.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
-                this.floatingShape.style.gap = '1.5px';
-                this.floatingShape.style.padding = '3px';
-                
-                // Адаптивный scale для разных устройств
-                const isMobile = window.innerWidth <= 480 || 'ontouchstart' in window;
-                const scaleValue = isMobile ? 1.8 : 1.5;
-                this.floatingShape.style.transform = `scale(${scaleValue})`;
-                this.floatingShape.style.transformOrigin = 'center center';
-
-                // Create blocks to match EXACT pattern
-                const isMobile = window.innerWidth <= 480 || 'ontouchstart' in window;
-                const blockSize = isMobile ? 16 : 18; // Адаптивный размер блоков
-                
-                for (let row = 0; row < rows; row++) {
-                    for (let col = 0; col < cols; col++) {
-                        const block = document.createElement('div');
-                        if (pattern[row][col]) {
-                            // Filled block
-                            block.className = 'shape-block';
-                            block.style.width = blockSize + 'px';
-                            block.style.height = blockSize + 'px';
-                            block.style.borderRadius = '4px';
-                            block.style.border = '1px solid rgba(255, 255, 255, 0.3)';
-                            block.style.position = 'relative';
-                            
-                            // Apply color styling
-                            const colorStyles = {
-                                red: 'linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%)',
-                                blue: 'linear-gradient(135deg, #48dbfb 0%, #0abde3 100%)',
-                                green: 'linear-gradient(135deg, #1dd1a1 0%, #10ac84 100%)',
-                                purple: 'linear-gradient(135deg, #a55eea 0%, #8854d0 100%)',
-                                orange: 'linear-gradient(135deg, #feca57 0%, #ff9ff3 100%)'
-                            };
-                            
-                            block.style.background = colorStyles[shape.color] || colorStyles.blue;
-                            block.style.boxShadow = '0 3px 10px rgba(0, 0, 0, 0.4), inset 0 1px 3px rgba(255, 255, 255, 0.4)';
-                        } else {
-                            // Empty block
-                            block.className = 'shape-block empty';
-                            block.style.width = blockSize + 'px';
-                            block.style.height = blockSize + 'px';
-                            block.style.background = 'transparent';
-                            block.style.border = 'none';
-                            block.style.boxShadow = 'none';
-                        }
-                        this.floatingShape.appendChild(block);
-                    }
-                }
                 
                 document.body.appendChild(this.floatingShape);
             }
@@ -2822,91 +2846,103 @@
                 }
             }
 
-            // СИНХРОНИЗАЦИЯ: Preview точно соответствует floating shape
+            // FIXED: Completely rewritten preview logic for perfect sync with floating shape
             showPlacementPreview(coords) {
                 this.clearPreview();
 
-                if (!this.draggedShape) return;
+                if (!this.draggedShape || !this.floatingShape) return;
 
                 const gridElement = document.getElementById('gameGrid');
                 const gridRect = gridElement.getBoundingClientRect();
-                const cellSize = (gridRect.width - 16) / this.gridSize;
-
+                const cellSize = (gridRect.width - 16) / this.gridSize; // Account for grid padding
                 const pattern = this.draggedShape.pattern;
-                
-                // Calculate exact cursor position on grid
-                const relativeX = coords.x - gridRect.left - 8;
-                const relativeY = coords.y - gridRect.top - 8;
-                
-                // Find where cursor points on grid
-                const cursorGridCol = Math.floor(relativeX / cellSize);
-                const cursorGridRow = Math.floor(relativeY / cellSize);
 
-                // Calculate shape's center to match floating shape positioning
-                let totalBlocks = 0;
-                let sumRow = 0, sumCol = 0;
+                // Get floating shape position (center point)
+                const floatingRect = this.floatingShape.getBoundingClientRect();
+                const floatingCenterX = floatingRect.left + floatingRect.width / 2;
+                const floatingCenterY = floatingRect.top + floatingRect.height / 2;
+
+                // Calculate which grid cell the floating shape center is over
+                const relativeX = floatingCenterX - gridRect.left - 8; // Account for grid padding
+                const relativeY = floatingCenterY - gridRect.top - 8;
+                
+                const centerGridCol = Math.floor(relativeX / cellSize);
+                const centerGridRow = Math.floor(relativeY / cellSize);
+
+                // Calculate shape bounds
+                let minRow = pattern.length, maxRow = -1;
+                let minCol = pattern[0].length, maxCol = -1;
                 
                 for (let row = 0; row < pattern.length; row++) {
                     for (let col = 0; col < pattern[row].length; col++) {
                         if (pattern[row][col]) {
-                            totalBlocks++;
-                            sumRow += row;
-                            sumCol += col;
+                            minRow = Math.min(minRow, row);
+                            maxRow = Math.max(maxRow, row);
+                            minCol = Math.min(minCol, col);
+                            maxCol = Math.max(maxCol, col);
                         }
                     }
                 }
                 
-                const centerRow = sumRow / totalBlocks;
-                const centerCol = sumCol / totalBlocks;
+                // Calculate shape center offset
+                const shapeCenterRow = (minRow + maxRow) / 2;
+                const shapeCenterCol = (minCol + maxCol) / 2;
 
-                // Calculate top-left position - ТОЧНО СИНХРОНИЗИРОВАНО
-                const gridCol = Math.round(cursorGridCol - centerCol);
-                const gridRow = Math.round(cursorGridRow - centerRow);
+                // Calculate top-left grid position
+                const gridStartCol = Math.round(centerGridCol - shapeCenterCol);
+                const gridStartRow = Math.round(centerGridRow - shapeCenterRow);
 
-                if (this.canPlaceShape(pattern, gridRow, gridCol)) {
-                    this.highlightCells(pattern, gridRow, gridCol, 'preview');
+                // Show preview if placement is valid
+                if (this.canPlaceShape(pattern, gridStartRow, gridStartCol)) {
+                    this.highlightCells(pattern, gridStartRow, gridStartCol, 'preview');
                 }
             }
 
-            // СИНХРОНИЗАЦИЯ: Placement точно соответствует preview
+            // FIXED: Updated placement logic to match preview exactly
             tryPlaceShape(coords) {
-                if (!this.draggedShape) return false;
+                if (!this.draggedShape || !this.floatingShape) return false;
 
                 const gridElement = document.getElementById('gameGrid');
                 const gridRect = gridElement.getBoundingClientRect();
                 const cellSize = (gridRect.width - 16) / this.gridSize;
-
                 const pattern = this.draggedShape.pattern;
-                
-                // Use EXACT same logic as preview
-                const relativeX = coords.x - gridRect.left - 8;
-                const relativeY = coords.y - gridRect.top - 8;
-                
-                const cursorGridCol = Math.floor(relativeX / cellSize);
-                const cursorGridRow = Math.floor(relativeY / cellSize);
 
-                // Calculate shape's center - ТОЧНО КАК В PREVIEW
-                let totalBlocks = 0;
-                let sumRow = 0, sumCol = 0;
+                // Get floating shape position (center point) - same logic as preview
+                const floatingRect = this.floatingShape.getBoundingClientRect();
+                const floatingCenterX = floatingRect.left + floatingRect.width / 2;
+                const floatingCenterY = floatingRect.top + floatingRect.height / 2;
+
+                // Calculate which grid cell the floating shape center is over
+                const relativeX = floatingCenterX - gridRect.left - 8;
+                const relativeY = floatingCenterY - gridRect.top - 8;
+                
+                const centerGridCol = Math.floor(relativeX / cellSize);
+                const centerGridRow = Math.floor(relativeY / cellSize);
+
+                // Calculate shape bounds (same logic as preview)
+                let minRow = pattern.length, maxRow = -1;
+                let minCol = pattern[0].length, maxCol = -1;
                 
                 for (let row = 0; row < pattern.length; row++) {
                     for (let col = 0; col < pattern[row].length; col++) {
                         if (pattern[row][col]) {
-                            totalBlocks++;
-                            sumRow += row;
-                            sumCol += col;
+                            minRow = Math.min(minRow, row);
+                            maxRow = Math.max(maxRow, row);
+                            minCol = Math.min(minCol, col);
+                            maxCol = Math.max(maxCol, col);
                         }
                     }
                 }
                 
-                const centerRow = sumRow / totalBlocks;
-                const centerCol = sumCol / totalBlocks;
+                const shapeCenterRow = (minRow + maxRow) / 2;
+                const shapeCenterCol = (minCol + maxCol) / 2;
 
-                const gridCol = Math.round(cursorGridCol - centerCol);
-                const gridRow = Math.round(cursorGridRow - centerRow);
+                // Calculate top-left grid position (same logic as preview)
+                const gridStartCol = Math.round(centerGridCol - shapeCenterCol);
+                const gridStartRow = Math.round(centerGridRow - shapeCenterRow);
 
-                if (this.canPlaceShape(pattern, gridRow, gridCol)) {
-                    this.placeShape(this.draggedShape, gridRow, gridCol);
+                if (this.canPlaceShape(pattern, gridStartRow, gridStartCol)) {
+                    this.placeShape(this.draggedShape, gridStartRow, gridStartCol);
                     return true;
                 }
                 return false;
@@ -3440,6 +3476,7 @@
                 setTimeout(() => this.playTone(784, 0.2, 'sine', 0.5), 200);
             }
         }
+
         function showNotification(message) {
             const notification = document.createElement('div');
             notification.className = 'notification';
