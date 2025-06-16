@@ -6,53 +6,39 @@
     <title>Блок Взрыв! - VK Mini App</title>
     
     <style>
-        /* ОСНОВНЫЕ ПЕРЕМЕННЫЕ */
-        :root {
-            --primary-bg: linear-gradient(135deg, #8B4A8C 0%, #5D3A5D 100%);
-            --secondary-bg: linear-gradient(135deg, #6B4A6C 0%, #4D2E4E 100%);
-            
-            /* КАРТОННЫЕ ЦВЕТА */
-            --card-bg: linear-gradient(145deg, #F5F1E8 0%, #E8E0D0 100%);
-            --card-shadow: rgba(139, 118, 95, 0.3);
-            --card-border: #D4C4A8;
-            
-            /* ЦВЕТА ТЕКСТА */
-            --text-primary: #5D4E37;
-            --text-secondary: #8B7355;
-            --text-white: #FFFFFF;
-            
-            /* АКЦЕНТНЫЕ ЦВЕТА */
-            --accent-green: linear-gradient(145deg, #8BC34A 0%, #689F38 100%);
-            --accent-blue: linear-gradient(145deg, #42A5F5 0%, #1976D2 100%);
-            --accent-red: linear-gradient(145deg, #EF5350 0%, #C62828 100%);
-            --accent-orange: linear-gradient(145deg, #FFA726 0%, #F57C00 100%);
-            
-            /* ДЕРЕВЯННЫЕ ЦВЕТА */
-            --wood-bg: linear-gradient(145deg, #8D6E63 0%, #5D4037 100%);
-            --wood-border: #6D4C41;
-        }
-
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
+        :root {
+            --primary-bg: linear-gradient(135deg, #8B4A8C 0%, #5D3A5D 100%);
+            --card-bg: linear-gradient(145deg, #F5F1E8 0%, #E8E0D0 100%);
+            --card-shadow: rgba(139, 118, 95, 0.3);
+            --card-border: #D4C4A8;
+            --text-primary: #5D4E37;
+            --text-secondary: #8B7355;
+            --text-white: #FFFFFF;
+            --accent-green: linear-gradient(145deg, #8BC34A 0%, #689F38 100%);
+            --accent-blue: linear-gradient(145deg, #42A5F5 0%, #1976D2 100%);
+            --accent-red: linear-gradient(145deg, #EF5350 0%, #C62828 100%);
+            --accent-orange: linear-gradient(145deg, #FFA726 0%, #F57C00 100%);
+            --wood-bg: linear-gradient(145deg, #8D6E63 0%, #5D4037 100%);
+            --wood-border: #6D4C41;
+        }
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', sans-serif;
             background: var(--primary-bg);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
             color: var(--text-primary);
-            overflow-x: hidden;
-            position: relative;
             font-weight: 600;
         }
 
-        /* ЗАГРУЗОЧНЫЙ ЭКРАН */
         #loadingScreen {
             position: fixed;
             top: 0;
@@ -65,27 +51,24 @@
             align-items: center;
             justify-content: center;
             z-index: 1000;
-            transition: opacity 0.5s ease;
         }
 
         #loadingScreen.hidden {
-            opacity: 0;
-            pointer-events: none;
+            display: none;
         }
 
         .loading-logo {
-            font-size: 48px;
+            font-size: 36px;
             font-weight: 900;
             color: var(--text-white);
             margin-bottom: 20px;
-            text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
         }
 
         .loading-spinner {
-            width: 50px;
-            height: 50px;
-            border: 4px solid rgba(255, 255, 255, 0.2);
-            border-top: 4px solid var(--text-white);
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(255, 255, 255, 0.2);
+            border-top: 3px solid var(--text-white);
             border-radius: 50%;
             animation: spin 1s linear infinite;
         }
@@ -95,31 +78,20 @@
             100% { transform: rotate(360deg); }
         }
 
-        /* ОСНОВНОЙ КОНТЕЙНЕР */
         #appContainer {
             width: 100%;
             max-width: 400px;
             min-height: 100vh;
             background: var(--card-bg);
             position: relative;
-            opacity: 0;
-            transform: translateY(20px);
-            transition: all 0.6s ease;
-            box-shadow: 0 0 30px var(--card-shadow);
+            box-shadow: 0 0 20px var(--card-shadow);
         }
 
-        #appContainer.loaded {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        /* ШАПКА */
         .header {
             background: var(--card-bg);
             padding: 15px 20px;
-            border-bottom: 3px solid var(--card-border);
-            box-shadow: 0 4px 12px var(--card-shadow);
-            position: relative;
+            border-bottom: 2px solid var(--card-border);
+            box-shadow: 0 2px 8px var(--card-shadow);
         }
 
         .header::before {
@@ -140,62 +112,57 @@
         }
 
         .profile-avatar {
-            width: 50px;
-            height: 50px;
+            width: 45px;
+            height: 45px;
             border-radius: 50%;
             background: var(--accent-blue);
-            border: 3px solid var(--card-border);
+            border: 2px solid var(--card-border);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 20px;
+            font-size: 18px;
             color: var(--text-white);
             font-weight: 900;
-            box-shadow: 0 4px 8px var(--card-shadow);
         }
 
         .profile-info h2 {
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 800;
             color: var(--text-primary);
-            margin-bottom: 2px;
         }
 
         .profile-info p {
             font-size: 12px;
             color: var(--text-secondary);
-            font-weight: 500;
         }
 
-        /* СТАТИСТИКА */
         .stats-row {
             display: flex;
-            gap: 10px;
+            gap: 8px;
         }
 
         .stat-item {
             flex: 1;
             background: rgba(255, 255, 255, 0.6);
-            border-radius: 12px;
-            padding: 8px;
+            border-radius: 10px;
+            padding: 6px;
             display: flex;
             align-items: center;
-            gap: 6px;
-            font-size: 12px;
+            gap: 5px;
+            font-size: 11px;
             font-weight: 700;
             color: var(--text-primary);
-            border: 2px solid rgba(255, 255, 255, 0.8);
-            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.8);
         }
 
         .stat-icon {
-            width: 18px;
-            height: 18px;
-            border-radius: 4px;
+            width: 16px;
+            height: 16px;
+            border-radius: 3px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 10px;
+            font-size: 9px;
             color: var(--text-white);
             font-weight: 900;
         }
@@ -204,22 +171,20 @@
         .stat-icon.energy { background: var(--accent-blue); }
         .stat-icon.coins { background: var(--accent-orange); }
 
-        /* НАВИГАЦИЯ */
         .navigation {
             background: var(--wood-bg);
-            border-top: 3px solid var(--wood-border);
+            border-top: 2px solid var(--wood-border);
             display: flex;
             padding: 0;
-            box-shadow: 0 -4px 12px var(--card-shadow);
+            box-shadow: 0 -2px 8px var(--card-shadow);
         }
 
         .nav-item {
             flex: 1;
-            padding: 15px 8px;
+            padding: 12px 8px;
             text-align: center;
             cursor: pointer;
-            transition: all 0.2s ease;
-            font-size: 11px;
+            font-size: 10px;
             font-weight: 700;
             color: rgba(255, 255, 255, 0.7);
             border: none;
@@ -227,8 +192,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 5px;
-            position: relative;
+            gap: 4px;
         }
 
         .nav-item.active {
@@ -236,49 +200,34 @@
             background: rgba(255, 255, 255, 0.1);
         }
 
-        .nav-item.active::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 30px;
-            height: 3px;
-            background: var(--accent-orange);
-            border-radius: 0 0 4px 4px;
-        }
-
         .nav-icon {
-            width: 24px;
-            height: 24px;
-            border-radius: 6px;
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
             background: rgba(255, 255, 255, 0.1);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 12px;
+            font-size: 10px;
         }
 
-        /* ЭКРАНЫ */
         .screen {
             display: none;
-            padding: 20px;
-            min-height: calc(100vh - 200px);
+            padding: 15px;
+            min-height: calc(100vh - 160px);
         }
 
         .screen.active {
             display: block;
         }
 
-        /* КАРТОЧКИ */
         .card {
             background: var(--card-bg);
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 15px;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 12px;
             border: 2px solid var(--card-border);
-            box-shadow: 0 6px 16px var(--card-shadow);
-            position: relative;
+            box-shadow: 0 4px 12px var(--card-shadow);
         }
 
         .card::before {
@@ -287,51 +236,36 @@
             top: 0;
             left: 0;
             right: 0;
-            height: 4px;
+            height: 3px;
             background: var(--accent-green);
-            border-radius: 15px 15px 0 0;
+            border-radius: 12px 12px 0 0;
         }
 
-        /* КНОПКА ИГРАТЬ */
         .play-button {
             width: 100%;
-            padding: 18px;
+            padding: 15px;
             background: var(--accent-green);
             border: none;
-            border-radius: 15px;
+            border-radius: 12px;
             color: var(--text-white);
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 900;
             cursor: pointer;
-            transition: all 0.2s ease;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            border: 3px solid rgba(255, 255, 255, 0.3);
-            box-shadow: 0 6px 16px rgba(139, 195, 74, 0.4);
-            position: relative;
-            overflow: hidden;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 4px 12px rgba(139, 195, 74, 0.4);
         }
 
-        .play-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(139, 195, 74, 0.6);
-        }
-
-        .play-button:active {
-            transform: translateY(0);
-        }
-
-        /* ИГРОВОЙ ЭКРАН */
         .game-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;
-            padding: 12px 16px;
+            margin-bottom: 12px;
+            padding: 10px 12px;
             background: var(--card-bg);
-            border-radius: 12px;
+            border-radius: 10px;
             border: 2px solid var(--card-border);
-            box-shadow: 0 4px 8px var(--card-shadow);
+            box-shadow: 0 2px 6px var(--card-shadow);
         }
 
         .score-display {
@@ -339,25 +273,22 @@
         }
 
         .score-label {
-            font-size: 11px;
+            font-size: 10px;
             color: var(--text-secondary);
             font-weight: 600;
-            text-transform: uppercase;
         }
 
         .score-value {
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 900;
             color: var(--text-primary);
-            margin-top: 2px;
         }
 
-        /* БУСТЕРЫ */
         .game-boosters {
             display: flex;
             justify-content: center;
-            gap: 8px;
-            margin-bottom: 20px;
+            gap: 6px;
+            margin-bottom: 15px;
         }
 
         .game-booster {
@@ -365,136 +296,119 @@
             flex-direction: column;
             align-items: center;
             cursor: pointer;
-            transition: transform 0.2s ease;
-            padding: 10px;
-            border-radius: 12px;
+            padding: 8px;
+            border-radius: 10px;
             background: var(--card-bg);
             border: 2px solid var(--card-border);
-            min-width: 60px;
-            box-shadow: 0 4px 8px var(--card-shadow);
-        }
-
-        .game-booster:hover {
-            transform: translateY(-3px);
+            min-width: 55px;
+            box-shadow: 0 2px 6px var(--card-shadow);
         }
 
         .booster-icon {
-            width: 32px;
-            height: 32px;
-            margin-bottom: 5px;
-            border-radius: 8px;
+            width: 28px;
+            height: 28px;
+            margin-bottom: 4px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: var(--text-white);
+            font-weight: 900;
         }
 
         .booster-count {
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 700;
             color: var(--text-primary);
         }
 
-        /* ИГРОВАЯ СЕТКА */
         .game-grid-container {
             background: var(--card-bg);
-            border-radius: 15px;
-            padding: 15px;
-            margin-bottom: 20px;
-            border: 3px solid var(--card-border);
-            box-shadow: inset 0 4px 8px var(--card-shadow);
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 2px solid var(--card-border);
+            box-shadow: inset 0 2px 6px var(--card-shadow);
         }
 
         .game-grid {
             display: grid;
             grid-template-columns: repeat(10, 1fr);
             grid-template-rows: repeat(10, 1fr);
-            gap: 2px;
+            gap: 1px;
             aspect-ratio: 1;
             background: rgba(255, 255, 255, 0.3);
-            border-radius: 8px;
-            padding: 8px;
+            border-radius: 6px;
+            padding: 6px;
         }
 
         .cell {
             background: rgba(255, 255, 255, 0.6);
-            border-radius: 3px;
+            border-radius: 2px;
             border: 1px solid rgba(255, 255, 255, 0.8);
-            position: relative;
             aspect-ratio: 1;
         }
 
         .cell.filled {
             border: 2px solid rgba(255, 255, 255, 0.9);
-            box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
         }
 
-        /* ЦВЕТА БЛОКОВ */
         .color-red { background: var(--accent-red) !important; }
         .color-blue { background: var(--accent-blue) !important; }
         .color-green { background: var(--accent-green) !important; }
         .color-purple { background: linear-gradient(145deg, #AB47BC 0%, #7B1FA2 100%) !important; }
         .color-orange { background: var(--accent-orange) !important; }
 
-        /* ПРЕВЬЮ ТЕНИ */
         .cell.preview {
             background: rgba(255, 255, 255, 0.95) !important;
             border: 2px solid rgba(255, 255, 255, 1) !important;
-            box-shadow: 0 0 12px rgba(255, 255, 255, 0.8) !important;
+            box-shadow: 0 0 8px rgba(255, 255, 255, 0.8) !important;
             transform: scale(1.05) !important;
             z-index: 10 !important;
         }
 
-        /* АНИМАЦИЯ ОЧИСТКИ */
         .cell.clearing {
-            animation: clearSimple 0.4s ease-out forwards;
-            z-index: 10;
+            animation: clearSimple 0.3s ease-out forwards;
         }
 
         @keyframes clearSimple {
             0% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.2); opacity: 0.7; }
+            50% { transform: scale(1.1); opacity: 0.5; }
             100% { transform: scale(0); opacity: 0; }
         }
 
-        /* ОБЛАСТЬ ФИГУР */
         .shapes-area {
             background: var(--card-bg);
-            border-radius: 15px;
-            padding: 20px;
-            border: 3px solid var(--card-border);
-            box-shadow: 0 6px 16px var(--card-shadow);
+            border-radius: 12px;
+            padding: 15px;
+            border: 2px solid var(--card-border);
+            box-shadow: 0 4px 12px var(--card-shadow);
         }
 
         .shapes-container {
             display: flex;
             justify-content: space-around;
-            gap: 10px;
+            gap: 8px;
         }
 
         .shape-slot {
             display: flex;
             align-items: center;
             justify-content: center;
-            min-height: 80px;
+            min-height: 70px;
             background: rgba(255, 255, 255, 0.4);
-            border-radius: 12px;
+            border-radius: 10px;
             border: 2px dashed var(--card-border);
             flex: 1;
         }
 
         .shape {
             display: grid;
-            gap: 2px;
+            gap: 1px;
             cursor: grab;
-            transition: transform 0.2s ease;
-            position: relative;
-            z-index: 100;
-            padding: 4px;
-        }
-
-        .shape:hover {
-            transform: scale(1.1);
-        }
-
-        .shape:active {
-            transform: scale(1.05);
+            padding: 3px;
         }
 
         .shape.dragging {
@@ -502,9 +416,9 @@
         }
 
         .shape-block {
-            width: 20px;
-            height: 20px;
-            border-radius: 4px;
+            width: 16px;
+            height: 16px;
+            border-radius: 3px;
             border: 1px solid rgba(255, 255, 255, 0.6);
         }
 
@@ -512,7 +426,6 @@
             opacity: 0;
         }
 
-        /* ОВЕРЛЕИ */
         .overlay {
             position: fixed;
             top: 0;
@@ -536,67 +449,36 @@
 
         .overlay-content {
             background: var(--card-bg);
-            border-radius: 20px;
-            padding: 30px;
-            max-width: 320px;
+            border-radius: 15px;
+            padding: 25px;
+            max-width: 300px;
             width: 90%;
             text-align: center;
-            border: 3px solid var(--card-border);
-            box-shadow: 0 10px 30px var(--card-shadow);
-            position: relative;
+            border: 2px solid var(--card-border);
+            box-shadow: 0 8px 20px var(--card-shadow);
         }
 
-        /* ЛЕНТОЧКА ЗАГОЛОВКА */
         .ribbon {
-            position: absolute;
-            top: -15px;
-            left: 50%;
-            transform: translateX(-50%);
             background: var(--accent-red);
             color: var(--text-white);
-            padding: 8px 25px;
-            border-radius: 8px;
-            font-size: 16px;
+            padding: 6px 20px;
+            border-radius: 6px;
+            font-size: 14px;
             font-weight: 900;
             text-transform: uppercase;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-            border: 2px solid rgba(255, 255, 255, 0.3);
+            margin-bottom: 15px;
+            display: inline-block;
         }
 
-        .ribbon::before,
-        .ribbon::after {
-            content: '';
-            position: absolute;
-            top: 100%;
-            width: 0;
-            height: 0;
-            border-style: solid;
-        }
-
-        .ribbon::before {
-            left: 0;
-            border-width: 8px 0 0 8px;
-            border-color: transparent transparent transparent #C62828;
-        }
-
-        .ribbon::after {
-            right: 0;
-            border-width: 8px 8px 0 0;
-            border-color: transparent #C62828 transparent transparent;
-        }
-
-        /* ПРОСТЫЕ КНОПКИ */
         .simple-button {
-            padding: 12px 20px;
+            padding: 10px 16px;
             border: none;
-            border-radius: 12px;
-            font-size: 14px;
+            border-radius: 8px;
+            font-size: 12px;
             font-weight: 700;
             cursor: pointer;
-            transition: all 0.2s ease;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
-            border: 2px solid rgba(255, 255, 255, 0.3);
+            margin: 5px;
         }
 
         .restart-btn {
@@ -607,25 +489,16 @@
         .menu-btn {
             background: rgba(255, 255, 255, 0.2);
             color: var(--text-primary);
-            border: 2px solid var(--card-border);
+            border: 1px solid var(--card-border);
         }
 
-        .simple-button:hover {
-            transform: translateY(-2px);
-        }
-
-        .simple-button:active {
-            transform: translateY(0);
-        }
-
-        /* МАГАЗИН */
         .shop-item {
             background: var(--card-bg);
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 15px;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 10px;
             border: 2px solid var(--card-border);
-            box-shadow: 0 6px 16px var(--card-shadow);
+            box-shadow: 0 4px 12px var(--card-shadow);
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -636,60 +509,51 @@
         }
 
         .shop-item-title {
-            font-size: 16px;
+            font-size: 14px;
             font-weight: 800;
             color: var(--text-primary);
-            margin-bottom: 5px;
+            margin-bottom: 3px;
         }
 
         .shop-item-description {
-            font-size: 12px;
+            font-size: 11px;
             color: var(--text-secondary);
-            font-weight: 500;
         }
 
         .shop-item-price {
             background: var(--accent-orange);
             color: var(--text-white);
-            padding: 8px 15px;
-            border-radius: 10px;
+            padding: 6px 12px;
+            border-radius: 8px;
             font-weight: 700;
-            font-size: 14px;
-            border: 2px solid rgba(255, 255, 255, 0.3);
+            font-size: 12px;
             cursor: pointer;
-            transition: all 0.2s ease;
         }
 
-        .shop-item-price:hover {
-            transform: scale(1.05);
-        }
-
-        /* ЛИДЕРБОРД */
         .leaderboard-header {
             background: var(--wood-bg);
-            border-radius: 15px 15px 0 0;
-            padding: 15px 20px;
-            border: 3px solid var(--wood-border);
+            border-radius: 12px 12px 0 0;
+            padding: 12px;
+            border: 2px solid var(--wood-border);
             border-bottom: none;
             color: var(--text-white);
             font-weight: 800;
             text-align: center;
-            margin-bottom: 0;
         }
 
         .leaderboard-list {
             background: var(--card-bg);
-            border-radius: 0 0 15px 15px;
-            border: 3px solid var(--card-border);
+            border-radius: 0 0 12px 12px;
+            border: 2px solid var(--card-border);
             border-top: none;
-            box-shadow: 0 6px 16px var(--card-shadow);
+            box-shadow: 0 4px 12px var(--card-shadow);
         }
 
         .leaderboard-item {
             display: flex;
             align-items: center;
-            gap: 15px;
-            padding: 15px 20px;
+            gap: 12px;
+            padding: 12px 15px;
             border-bottom: 1px solid var(--card-border);
         }
 
@@ -698,8 +562,8 @@
         }
 
         .leaderboard-rank {
-            width: 30px;
-            height: 30px;
+            width: 24px;
+            height: 24px;
             border-radius: 50%;
             background: var(--accent-orange);
             color: var(--text-white);
@@ -707,7 +571,7 @@
             align-items: center;
             justify-content: center;
             font-weight: 900;
-            font-size: 14px;
+            font-size: 12px;
         }
 
         .leaderboard-rank.gold { background: linear-gradient(145deg, #FFD700 0%, #FFA000 100%); }
@@ -715,16 +579,17 @@
         .leaderboard-rank.bronze { background: linear-gradient(145deg, #CD7F32 0%, #8D5524 100%); }
 
         .leaderboard-avatar {
-            width: 40px;
-            height: 40px;
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
             background: var(--accent-blue);
-            border: 2px solid var(--card-border);
+            border: 1px solid var(--card-border);
             display: flex;
             align-items: center;
             justify-content: center;
             color: var(--text-white);
             font-weight: 900;
+            font-size: 12px;
         }
 
         .leaderboard-info {
@@ -734,32 +599,30 @@
         .leaderboard-name {
             font-weight: 700;
             color: var(--text-primary);
-            font-size: 14px;
+            font-size: 13px;
         }
 
         .leaderboard-score {
-            font-size: 12px;
+            font-size: 11px;
             color: var(--text-secondary);
-            font-weight: 600;
         }
 
-        /* УВЕДОМЛЕНИЯ */
         .notification {
             position: fixed;
             top: 20px;
             left: 50%;
-            transform: translateX(-50%) translateY(-100px);
+            transform: translateX(-50%) translateY(-50px);
             background: var(--card-bg);
             color: var(--text-primary);
-            padding: 12px 20px;
-            border-radius: 10px;
+            padding: 10px 16px;
+            border-radius: 8px;
             border: 2px solid var(--card-border);
-            box-shadow: 0 6px 16px var(--card-shadow);
+            box-shadow: 0 4px 12px var(--card-shadow);
             z-index: 10000;
             font-weight: 700;
-            font-size: 14px;
+            font-size: 12px;
             opacity: 0;
-            transition: all 0.4s ease;
+            transition: all 0.3s ease;
         }
 
         .notification.show {
@@ -767,39 +630,31 @@
             transform: translateX(-50%) translateY(0);
         }
 
-        /* АДАПТИВНОСТЬ */
         @media (max-width: 350px) {
             .stats-row {
                 flex-direction: column;
-                gap: 5px;
-            }
-            
-            .stat-item {
-                padding: 6px;
+                gap: 4px;
             }
             
             .game-grid {
                 gap: 1px;
-                padding: 6px;
+                padding: 4px;
             }
             
             .shape-block {
-                width: 16px;
-                height: 16px;
+                width: 14px;
+                height: 14px;
             }
         }
     </style>
 </head>
 <body>
-    <!-- ЗАГРУЗОЧНЫЙ ЭКРАН -->
     <div id="loadingScreen">
         <div class="loading-logo">🧩 БЛОК ВЗРЫВ!</div>
         <div class="loading-spinner"></div>
     </div>
 
-    <!-- ОСНОВНОЕ ПРИЛОЖЕНИЕ -->
     <div id="appContainer">
-        <!-- ШАПКА -->
         <div class="header">
             <div class="profile-section">
                 <div class="profile-avatar" id="userAvatar">👤</div>
@@ -825,33 +680,31 @@
             </div>
         </div>
 
-        <!-- ЭКРАН ИГРОКА -->
         <div class="screen active" id="playerScreen">
             <div class="card">
-                <h3 style="text-align: center; margin-bottom: 20px; font-size: 20px; color: var(--text-primary);">
+                <h3 style="text-align: center; margin-bottom: 15px; font-size: 18px; color: var(--text-primary);">
                     🎮 Готов к игре?
                 </h3>
-                <button class="play-button" onclick="startNewGameFromMenu()">
+                <button class="play-button" onclick="startNewGame()">
                     🚀 ИГРАТЬ
                 </button>
             </div>
 
             <div class="card">
-                <h4 style="margin-bottom: 15px; color: var(--text-primary);">📊 Статистика</h4>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                <h4 style="margin-bottom: 12px; color: var(--text-primary); font-size: 14px;">📊 Статистика</h4>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
                     <div style="text-align: center;">
-                        <div style="font-size: 24px; font-weight: 900; color: var(--text-primary);" id="bestScore">0</div>
-                        <div style="font-size: 12px; color: var(--text-secondary); font-weight: 600;">Лучший счёт</div>
+                        <div style="font-size: 20px; font-weight: 900; color: var(--text-primary);" id="bestScore">0</div>
+                        <div style="font-size: 11px; color: var(--text-secondary);">Лучший счёт</div>
                     </div>
                     <div style="text-align: center;">
-                        <div style="font-size: 24px; font-weight: 900; color: var(--text-primary);" id="gamesPlayed">0</div>
-                        <div style="font-size: 12px; color: var(--text-secondary); font-weight: 600;">Игр сыграно</div>
+                        <div style="font-size: 20px; font-weight: 900; color: var(--text-primary);" id="gamesPlayed">0</div>
+                        <div style="font-size: 11px; color: var(--text-secondary);">Игр сыграно</div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- ИГРОВОЙ ЭКРАН -->
         <div class="screen" id="gameScreen">
             <div class="game-header">
                 <div class="score-display">
@@ -870,15 +723,15 @@
 
             <div class="game-boosters">
                 <div class="game-booster" onclick="useBooster('refresh')">
-                    <div class="booster-icon" style="background: var(--accent-green); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 900;">🔄</div>
+                    <div class="booster-icon" style="background: var(--accent-green);">🔄</div>
                     <div class="booster-count" id="refreshCount">2</div>
                 </div>
                 <div class="game-booster" onclick="useBooster('shape_choice')">
-                    <div class="booster-icon" style="background: var(--accent-blue); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 900;">🎯</div>
+                    <div class="booster-icon" style="background: var(--accent-blue);">🎯</div>
                     <div class="booster-count" id="shapeChoiceCount">0</div>
                 </div>
                 <div class="game-booster" onclick="useBooster('row_blast')">
-                    <div class="booster-icon" style="background: var(--accent-red); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 900;">💥</div>
+                    <div class="booster-icon" style="background: var(--accent-red);">💥</div>
                     <div class="booster-count" id="rowBlastCount">0</div>
                 </div>
             </div>
@@ -896,17 +749,16 @@
             </div>
         </div>
 
-        <!-- ЭКРАН МАГАЗИНА -->
         <div class="screen" id="shopScreen">
             <div class="card">
-                <h3 style="text-align: center; margin-bottom: 20px; font-size: 18px; color: var(--text-primary);">
+                <h3 style="text-align: center; margin-bottom: 15px; font-size: 16px; color: var(--text-primary);">
                     🛒 Наборы бустеров
                 </h3>
                 
                 <div class="shop-item">
                     <div class="shop-item-info">
                         <div class="shop-item-title">Стартовый набор</div>
-                        <div class="shop-item-description">3 Выбора + 2 Обновления + 1 Взрыв</div>
+                        <div class="shop-item-description">3 Выбора + 2 Обновления</div>
                     </div>
                     <div class="shop-item-price" onclick="buyPack('starter')">150 🪙</div>
                 </div>
@@ -914,14 +766,14 @@
                 <div class="shop-item">
                     <div class="shop-item-info">
                         <div class="shop-item-title">Премиум набор</div>
-                        <div class="shop-item-description">5 Выборов + 3 Взрыва + бонусы</div>
+                        <div class="shop-item-description">5 Выборов + 3 Взрыва</div>
                     </div>
                     <div class="shop-item-price" onclick="buyPack('premium')">450 🪙</div>
                 </div>
             </div>
 
             <div class="card">
-                <h3 style="text-align: center; margin-bottom: 20px; font-size: 18px; color: var(--text-primary);">
+                <h3 style="text-align: center; margin-bottom: 15px; font-size: 16px; color: var(--text-primary);">
                     ⚡ Энергия
                 </h3>
                 
@@ -943,7 +795,6 @@
             </div>
         </div>
 
-        <!-- ЭКРАН ЛИДЕРБОРДА -->
         <div class="screen" id="leaderboardScreen">
             <div class="leaderboard-header">
                 🏆 ТОП ИГРОКИ
@@ -984,36 +835,34 @@
             </div>
         </div>
 
-        <!-- ЭКРАН ДРУЗЕЙ -->
         <div class="screen" id="friendsScreen">
             <div class="card">
-                <h3 style="text-align: center; margin-bottom: 20px; font-size: 18px; color: var(--text-primary);">
+                <h3 style="text-align: center; margin-bottom: 15px; font-size: 16px; color: var(--text-primary);">
                     👥 Пригласи друзей
                 </h3>
-                <p style="text-align: center; color: var(--text-secondary); margin-bottom: 20px; font-weight: 500; line-height: 1.4;">
+                <p style="text-align: center; color: var(--text-secondary); margin-bottom: 15px; font-size: 12px; line-height: 1.4;">
                     За каждого друга получи <strong>20 монет</strong> и <strong>1 энергию</strong>!
                 </p>
-                <button class="play-button" onclick="inviteFriends()" style="font-size: 16px;">
+                <button class="play-button" onclick="inviteFriends()" style="font-size: 14px;">
                     📱 ПРИГЛАСИТЬ ДРУЗЕЙ
                 </button>
             </div>
 
             <div class="card">
-                <h4 style="margin-bottom: 15px; color: var(--text-primary);">📈 Статистика приглашений</h4>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                <h4 style="margin-bottom: 12px; color: var(--text-primary); font-size: 14px;">📈 Статистика</h4>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
                     <div style="text-align: center;">
-                        <div style="font-size: 20px; font-weight: 900; color: var(--text-primary);" id="invitesSent">0</div>
-                        <div style="font-size: 12px; color: var(--text-secondary); font-weight: 600;">Отправлено</div>
+                        <div style="font-size: 18px; font-weight: 900; color: var(--text-primary);" id="invitesSent">0</div>
+                        <div style="font-size: 11px; color: var(--text-secondary);">Отправлено</div>
                     </div>
                     <div style="text-align: center;">
-                        <div style="font-size: 20px; font-weight: 900; color: var(--text-primary);" id="friendsJoined">0</div>
-                        <div style="font-size: 12px; color: var(--text-secondary); font-weight: 600;">Присоединились</div>
+                        <div style="font-size: 18px; font-weight: 900; color: var(--text-primary);" id="friendsJoined">0</div>
+                        <div style="font-size: 11px; color: var(--text-secondary);">Присоединились</div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- НАВИГАЦИЯ -->
         <div class="navigation">
             <button class="nav-item active" onclick="switchTab('player')">
                 <div class="nav-icon">🎮</div>
@@ -1034,16 +883,14 @@
         </div>
     </div>
 
-    <!-- ОВЕРЛЕЙ GAME OVER -->
     <div class="overlay" id="gameOverOverlay">
         <div class="overlay-content">
             <div class="ribbon">ИГРА ОКОНЧЕНА</div>
-            <div style="margin-top: 25px; margin-bottom: 20px;">
-                <h3 style="margin-bottom: 10px; color: var(--text-primary);">Финальный счёт</h3>
-                <div style="font-size: 32px; font-weight: 900; color: var(--text-primary); margin-bottom: 10px;" id="finalScore">0</div>
-                <div style="font-size: 14px; color: var(--text-secondary);">Опыт: <span id="finalXP">+0</span></div>
+            <div style="margin-bottom: 15px;">
+                <h3 style="margin-bottom: 8px; color: var(--text-primary); font-size: 16px;">Финальный счёт</h3>
+                <div style="font-size: 28px; font-weight: 900; color: var(--text-primary);" id="finalScore">0</div>
             </div>
-            <div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;">
+            <div style="display: flex; gap: 8px; justify-content: center;">
                 <button class="simple-button restart-btn" onclick="restartGame()">🔥 СНОВА</button>
                 <button class="simple-button menu-btn" onclick="exitGame()">🏠 МЕНЮ</button>
             </div>
@@ -1051,245 +898,13 @@
     </div>
 
     <script>
-        // VK BRIDGE КОНФИГУРАЦИЯ
-        const APP_CONFIG = {
-            APP_ID: 51912419
-        };
-
+        // Простая инициализация без VK Bridge сначала
+        let gameState = null;
+        let currentTab = 'player';
         let vkBridge = null;
         let isVKReady = false;
-        let currentUser = null;
 
-        // СОСТОЯНИЕ ПРИЛОЖЕНИЯ
-        const AppState = {
-            currentTab: 'player',
-            gameState: null,
-            hasUnfinishedGame: false
-        };
-
-        // VK BRIDGE ИНИЦИАЛИЗАЦИЯ
-        async function initVK() {
-            if (window.vkBridge) {
-                vkBridge = window.vkBridge;
-                try {
-                    await vkBridge.send('VKWebAppInit');
-                    
-                    const userResult = await vkBridge.send('VKWebAppGetUserInfo');
-                    currentUser = userResult;
-                    
-                    document.getElementById('userName').textContent = 
-                        userResult.first_name || 'Игрок';
-                    document.getElementById('userAvatar').textContent = 
-                        userResult.first_name ? userResult.first_name[0].toUpperCase() : '👤';
-                    
-                    isVKReady = true;
-                    console.log('✅ VK Bridge инициализирован');
-                    
-                    await loadGameData();
-                    
-                } catch (error) {
-                    console.log('❌ Ошибка VK Bridge:', error);
-                    isVKReady = false;
-                }
-            } else {
-                console.log('⚠️ VK Bridge недоступен');
-                isVKReady = false;
-            }
-        }
-
-        // СОХРАНЕНИЕ И ЗАГРУЗКА ДАННЫХ
-        async function saveGameData() {
-            if (!AppState.gameState) return;
-            
-            const gameData = {
-                coins: AppState.gameState.coins,
-                bestScore: AppState.gameState.bestScore,
-                level: AppState.gameState.level,
-                energy: AppState.gameState.energy,
-                boosters: AppState.gameState.boosters,
-                stats: AppState.gameState.stats,
-                referrals: AppState.gameState.referrals,
-                hasUnfinishedGame: AppState.hasUnfinishedGame,
-                gameSnapshot: AppState.hasUnfinishedGame ? AppState.gameState.getSnapshot() : null,
-                timestamp: Date.now()
-            };
-
-            if (isVKReady && vkBridge) {
-                try {
-                    await vkBridge.send('VKWebAppStorageSet', {
-                        key: 'gameData',
-                        value: JSON.stringify(gameData)
-                    });
-                    console.log('💾 Данные сохранены');
-                } catch (error) {
-                    console.log('❌ Ошибка сохранения:', error);
-                    localStorage.setItem('blockBlastData', JSON.stringify(gameData));
-                }
-            } else {
-                localStorage.setItem('blockBlastData', JSON.stringify(gameData));
-            }
-        }
-
-        async function loadGameData() {
-            let gameData = null;
-
-            if (isVKReady && vkBridge) {
-                try {
-                    const result = await vkBridge.send('VKWebAppStorageGet', {
-                        keys: ['gameData']
-                    });
-                    
-                    if (result.keys[0] && result.keys[0].value) {
-                        gameData = JSON.parse(result.keys[0].value);
-                        console.log('📁 Данные загружены из VK');
-                    }
-                } catch (error) {
-                    console.log('❌ Ошибка загрузки из VK:', error);
-                }
-            }
-
-            if (!gameData) {
-                const localData = localStorage.getItem('blockBlastData');
-                if (localData) {
-                    gameData = JSON.parse(localData);
-                    console.log('📁 Данные загружены локально');
-                }
-            }
-
-            if (gameData && AppState.gameState) {
-                AppState.gameState.coins = gameData.coins || 100;
-                AppState.gameState.bestScore = gameData.bestScore || 0;
-                
-                if (gameData.level) {
-                    AppState.gameState.level = gameData.level;
-                }
-                if (gameData.energy) {
-                    AppState.gameState.energy = gameData.energy;
-                }
-                if (gameData.boosters) {
-                    AppState.gameState.boosters = gameData.boosters;
-                }
-                if (gameData.stats) {
-                    AppState.gameState.stats = gameData.stats;
-                }
-                if (gameData.referrals) {
-                    AppState.gameState.referrals = gameData.referrals;
-                }
-
-                AppState.hasUnfinishedGame = gameData.hasUnfinishedGame || false;
-                
-                if (AppState.hasUnfinishedGame && gameData.gameSnapshot) {
-                    AppState.gameState.loadSnapshot(gameData.gameSnapshot);
-                    console.log('🎮 Незавершённая игра восстановлена');
-                }
-
-                updateAllUI();
-            }
-        }
-
-        // UI ФУНКЦИИ
-        function switchTab(tabName) {
-            AppState.currentTab = tabName;
-            
-            document.querySelectorAll('.screen').forEach(screen => {
-                screen.classList.remove('active');
-            });
-            document.querySelectorAll('.nav-item').forEach(item => {
-                item.classList.remove('active');
-            });
-            
-            document.getElementById(tabName + 'Screen').classList.add('active');
-            document.querySelector(`[onclick="switchTab('${tabName}')"]`).classList.add('active');
-
-            if (tabName === 'game' && AppState.gameState) {
-                AppState.gameState.renderShapes();
-            }
-        }
-
-        function startNewGameFromMenu() {
-            if (!AppState.gameState.energy.canPlay()) {
-                showNotification('Недостаточно энергии! ⚡');
-                return;
-            }
-
-            if (!AppState.gameState.energy.consume(1)) {
-                showNotification('Недостаточно энергии! ⚡');
-                return;
-            }
-
-            AppState.gameState.startNewGame();
-            AppState.hasUnfinishedGame = true;
-            switchTab('game');
-            updateAllUI();
-            
-            if (isVKReady) {
-                saveGameData();
-            }
-        }
-
-        function restartGame() {
-            closeOverlay('gameOverOverlay');
-            
-            if (!AppState.gameState.energy.canPlay()) {
-                showNotification('Недостаточно энергии! ⚡');
-                switchTab('player');
-                return;
-            }
-
-            if (!AppState.gameState.energy.consume(1)) {
-                showNotification('Недостаточно энергии! ⚡');
-                switchTab('player');
-                return;
-            }
-
-            AppState.gameState.startNewGame();
-            AppState.hasUnfinishedGame = true;
-            switchTab('game');
-            updateAllUI();
-            
-            if (isVKReady) {
-                saveGameData();
-            }
-        }
-
-        function exitGame() {
-            closeOverlay('gameOverOverlay');
-            switchTab('player');
-        }
-
-        function updateGameUI() {
-            if (!AppState.gameState) return;
-            
-            document.getElementById('gameScore').textContent = AppState.gameState.score.toLocaleString();
-            document.getElementById('gameLines').textContent = AppState.gameState.linesCleared;
-            document.getElementById('gameCombo').textContent = AppState.gameState.combo;
-            
-            document.getElementById('refreshCount').textContent = AppState.gameState.boosters.inventory.refresh;
-            document.getElementById('shapeChoiceCount').textContent = AppState.gameState.boosters.inventory.shape_choice;
-            document.getElementById('rowBlastCount').textContent = AppState.gameState.boosters.inventory.row_blast;
-        }
-
-        function updateAllUI() {
-            if (!AppState.gameState) return;
-            
-            document.getElementById('headerLevel').textContent = AppState.gameState.level.current;
-            document.getElementById('headerEnergy').textContent = 
-                `${AppState.gameState.energy.current}/${AppState.gameState.energy.max}`;
-            document.getElementById('headerCoins').textContent = AppState.gameState.coins.toLocaleString();
-            
-            document.getElementById('userLevel').textContent = AppState.gameState.level.current;
-            document.getElementById('bestScore').textContent = AppState.gameState.bestScore.toLocaleString();
-            document.getElementById('gamesPlayed').textContent = AppState.gameState.stats.gamesPlayed;
-            
-            document.getElementById('playerScore').textContent = `${AppState.gameState.bestScore.toLocaleString()} очков`;
-            
-            document.getElementById('invitesSent').textContent = AppState.gameState.referrals.invitesSent;
-            document.getElementById('friendsJoined').textContent = AppState.gameState.referrals.friendsJoined;
-            
-            updateGameUI();
-        }
-
-        // КЛАСС ИГРЫ
+        // Основной класс игры - упрощенная версия
         class BlockBlastGame {
             constructor() {
                 this.gridSize = 10;
@@ -1298,6 +913,10 @@
                 this.linesCleared = 0;
                 this.combo = 0;
                 this.coins = 100;
+                this.level = 1;
+                this.energy = { current: 5, max: 5 };
+                this.boosters = { refresh: 2, shape_choice: 0, row_blast: 0 };
+                this.stats = { gamesPlayed: 0 };
                 this.isGameOver = false;
                 this.gameStarted = false;
                 
@@ -1308,43 +927,22 @@
                 
                 this.colors = ['red', 'blue', 'green', 'purple', 'orange'];
                 
-                this.energy = this.initEnergySystem();
-                this.level = this.initLevelSystem();
-                this.boosters = this.initBoostersSystem();
-                this.stats = this.initStatsSystem();
-                this.referrals = this.initReferralSystem();
-                
                 this.shapeTemplates = [
-                    // Точки
                     { pattern: [[1]], name: 'dot' },
-                    
-                    // Горизонтальные линии
                     { pattern: [[1, 1]], name: 'line2h' },
                     { pattern: [[1, 1, 1]], name: 'line3h' },
                     { pattern: [[1, 1, 1, 1]], name: 'line4h' },
-                    { pattern: [[1, 1, 1, 1, 1]], name: 'line5h' },
-                    
-                    // Вертикальные линии
                     { pattern: [[1], [1]], name: 'line2v' },
                     { pattern: [[1], [1], [1]], name: 'line3v' },
                     { pattern: [[1], [1], [1], [1]], name: 'line4v' },
-                    { pattern: [[1], [1], [1], [1], [1]], name: 'line5v' },
-                    
-                    // Квадраты
                     { pattern: [[1, 1], [1, 1]], name: 'square2' },
                     { pattern: [[1, 1, 1], [1, 1, 1], [1, 1, 1]], name: 'square3' },
-                    
-                    // Простые L-формы
                     { pattern: [[1, 1, 1], [1, 0, 0]], name: 'L1' },
                     { pattern: [[1, 1, 1], [0, 0, 1]], name: 'L2' },
                     { pattern: [[1, 0], [1, 0], [1, 1]], name: 'L3' },
                     { pattern: [[0, 1], [0, 1], [1, 1]], name: 'L4' },
-                    
-                    // Простые углы
                     { pattern: [[1, 1], [1, 0]], name: 'corner1' },
-                    { pattern: [[1, 1], [0, 1]], name: 'corner2' },
-                    { pattern: [[1, 0], [1, 1]], name: 'corner3' },
-                    { pattern: [[0, 1], [1, 1]], name: 'corner4' }
+                    { pattern: [[1, 1], [0, 1]], name: 'corner2' }
                 ];
 
                 this.init();
@@ -1353,189 +951,7 @@
             init() {
                 this.createGrid();
                 this.generateShapes();
-                this.energy.startTimer();
                 this.setupDragAndDrop();
-                console.log('🎮 Игра инициализирована');
-            }
-
-            initEnergySystem() {
-                return {
-                    current: 5,
-                    max: 5,
-                    regenTime: 30 * 60 * 1000, // 30 minutes
-                    lastUpdate: Date.now(),
-                    timer: null,
-                    
-                    canPlay() {
-                        this.updateEnergy();
-                        return this.current > 0;
-                    },
-                    
-                    consume(amount = 1) {
-                        if (this.current >= amount) {
-                            this.current -= amount;
-                            this.lastUpdate = Date.now();
-                            this.startTimer();
-                            return true;
-                        }
-                        return false;
-                    },
-                    
-                    add(amount) {
-                        this.current = Math.min(this.max, this.current + amount);
-                        showNotification(`+${amount} Энергия! ⚡`);
-                    },
-                    
-                    updateEnergy() {
-                        if (this.current >= this.max) return;
-                        
-                        const timePassed = Date.now() - this.lastUpdate;
-                        const energyToAdd = Math.floor(timePassed / this.regenTime);
-                        
-                        if (energyToAdd > 0) {
-                            this.current = Math.min(this.max, this.current + energyToAdd);
-                            this.lastUpdate = Date.now();
-                        }
-                    },
-                    
-                    startTimer() {
-                        if (this.timer) clearInterval(this.timer);
-                        if (this.current >= this.max) return;
-                        
-                        this.timer = setInterval(() => {
-                            this.updateEnergy();
-                            updateAllUI();
-                            
-                            if (this.current >= this.max) {
-                                clearInterval(this.timer);
-                                this.timer = null;
-                            }
-                        }, 1000);
-                    },
-                    
-                    getTimeToNext() {
-                        if (this.current >= this.max) return 0;
-                        const timePassed = Date.now() - this.lastUpdate;
-                        return Math.max(0, this.regenTime - timePassed);
-                    }
-                };
-            }
-
-            initLevelSystem() {
-                return {
-                    current: 1,
-                    currentXP: 0,
-                    totalXP: 0,
-                    baseXPRequired: 100,
-                    multiplier: 1.15,
-                    
-                    getXPRequired(level) {
-                        return Math.floor(this.baseXPRequired * Math.pow(this.multiplier, level - 1));
-                    },
-                    
-                    addXP(amount) {
-                        const oldLevel = this.current;
-                        this.currentXP += amount;
-                        this.totalXP += amount;
-                        
-                        while (this.currentXP >= this.getXPRequired(this.current)) {
-                            this.currentXP -= this.getXPRequired(this.current);
-                            this.current++;
-                        }
-                        
-                        if (this.current > oldLevel) {
-                            AppState.gameState.handleLevelUp(oldLevel, this.current);
-                        }
-                        
-                        return this.current > oldLevel;
-                    },
-                    
-                    getProgress() {
-                        const required = this.getXPRequired(this.current);
-                        return (this.currentXP / required) * 100;
-                    }
-                };
-            }
-
-            initBoostersSystem() {
-                return {
-                    inventory: {
-                        shape_choice: 0,
-                        row_blast: 0,
-                        refresh: 2,
-                        lightning: 0,
-                        star_blast: 0
-                    },
-                    
-                    has(type) {
-                        return this.inventory[type] > 0;
-                    },
-                    
-                    use(type) {
-                        if (this.has(type)) {
-                            this.inventory[type]--;
-                            updateGameUI();
-                            return true;
-                        }
-                        return false;
-                    },
-                    
-                    add(type, amount) {
-                        this.inventory[type] += amount;
-                        showNotification(`+${amount} ${this.getName(type)}! 🎁`);
-                    },
-                    
-                    getName(type) {
-                        const names = {
-                            shape_choice: 'Выбор Фигуры',
-                            row_blast: 'Взрыв Ряда',
-                            refresh: 'Обновление',
-                            lightning: 'Молния',
-                            star_blast: 'Звездный Удар'
-                        };
-                        return names[type] || type;
-                    }
-                };
-            }
-
-            initStatsSystem() {
-                return {
-                    gamesPlayed: 0,
-                    totalLinesCleared: 0,
-                    maxCombo: 0,
-                    totalScore: 0
-                };
-            }
-
-            initReferralSystem() {
-                return {
-                    invitesSent: 0,
-                    friendsJoined: 0,
-                    dailyInvites: 0,
-                    lastInviteDate: new Date().toDateString(),
-                    
-                    sendInvite() {
-                        const today = new Date().toDateString();
-                        if (this.lastInviteDate !== today) {
-                            this.dailyInvites = 0;
-                            this.lastInviteDate = today;
-                        }
-                        
-                        if (this.dailyInvites >= 10) {
-                            showNotification('Лимит приглашений на день достигнут! 📱');
-                            return false;
-                        }
-                        
-                        this.invitesSent++;
-                        this.dailyInvites++;
-                        
-                        AppState.gameState.energy.add(1);
-                        AppState.gameState.addCoins(5);
-                        
-                        updateAllUI();
-                        return true;
-                    }
-                };
             }
 
             createGrid() {
@@ -1547,8 +963,6 @@
                     for (let col = 0; col < this.gridSize; col++) {
                         const cell = document.createElement('div');
                         cell.className = 'cell';
-                        cell.dataset.row = row;
-                        cell.dataset.col = col;
                         gridElement.appendChild(cell);
                     }
                 }
@@ -1561,23 +975,19 @@
                     const template = this.shapeTemplates[Math.floor(Math.random() * this.shapeTemplates.length)];
                     const color = this.colors[Math.floor(Math.random() * this.colors.length)];
                     
-                    const shape = {
+                    this.currentShapes.push({
                         id: i,
                         pattern: template.pattern,
-                        name: template.name,
                         color: color,
                         used: false
-                    };
-                    this.currentShapes.push(shape);
+                    });
                 }
 
                 this.renderShapes();
                 
-                setTimeout(() => {
-                    if (this.gameStarted && this.checkGameOver()) {
-                        this.gameOver();
-                    }
-                }, 100);
+                if (this.gameStarted && this.checkGameOver()) {
+                    this.gameOver();
+                }
             }
 
             renderShapes() {
@@ -1598,7 +1008,6 @@
                 const shapeDiv = document.createElement('div');
                 shapeDiv.className = 'shape';
                 shapeDiv.dataset.shapeId = shape.id;
-                shapeDiv.dataset.color = shape.color;
 
                 const pattern = shape.pattern;
                 const cols = pattern[0].length;
@@ -1619,22 +1028,6 @@
                 }
 
                 return shapeDiv;
-            }
-
-            startNewGame() {
-                this.grid = [];
-                this.score = 0;
-                this.linesCleared = 0;
-                this.combo = 0;
-                this.isGameOver = false;
-                this.gameStarted = true;
-                this.stats.gamesPlayed++;
-
-                this.createGrid();
-                this.generateShapes();
-                updateGameUI();
-
-                console.log('🎮 Новая игра начата');
             }
 
             setupDragAndDrop() {
@@ -1671,7 +1064,6 @@
 
                     this.isDragging = true;
                     this.draggedShape = shape;
-
                     shapeElement.classList.add('dragging');
 
                     const coords = getCoords(e);
@@ -1682,11 +1074,10 @@
 
                 const handleMove = (e) => {
                     if (!this.isDragging || !this.draggedShape) return;
-
                     const coords = getCoords(e);
-                    if (!coords) return;
-
-                    this.showPlacementPreview(coords);
+                    if (coords) {
+                        this.showPlacementPreview(coords);
+                    }
                 };
 
                 const endDrag = (e) => {
@@ -1735,67 +1126,23 @@
 
             showPlacementPreview(coords) {
                 this.clearPreview();
-
                 if (!this.draggedShape) return;
 
                 const gridElement = document.getElementById('gameGrid');
                 const gridRect = gridElement.getBoundingClientRect();
-                const cellSize = (gridRect.width - 16) / this.gridSize;
+                const cellSize = gridRect.width / this.gridSize;
 
-                const pattern = this.draggedShape.pattern;
-                
                 const shadowOffset = 120;
                 const shadowY = coords.y - shadowOffset;
                 
-                const relativeX = coords.x - gridRect.left - 8;
-                const relativeY = shadowY - gridRect.top - 8;
+                const relativeX = coords.x - gridRect.left;
+                const relativeY = shadowY - gridRect.top;
                 
-                const cursorGridCol = relativeX / cellSize;
-                const cursorGridRow = relativeY / cellSize;
+                const gridCol = Math.floor(relativeX / cellSize);
+                const gridRow = Math.floor(relativeY / cellSize);
 
-                let minRow = pattern.length, maxRow = -1;
-                let minCol = pattern[0].length, maxCol = -1;
-                
-                for (let row = 0; row < pattern.length; row++) {
-                    for (let col = 0; col < pattern[row].length; col++) {
-                        if (pattern[row][col]) {
-                            minRow = Math.min(minRow, row);
-                            maxRow = Math.max(maxRow, row);
-                            minCol = Math.min(minCol, col);
-                            maxCol = Math.max(maxCol, col);
-                        }
-                    }
-                }
-                
-                const shapeCenterRow = (minRow + maxRow) / 2;
-                const shapeCenterCol = (minCol + maxCol) / 2;
-
-                let bestGridCol = Math.round(cursorGridCol - shapeCenterCol);
-                let bestGridRow = Math.round(cursorGridRow - shapeCenterRow);
-                
-                const searchRadius = 1.5;
-                let bestDistance = Infinity;
-                let foundValidPosition = false;
-                
-                for (let offsetRow = -searchRadius; offsetRow <= searchRadius; offsetRow += 0.5) {
-                    for (let offsetCol = -searchRadius; offsetCol <= searchRadius; offsetCol += 0.5) {
-                        const testRow = Math.round(cursorGridRow - shapeCenterRow + offsetRow);
-                        const testCol = Math.round(cursorGridCol - shapeCenterCol + offsetCol);
-                        
-                        if (this.canPlaceShape(pattern, testRow, testCol)) {
-                            const distance = Math.sqrt(offsetRow * offsetRow + offsetCol * offsetCol);
-                            if (distance < bestDistance) {
-                                bestDistance = distance;
-                                bestGridRow = testRow;
-                                bestGridCol = testCol;
-                                foundValidPosition = true;
-                            }
-                        }
-                    }
-                }
-
-                if (foundValidPosition) {
-                    this.highlightCells(pattern, bestGridRow, bestGridCol, 'preview');
+                if (this.canPlaceShape(this.draggedShape.pattern, gridRow, gridCol)) {
+                    this.highlightCells(this.draggedShape.pattern, gridRow, gridCol, 'preview');
                 }
             }
 
@@ -1804,59 +1151,19 @@
 
                 const gridElement = document.getElementById('gameGrid');
                 const gridRect = gridElement.getBoundingClientRect();
-                const cellSize = (gridRect.width - 16) / this.gridSize;
+                const cellSize = gridRect.width / this.gridSize;
 
-                const pattern = this.draggedShape.pattern;
-                
                 const shadowOffset = 120;
                 const shadowY = coords.y - shadowOffset;
                 
-                const relativeX = coords.x - gridRect.left - 8;
-                const relativeY = shadowY - gridRect.top - 8;
+                const relativeX = coords.x - gridRect.left;
+                const relativeY = shadowY - gridRect.top;
                 
-                const cursorGridCol = relativeX / cellSize;
-                const cursorGridRow = relativeY / cellSize;
+                const gridCol = Math.floor(relativeX / cellSize);
+                const gridRow = Math.floor(relativeY / cellSize);
 
-                let minRow = pattern.length, maxRow = -1;
-                let minCol = pattern[0].length, maxCol = -1;
-                
-                for (let row = 0; row < pattern.length; row++) {
-                    for (let col = 0; col < pattern[row].length; col++) {
-                        if (pattern[row][col]) {
-                            minRow = Math.min(minRow, row);
-                            maxRow = Math.max(maxRow, row);
-                            minCol = Math.min(minCol, col);
-                            maxCol = Math.max(maxCol, col);
-                        }
-                    }
-                }
-                
-                const shapeCenterRow = (minRow + maxRow) / 2;
-                const shapeCenterCol = (minCol + maxCol) / 2;
-
-                const searchRadius = 2.0;
-                let bestDistance = Infinity;
-                let bestGridRow = -1;
-                let bestGridCol = -1;
-                
-                for (let offsetRow = -searchRadius; offsetRow <= searchRadius; offsetRow += 0.25) {
-                    for (let offsetCol = -searchRadius; offsetCol <= searchRadius; offsetCol += 0.25) {
-                        const testRow = Math.round(cursorGridRow - shapeCenterRow + offsetRow);
-                        const testCol = Math.round(cursorGridCol - shapeCenterCol + offsetCol);
-                        
-                        if (this.canPlaceShape(pattern, testRow, testCol)) {
-                            const distance = Math.sqrt(offsetRow * offsetRow + offsetCol * offsetCol);
-                            if (distance < bestDistance) {
-                                bestDistance = distance;
-                                bestGridRow = testRow;
-                                bestGridCol = testCol;
-                            }
-                        }
-                    }
-                }
-
-                if (bestGridRow >= 0 && bestGridCol >= 0) {
-                    this.placeShape(this.draggedShape, bestGridRow, bestGridCol);
+                if (this.canPlaceShape(this.draggedShape.pattern, gridRow, gridCol)) {
+                    this.placeShape(this.draggedShape, gridRow, gridCol);
                     return true;
                 }
                 return false;
@@ -1883,7 +1190,6 @@
 
             placeShape(shape, startRow, startCol) {
                 const gridElement = document.getElementById('gameGrid');
-                const cells = gridElement.children;
                 
                 for (let row = 0; row < shape.pattern.length; row++) {
                     for (let col = 0; col < shape.pattern[row].length; col++) {
@@ -1893,7 +1199,7 @@
                             this.grid[newRow][newCol] = shape.color;
 
                             const cellIndex = newRow * this.gridSize + newCol;
-                            const cell = cells[cellIndex];
+                            const cell = gridElement.children[cellIndex];
                             cell.className = `cell filled color-${shape.color}`;
                         }
                     }
@@ -1902,17 +1208,10 @@
                 shape.used = true;
                 this.addScore(this.calculateShapeScore(shape.pattern));
 
-                if (navigator.vibrate) {
-                    navigator.vibrate(30);
-                }
-
                 setTimeout(() => {
                     const clearedLines = this.clearCompletedLines();
                     if (clearedLines > 0) {
                         this.handleLinesCleared(clearedLines);
-                        if (navigator.vibrate && clearedLines >= 2) {
-                            navigator.vibrate([50, 25, 50]);
-                        }
                     } else {
                         this.combo = 0;
                         updateGameUI();
@@ -1988,24 +1287,23 @@
                     
                     setTimeout(() => {
                         const gridElement = document.getElementById('gameGrid');
-                        const cells = gridElement.children;
                         
                         linesToClear.forEach(line => {
                             if (line.type === 'row') {
                                 for (let col = 0; col < this.gridSize; col++) {
                                     this.grid[line.index][col] = null;
                                     const cellIndex = line.index * this.gridSize + col;
-                                    cells[cellIndex].className = 'cell';
+                                    gridElement.children[cellIndex].className = 'cell';
                                 }
                             } else {
                                 for (let row = 0; row < this.gridSize; row++) {
                                     this.grid[row][line.index] = null;
                                     const cellIndex = row * this.gridSize + line.index;
-                                    cells[cellIndex].className = 'cell';
+                                    gridElement.children[cellIndex].className = 'cell';
                                 }
                             }
                         });
-                    }, 400);
+                    }, 300);
                 }
 
                 return linesToClear.length;
@@ -2013,18 +1311,17 @@
 
             animateLineClear(lines) {
                 const gridElement = document.getElementById('gameGrid');
-                const cells = gridElement.children;
                 
                 lines.forEach(line => {
                     if (line.type === 'row') {
                         for (let col = 0; col < this.gridSize; col++) {
                             const cellIndex = line.index * this.gridSize + col;
-                            cells[cellIndex].classList.add('clearing');
+                            gridElement.children[cellIndex].classList.add('clearing');
                         }
                     } else {
                         for (let row = 0; row < this.gridSize; row++) {
                             const cellIndex = row * this.gridSize + line.index;
-                            cells[cellIndex].classList.add('clearing');
+                            gridElement.children[cellIndex].classList.add('clearing');
                         }
                     }
                 });
@@ -2032,12 +1329,7 @@
 
             handleLinesCleared(count) {
                 this.linesCleared += count;
-                this.stats.totalLinesCleared += count;
                 this.combo++;
-
-                if (this.combo > this.stats.maxCombo) {
-                    this.stats.maxCombo = this.combo;
-                }
 
                 let multiplier = 1;
                 if (count >= 2) multiplier = 3;
@@ -2071,10 +1363,6 @@
                 if (this.score > this.bestScore) {
                     this.bestScore = this.score;
                 }
-                
-                const xpGained = Math.floor(points * 0.1);
-                this.level.addXP(xpGained);
-                
                 updateGameUI();
                 updateAllUI();
             }
@@ -2090,16 +1378,13 @@
             }
 
             checkGameOver() {
-                if (this.allShapesUsed()) {
-                    return false;
-                }
+                if (this.allShapesUsed()) return false;
                 
                 for (let shape of this.currentShapes) {
                     if (!shape.used && this.canPlaceShapeAnywhere(shape.pattern)) {
                         return false;
                     }
                 }
-                
                 return true;
             }
 
@@ -2114,115 +1399,126 @@
                 return false;
             }
 
-            async gameOver() {
+            gameOver() {
                 this.isGameOver = true;
-                AppState.hasUnfinishedGame = false;
-                
-                const finalXpGained = Math.floor(this.score * 0.05);
-                this.level.addXP(finalXpGained);
-                
-                if (isVKReady) {
-                    await saveGameData();
-                }
                 
                 document.getElementById('finalScore').textContent = this.score.toLocaleString();
-                document.getElementById('finalXP').textContent = `+${finalXpGained}`;
                 
                 setTimeout(() => {
                     showOverlay('gameOverOverlay');
                 }, 500);
                 
                 updateAllUI();
-                console.log('💀 Игра окончена! Финальный счет:', this.score);
             }
 
-            handleLevelUp(oldLevel, newLevel) {
-                const coinsReward = 50 * newLevel;
-                this.addCoins(coinsReward);
-                
-                if (newLevel % 5 === 0) {
-                    this.boosters.add('shape_choice', 1);
-                    this.addCoins(200);
-                }
-                
-                if (newLevel % 10 === 0) {
-                    this.boosters.add('row_blast', 1);
-                    this.energy.max += 1;
-                    this.addCoins(500);
-                }
-                
-                showNotification(`🎉 Уровень ${newLevel}! +${coinsReward} монет!`);
-            }
+            startNewGame() {
+                this.grid = [];
+                this.score = 0;
+                this.linesCleared = 0;
+                this.combo = 0;
+                this.isGameOver = false;
+                this.gameStarted = true;
+                this.stats.gamesPlayed++;
 
-            restart() {
-                this.startNewGame();
-            }
-
-            getSnapshot() {
-                return {
-                    grid: JSON.parse(JSON.stringify(this.grid)),
-                    score: this.score,
-                    linesCleared: this.linesCleared,
-                    combo: this.combo,
-                    currentShapes: JSON.parse(JSON.stringify(this.currentShapes)),
-                    gameStarted: this.gameStarted
-                };
-            }
-
-            loadSnapshot(snapshot) {
-                this.grid = snapshot.grid;
-                this.score = snapshot.score;
-                this.linesCleared = snapshot.linesCleared;
-                this.combo = snapshot.combo;
-                this.currentShapes = snapshot.currentShapes;
-                this.gameStarted = snapshot.gameStarted;
-                
                 this.createGrid();
-                this.restoreGridState();
-                this.renderShapes();
-            }
-
-            restoreGridState() {
-                const gridElement = document.getElementById('gameGrid');
-                for (let row = 0; row < this.gridSize; row++) {
-                    for (let col = 0; col < this.gridSize; col++) {
-                        const cellIndex = row * this.gridSize + col;
-                        const cell = gridElement.children[cellIndex];
-                        
-                        if (this.grid[row][col] !== null) {
-                            cell.className = `cell filled color-${this.grid[row][col]}`;
-                        } else {
-                            cell.className = 'cell';
-                        }
-                    }
-                }
+                this.generateShapes();
+                updateGameUI();
             }
         }
 
-        // Shop Functions
+        // UI функции
+        function switchTab(tabName) {
+            currentTab = tabName;
+            
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            document.getElementById(tabName + 'Screen').classList.add('active');
+            document.querySelector(`[onclick="switchTab('${tabName}')"]`).classList.add('active');
+        }
+
+        function startNewGame() {
+            if (gameState.energy.current <= 0) {
+                showNotification('Недостаточно энергии! ⚡');
+                return;
+            }
+
+            gameState.energy.current--;
+            gameState.startNewGame();
+            switchTab('game');
+            updateAllUI();
+        }
+
+        function restartGame() {
+            closeOverlay('gameOverOverlay');
+            
+            if (gameState.energy.current <= 0) {
+                showNotification('Недостаточно энергии! ⚡');
+                switchTab('player');
+                return;
+            }
+
+            gameState.energy.current--;
+            gameState.startNewGame();
+            switchTab('game');
+            updateAllUI();
+        }
+
+        function exitGame() {
+            closeOverlay('gameOverOverlay');
+            switchTab('player');
+        }
+
+        function updateGameUI() {
+            if (!gameState) return;
+            
+            document.getElementById('gameScore').textContent = gameState.score.toLocaleString();
+            document.getElementById('gameLines').textContent = gameState.linesCleared;
+            document.getElementById('gameCombo').textContent = gameState.combo;
+            
+            document.getElementById('refreshCount').textContent = gameState.boosters.refresh;
+            document.getElementById('shapeChoiceCount').textContent = gameState.boosters.shape_choice;
+            document.getElementById('rowBlastCount').textContent = gameState.boosters.row_blast;
+        }
+
+        function updateAllUI() {
+            if (!gameState) return;
+            
+            document.getElementById('headerLevel').textContent = gameState.level;
+            document.getElementById('headerEnergy').textContent = `${gameState.energy.current}/${gameState.energy.max}`;
+            document.getElementById('headerCoins').textContent = gameState.coins.toLocaleString();
+            
+            document.getElementById('userLevel').textContent = gameState.level;
+            document.getElementById('bestScore').textContent = gameState.bestScore.toLocaleString();
+            document.getElementById('gamesPlayed').textContent = gameState.stats.gamesPlayed;
+            
+            document.getElementById('playerScore').textContent = `${gameState.bestScore.toLocaleString()} очков`;
+        }
+
+        // Простые функции для магазина и бустеров
         function buyPack(packType) {
             const packs = {
                 starter: { price: 150, items: { shape_choice: 3, refresh: 2, row_blast: 1 } },
-                premium: { price: 450, items: { shape_choice: 5, row_blast: 3, lightning: 2, star_blast: 1 } }
+                premium: { price: 450, items: { shape_choice: 5, row_blast: 3 } }
             };
             
             const pack = packs[packType];
             
-            if (AppState.gameState.coins >= pack.price) {
-                AppState.gameState.coins -= pack.price;
+            if (gameState.coins >= pack.price) {
+                gameState.coins -= pack.price;
                 
                 Object.entries(pack.items).forEach(([type, amount]) => {
-                    AppState.gameState.boosters.add(type, amount);
+                    gameState.boosters[type] += amount;
                 });
                 
                 updateAllUI();
-                showNotification(`${packType.toUpperCase()} набор куплен! 🎁`);
-                
-                if (isVKReady) {
-                    saveGameData();
-                }
+                showNotification(`Набор куплен! 🎁`);
             } else {
-                showNotification(`Недостаточно монет! Нужно ${pack.price} 🪙`);
+                showNotification(`Недостаточно монет! 🪙`);
             }
         }
 
@@ -2230,90 +1526,38 @@
             const prices = { 1: 50, 5: 200 };
             const price = prices[amount];
             
-            if (AppState.gameState.coins >= price) {
-                AppState.gameState.coins -= price;
-                AppState.gameState.energy.add(amount);
+            if (gameState.coins >= price) {
+                gameState.coins -= price;
+                gameState.energy.current = Math.min(gameState.energy.max, gameState.energy.current + amount);
                 updateAllUI();
-                showNotification(`+${amount} Энергия куплена! ⚡`);
-                
-                if (isVKReady) {
-                    saveGameData();
-                }
+                showNotification(`+${amount} Энергия! ⚡`);
             } else {
-                showNotification(`Недостаточно монет! Нужно ${price} 🪙`);
+                showNotification(`Недостаточно монет! 🪙`);
             }
         }
 
-        // Booster Functions
         function useBooster(type) {
-            if (!AppState.gameState.boosters.has(type)) {
-                showNotification(`Нет ${AppState.gameState.boosters.getName(type)}! 🚫`);
+            if (gameState.boosters[type] <= 0) {
+                showNotification(`Нет бустера! 🚫`);
                 return;
             }
 
-            if (AppState.gameState.boosters.use(type)) {
-                showNotification(`${AppState.gameState.boosters.getName(type)} активирован! ✨`);
-                
-                switch (type) {
-                    case 'refresh':
-                        AppState.gameState.generateShapes();
-                        break;
-                    case 'shape_choice':
-                        showNotification('Выберите лучшие фигуры! 🎯');
-                        AppState.gameState.generateShapes();
-                        break;
-                    default:
-                        showNotification('Бустер пока в разработке! 🔧');
-                        break;
-                }
-            }
-        }
-
-        // Social Functions
-        async function inviteFriends() {
-            if (AppState.gameState.referrals.sendInvite()) {
-                try {
-                    const success = await inviteVKFriends();
-                    
-                    if (success) {
-                        showNotification('Приглашение отправлено! 📱');
-                        
-                        setTimeout(() => {
-                            if (Math.random() < 0.3) {
-                                AppState.gameState.referrals.friendsJoined++;
-                                AppState.gameState.addCoins(20);
-                                showNotification(`Друг присоединился к игре! 🎉`);
-                                updateAllUI();
-                            }
-                        }, 2000);
-                    } else {
-                        showNotification('Ошибка отправки приглашения 😞');
-                    }
-                    
-                } catch (error) {
-                    console.log('Ошибка отправки приглашения:', error);
-                    showNotification('Ошибка отправки приглашения 😞');
-                }
-                
-                if (isVKReady) {
-                    saveGameData();
-                }
-            }
-        }
-
-        async function inviteVKFriends() {
-            if (!vkBridge || !isVKReady) return false;
+            gameState.boosters[type]--;
+            updateGameUI();
             
-            try {
-                const result = await vkBridge.send('VKWebAppShare', {
-                    link: `https://vk.com/app${APP_CONFIG.APP_ID}?ref=${currentUser?.id || 0}`
-                });
-                
-                return result.result;
-            } catch (error) {
-                console.log('❌ Ошибка приглашения друзей:', error);
-                return false;
+            if (type === 'refresh') {
+                gameState.generateShapes();
+                showNotification(`Фигуры обновлены! 🔄`);
+            } else {
+                showNotification(`Бустер активирован! ✨`);
             }
+        }
+
+        function inviteFriends() {
+            showNotification('Приглашение отправлено! 📱');
+            gameState.coins += 5;
+            gameState.energy.current = Math.min(gameState.energy.max, gameState.energy.current + 1);
+            updateAllUI();
         }
 
         function showNotification(message) {
@@ -2325,8 +1569,8 @@
             setTimeout(() => notification.classList.add('show'), 100);
             setTimeout(() => {
                 notification.classList.remove('show');
-                setTimeout(() => notification.remove(), 400);
-            }, 3000);
+                setTimeout(() => notification.remove(), 300);
+            }, 2500);
         }
 
         function showOverlay(overlayId) {
@@ -2339,55 +1583,44 @@
             overlay.classList.remove('active');
         }
 
-        function startAutoSave() {
-            setInterval(() => {
-                if (AppState.gameState && isVKReady) {
-                    saveGameData();
-                }
-            }, 30000);
-        }
-
-        async function initializeApp() {
+        // Простая инициализация
+        function initializeApp() {
             try {
-                document.getElementById('loadingScreen').style.display = 'flex';
+                // Пытаемся инициализировать VK Bridge если доступен
+                if (window.vkBridge) {
+                    vkBridge = window.vkBridge;
+                    vkBridge.send('VKWebAppInit').then(() => {
+                        isVKReady = true;
+                        return vkBridge.send('VKWebAppGetUserInfo');
+                    }).then((userResult) => {
+                        document.getElementById('userName').textContent = userResult.first_name || 'Игрок';
+                        document.getElementById('userAvatar').textContent = 
+                            userResult.first_name ? userResult.first_name[0].toUpperCase() : '👤';
+                    }).catch((error) => {
+                        console.log('VK Bridge error:', error);
+                    });
+                }
                 
-                await initVK();
+                // Инициализируем игру
+                gameState = new BlockBlastGame();
+                updateAllUI();
                 
-                AppState.gameState = new BlockBlastGame();
-                
-                startAutoSave();
-                
+                // Скрываем загрузочный экран
                 setTimeout(() => {
                     document.getElementById('loadingScreen').classList.add('hidden');
-                    document.getElementById('appContainer').classList.add('loaded');
-                }, 1500);
-                
-                console.log('🎮 Приложение успешно инициализировано');
+                }, 1000);
                 
             } catch (error) {
-                console.error('❌ Ошибка инициализации приложения:', error);
+                console.error('Initialization error:', error);
+                // Все равно инициализируем игру
+                gameState = new BlockBlastGame();
+                updateAllUI();
                 document.getElementById('loadingScreen').classList.add('hidden');
-                document.getElementById('appContainer').classList.add('loaded');
-                AppState.gameState = new BlockBlastGame();
             }
         }
 
-        window.addEventListener('orientationchange', () => {
-            setTimeout(() => {
-                if (AppState.gameState) updateAllUI();
-            }, 300);
-        });
-
-        document.addEventListener('visibilitychange', () => {
-            if (!document.hidden && AppState.gameState) {
-                AppState.gameState.energy.updateEnergy();
-                updateAllUI();
-            }
-        });
-
+        // Запускаем когда DOM готов
         document.addEventListener('DOMContentLoaded', initializeApp);
-
-        console.log('🎮 Блок Взрыв! VK Mini App v3.0.0 - Оптимизирован и готов! 🚀');
     </script>
 </body>
 </html>
