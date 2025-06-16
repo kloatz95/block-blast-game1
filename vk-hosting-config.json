@@ -1,0 +1,33 @@
+{
+  "app_id": 53745312,
+  "endpoints": {
+    "base": "https://kloatz95.github.io/block-blast-vk-game/",
+    "app": "https://kloatz95.github.io/block-blast-vk-game/index.html"
+  },
+  "trusted_domains": [
+    "kloatz95.github.io"
+  ],
+  "settings": {
+    "access_token": false,
+    "user_settings_token": false,
+    "group_settings_token": false,
+    "enable_payments": false,
+    "enable_mobile_iframe": true,
+    "enable_standalone": true,
+    "mobile_controls_type": "client",
+    "mobile_view_type": "full_screen",
+    "iframe_settings": {
+      "no_resize": true,
+      "scrolling": false
+    }
+  },
+  "permissions": [
+    "friends",
+    "wall",
+    "photos"
+  ],
+  "platforms": [
+    "mobile",
+    "web"
+  ]
+}
