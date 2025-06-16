@@ -2,86 +2,58 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Блок Взрыв! - Социальная Версия</title>
-    
-    <!-- VK Mini Apps Bridge -->
-    <script src="https://unpkg.com/@vkontakte/vk-bridge/dist/browser.min.js"></script>
-    
-    <!-- App Metadata -->
-    <meta name="description" content="Захватывающая головоломка с блоками! Составляй линии, зарабатывай очки и соревнуйся с друзьями!">
-    <meta name="keywords" content="игра, головоломка, блоки, ВКонтакте, mini app">
-    <meta name="author" content="Block Blast Game">
-    
-    <!-- Open Graph for VK -->
-    <meta property="og:title" content="Блок Взрыв! - Социальная Игра">
-    <meta property="og:description" content="Захватывающая головоломка с блоками! Составляй линии, зарабатывай очки и соревнуйся с друзьями!">
-    <meta property="og:type" content="game">
-    <meta property="og:url" content="https://vk.com/app53745312">
-    <meta property="og:image" content="https://your-domain.com/og-image.jpg">
-    
-    <!-- Disable zooming and selection for better mobile experience -->
-    <meta name="format-detection" content="telephone=no">
-    <meta name="msapplication-tap-highlight" content="no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Блок Взрыв! - VK Mini App</title>
     
     <style>
+        /* ОСНОВНЫЕ ПЕРЕМЕННЫЕ */
+        :root {
+            --primary-bg: linear-gradient(135deg, #8B4A8C 0%, #5D3A5D 100%);
+            --secondary-bg: linear-gradient(135deg, #6B4A6C 0%, #4D2E4E 100%);
+            
+            /* КАРТОННЫЕ ЦВЕТА */
+            --card-bg: linear-gradient(145deg, #F5F1E8 0%, #E8E0D0 100%);
+            --card-shadow: rgba(139, 118, 95, 0.3);
+            --card-border: #D4C4A8;
+            
+            /* ЦВЕТА ТЕКСТА */
+            --text-primary: #5D4E37;
+            --text-secondary: #8B7355;
+            --text-white: #FFFFFF;
+            
+            /* АКЦЕНТНЫЕ ЦВЕТА */
+            --accent-green: linear-gradient(145deg, #8BC34A 0%, #689F38 100%);
+            --accent-blue: linear-gradient(145deg, #42A5F5 0%, #1976D2 100%);
+            --accent-red: linear-gradient(145deg, #EF5350 0%, #C62828 100%);
+            --accent-orange: linear-gradient(145deg, #FFA726 0%, #F57C00 100%);
+            
+            /* ДЕРЕВЯННЫЕ ЦВЕТА */
+            --wood-bg: linear-gradient(145deg, #8D6E63 0%, #5D4037 100%);
+            --wood-border: #6D4C41;
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-            user-select: none;
-            -webkit-user-select: none;
-        }
-
-        // Utility Functions
-
-        @import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@400;700;900&display=swap');
-
-        /* CSS Variables for easy theming */
-        :root {
-            --primary-bg: linear-gradient(135deg, #0f0c29 0%, #302b63 35%, #24243e 70%, #1a1a2e 100%);
-            --card-bg: rgba(0, 0, 0, 0.4);
-            --card-border: rgba(255, 255, 255, 0.1);
-            --accent-color: #feca57;
-            --accent-gradient: linear-gradient(45deg, #feca57, #ff9ff3);
-            --text-primary: white;
-            --text-secondary: #a8b2d1;
-            --energy-color: #feca57;
-            --coin-color: #ffd700;
-            --success-color: #1dd1a1;
-            --danger-color: #e74c3c;
-            --grid-bg: rgba(0, 0, 0, 0.5);
-            --grid-border: rgba(72, 219, 251, 0.4);
         }
 
         body {
-            font-family: 'Exo 2', sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: var(--primary-bg);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 0;
-            margin: 0;
             color: var(--text-primary);
             overflow-x: hidden;
             position: relative;
-            animation: backgroundPulse 8s ease-in-out infinite;
-            background-image: url('./assets/images/background.jpg');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
+            font-weight: 600;
         }
 
-        @keyframes backgroundPulse {
-            0%, 100% { filter: brightness(1) hue-rotate(0deg); }
-            50% { filter: brightness(1.1) hue-rotate(5deg); }
-        }
-
-        /* Loading Screen */
-        .loading-screen {
+        /* ЗАГРУЗОЧНЫЙ ЭКРАН */
+        #loadingScreen {
             position: fixed;
             top: 0;
             left: 0;
@@ -92,46 +64,30 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            z-index: 9999;
-            transition: opacity 0.5s ease, visibility 0.5s ease;
+            z-index: 1000;
+            transition: opacity 0.5s ease;
         }
 
-        .loading-screen.hidden {
+        #loadingScreen.hidden {
             opacity: 0;
-            visibility: hidden;
+            pointer-events: none;
         }
 
         .loading-logo {
-            font-size: 36px;
+            font-size: 48px;
             font-weight: 900;
+            color: var(--text-white);
             margin-bottom: 20px;
-            background: var(--accent-gradient);
-            background-size: 400% 100%;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            animation: logoShimmer 2s ease-in-out infinite;
-            background-image: url('./assets/icons/logo.png');
-            background-size: contain;
-            background-repeat: no-repeat;
-            background-position: center;
-            width: 120px;
-            height: 120px;
-        }
-
-        @keyframes logoShimmer {
-            0%, 100% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
+            text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
         }
 
         .loading-spinner {
             width: 50px;
             height: 50px;
-            border: 4px solid rgba(255, 255, 255, 0.1);
-            border-top: 4px solid var(--accent-color);
+            border: 4px solid rgba(255, 255, 255, 0.2);
+            border-top: 4px solid var(--text-white);
             border-radius: 50%;
             animation: spin 1s linear infinite;
-            margin-bottom: 20px;
         }
 
         @keyframes spin {
@@ -139,247 +95,122 @@
             100% { transform: rotate(360deg); }
         }
 
-        .loading-text {
-            font-size: 14px;
-            opacity: 0.8;
-            animation: pulse 1.5s ease-in-out infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 0.8; }
-            50% { opacity: 1; }
-        }
-
-        /* MAIN APP CONTAINER */
-        .app-container {
-            max-width: 100%;
+        /* ОСНОВНОЙ КОНТЕЙНЕР */
+        #appContainer {
             width: 100%;
-            height: 100vh;
-            background: var(--primary-bg);
-            border-radius: 0;
-            backdrop-filter: none;
-            border: none;
-            overflow: hidden;
-            box-shadow: none;
+            max-width: 400px;
+            min-height: 100vh;
+            background: var(--card-bg);
             position: relative;
             opacity: 0;
-            transform: translateY(0);
-            transition: all 0.5s ease;
-            display: flex;
-            flex-direction: column;
-            background-image: url('./assets/images/game-bg.jpg');
-            background-size: cover;
-            background-position: center;
+            transform: translateY(20px);
+            transition: all 0.6s ease;
+            box-shadow: 0 0 30px var(--card-shadow);
         }
 
-        .app-container.loaded {
+        #appContainer.loaded {
             opacity: 1;
             transform: translateY(0);
         }
 
-        /* MAIN SCREEN */
-        .main-screen {
-            width: 100%;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            transition: transform 0.4s ease;
+        /* ШАПКА */
+        .header {
+            background: var(--card-bg);
+            padding: 15px 20px;
+            border-bottom: 3px solid var(--card-border);
+            box-shadow: 0 4px 12px var(--card-shadow);
+            position: relative;
         }
 
-        .main-screen.slide-left {
-            transform: translateX(-100%);
-        }
-
-        /* GAME SCREEN */
-        .game-screen {
+        .header::before {
+            content: '';
             position: absolute;
             top: 0;
-            left: 100%;
-            width: 100%;
-            height: 100vh;
-            background: var(--primary-bg);
-            display: flex;
-            flex-direction: column;
-            transition: transform 0.4s ease;
-            z-index: 100;
-        }
-
-        .game-screen.active {
-            transform: translateX(-100%);
-        }
-
-        /* NEW HEADER */
-        .new-header {
-            padding: 15px 20px;
-            background: linear-gradient(135deg, rgba(147, 51, 234, 0.25) 0%, rgba(79, 70, 229, 0.25) 100%);
-            border-bottom: 1px solid var(--card-border);
-            position: relative;
-            overflow: hidden;
-            background-image: url('./assets/images/header-bg.png');
-            background-size: cover;
-            background-position: center;
-        }
-
-        .header-content {
-            display: flex;
-            align-items: center;
-            gap: 15px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--accent-orange);
         }
 
         .profile-section {
             display: flex;
             align-items: center;
-            gap: 12px;
-            flex: 1;
+            gap: 15px;
+            margin-bottom: 15px;
         }
 
         .profile-avatar {
             width: 50px;
             height: 50px;
             border-radius: 50%;
-            border: 3px solid rgba(255, 255, 255, 0.3);
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            background: var(--accent-blue);
+            border: 3px solid var(--card-border);
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 20px;
-            animation: avatarPulse 3s ease-in-out infinite;
-            flex-shrink: 0;
-            position: relative;
-            overflow: hidden;
-            background-image: url('./assets/icons/avatar-border.png');
-            background-size: contain;
-            background-repeat: no-repeat;
-            background-position: center;
+            color: var(--text-white);
+            font-weight: 900;
+            box-shadow: 0 4px 8px var(--card-shadow);
         }
 
-        .profile-avatar img {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-
-        @keyframes avatarPulse {
-            0%, 100% { transform: scale(1); box-shadow: 0 0 20px rgba(102, 126, 234, 0.3); }
-            50% { transform: scale(1.05); box-shadow: 0 0 30px rgba(102, 126, 234, 0.5); }
-        }
-
-        .profile-info {
-            display: flex;
-            flex-direction: column;
-            flex: 1;
-        }
-
-        .profile-name {
-            font-size: 16px;
-            font-weight: 700;
+        .profile-info h2 {
+            font-size: 18px;
+            font-weight: 800;
             color: var(--text-primary);
-            line-height: 1.2;
             margin-bottom: 2px;
         }
 
-        .profile-level {
+        .profile-info p {
             font-size: 12px;
             color: var(--text-secondary);
-            display: flex;
-            align-items: center;
-            gap: 4px;
+            font-weight: 500;
         }
 
-        .level-icon {
-            width: 14px;
-            height: 14px;
-            background-image: url('./assets/icons/level.png');
-            background-size: contain;
-            background-repeat: no-repeat;
-            background-position: center;
-        }
-
-        .stats-section {
+        /* СТАТИСТИКА */
+        .stats-row {
             display: flex;
-            gap: 15px;
-            align-items: center;
+            gap: 10px;
         }
 
         .stat-item {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 12px;
+            padding: 8px;
             display: flex;
             align-items: center;
             gap: 6px;
-            background: var(--card-bg);
-            padding: 8px 12px;
-            border-radius: 20px;
-            border: 1px solid var(--card-border);
-            backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
-        }
-
-        .stat-item:hover {
-            transform: translateY(-2px);
-            border-color: rgba(255, 255, 255, 0.2);
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-primary);
+            border: 2px solid rgba(255, 255, 255, 0.8);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .stat-icon {
             width: 18px;
             height: 18px;
-            background-size: contain;
-            background-repeat: no-repeat;
-            background-position: center;
-            animation: iconPulse 2s ease-in-out infinite;
-        }
-
-        .energy-icon {
-            background-image: url('./assets/icons/energy.png');
-        }
-
-        .coins-icon {
-            background-image: url('./assets/icons/coin.png');
-        }
-
-        @keyframes iconPulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-        }
-
-        .stat-value {
-            font-size: 14px;
-            font-weight: 700;
-            color: var(--accent-color);
-            text-shadow: 0 0 10px rgba(254, 202, 87, 0.5);
-        }
-
-        .buy-coins-btn {
-            background: linear-gradient(135deg, #1dd1a1, #10ac84);
-            border: none;
-            border-radius: 50%;
-            width: 20px;
-            height: 20px;
+            border-radius: 4px;
             display: flex;
             align-items: center;
             justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
             font-size: 10px;
-            margin-left: 4px;
+            color: var(--text-white);
+            font-weight: 900;
         }
 
-        .buy-coins-btn:hover {
-            transform: scale(1.1);
-            box-shadow: 0 0 15px rgba(29, 209, 161, 0.5);
-        }
+        .stat-icon.level { background: var(--accent-green); }
+        .stat-icon.energy { background: var(--accent-blue); }
+        .stat-icon.coins { background: var(--accent-orange); }
 
-        /* NEW NAVIGATION */
-        .new-nav {
+        /* НАВИГАЦИЯ */
+        .navigation {
+            background: var(--wood-bg);
+            border-top: 3px solid var(--wood-border);
             display: flex;
-            background: var(--card-bg);
-            border-radius: 0;
             padding: 0;
-            margin: 0;
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid var(--card-border);
-            background-image: url('./assets/images/tabs-bg.png');
-            background-size: cover;
-            background-position: center;
+            box-shadow: 0 -4px 12px var(--card-shadow);
         }
 
         .nav-item {
@@ -387,216 +218,145 @@
             padding: 15px 8px;
             text-align: center;
             cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            font-size: 12px;
-            font-weight: 600;
-            background: transparent;
-            border: none;
-            color: rgba(255, 255, 255, 0.6);
-            position: relative;
-            overflow: hidden;
-            border-bottom: 3px solid transparent;
-        }
-
-        .nav-item::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-            transition: left 0.5s ease;
-        }
-
-        .nav-item:hover::before {
-            left: 100%;
-        }
-
-        .nav-item.active {
-            color: var(--accent-color);
-            border-bottom-color: var(--accent-color);
-            background: rgba(254, 202, 87, 0.1);
-        }
-
-        .nav-icon {
-            width: 20px;
-            height: 20px;
-            background-size: contain;
-            background-repeat: no-repeat;
-            background-position: center;
-            display: block;
-            margin: 0 auto 4px;
-        }
-
-        .nav-player { background-image: url('./assets/icons/tab-player.png'); }
-        .nav-shop { background-image: url('./assets/icons/tab-shop.png'); }
-        .nav-leaderboard { background-image: url('./assets/icons/tab-leaderboard.png'); }
-        .nav-friends { background-image: url('./assets/icons/tab-friends.png'); }
-
-        /* CONTENT AREA */
-        .content-area {
-            flex: 1;
-            padding: 20px;
-            overflow-y: auto;
-            position: relative;
-        }
-
-        .content-screen {
-            display: none;
-            animation: contentSlideIn 0.5s ease-out;
-        }
-
-        .content-screen.active {
-            display: block;
-        }
-
-        @keyframes contentSlideIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* PLAY BUTTON */
-        .play-button-container {
-            position: sticky;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            padding: 20px;
-            background: linear-gradient(to top, var(--primary-bg) 0%, rgba(15, 12, 41, 0.95) 70%, transparent 100%);
-            z-index: 50;
-        }
-
-        .play-button {
-            width: 100%;
-            padding: 18px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            background-image: url('./assets/images/play-button-bg.png');
-            background-size: cover;
-            background-position: center;
-            border: none;
-            border-radius: 15px;
-            color: white;
-            font-size: 18px;
-            font-weight: 900;
-            cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            font-family: 'Exo 2', sans-serif;
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .play-button::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-            transition: left 0.6s ease;
-        }
-
-        .play-button:hover::before {
-            left: 100%;
-        }
-
-        .play-button:hover {
-            transform: translateY(-3px) scale(1.02);
-            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.6);
-        }
-
-        .play-button:active {
-            transform: translateY(-1px) scale(0.98);
-        }
-
-        .play-button.continue {
-            background: linear-gradient(135deg, #1dd1a1, #10ac84);
-            box-shadow: 0 8px 25px rgba(29, 209, 161, 0.4);
-        }
-
-        .play-button.continue:hover {
-            box-shadow: 0 15px 35px rgba(29, 209, 161, 0.6);
-        }
-
-        /* GAME HEADER */
-        .game-header {
-            padding: 15px 20px;
-            background: linear-gradient(135deg, rgba(147, 51, 234, 0.25) 0%, rgba(79, 70, 229, 0.25) 100%);
-            border-bottom: 1px solid var(--card-border);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .back-button {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 10px;
-            padding: 10px 15px;
-            color: var(--text-primary);
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
-        }
-
-        .back-button:hover {
-            transform: translateY(-2px);
-            border-color: rgba(255, 255, 255, 0.3);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-        }
-
-        .game-stats {
-            display: flex;
-            gap: 20px;
-            align-items: center;
-        }
-
-        .game-stat {
-            text-align: center;
-        }
-
-        .game-stat-label {
-            font-size: 10px;
-            opacity: 0.7;
-            margin-bottom: 2px;
-            text-transform: uppercase;
+            transition: all 0.2s ease;
+            font-size: 11px;
             font-weight: 700;
-            letter-spacing: 1px;
-            color: var(--text-secondary);
-        }
-
-        .game-stat-value {
-            font-size: 16px;
-            font-weight: 900;
-            background: var(--accent-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        /* GAME CONTENT */
-        .game-content {
-            flex: 1;
-            padding: 20px;
+            color: rgba(255, 255, 255, 0.7);
+            border: none;
+            background: transparent;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 20px;
-            justify-content: center;
+            gap: 5px;
+            position: relative;
         }
 
-        /* BOOSTERS IN GAME */
+        .nav-item.active {
+            color: var(--text-white);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-item.active::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30px;
+            height: 3px;
+            background: var(--accent-orange);
+            border-radius: 0 0 4px 4px;
+        }
+
+        .nav-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+
+        /* ЭКРАНЫ */
+        .screen {
+            display: none;
+            padding: 20px;
+            min-height: calc(100vh - 200px);
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        /* КАРТОЧКИ */
+        .card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border: 2px solid var(--card-border);
+            box-shadow: 0 6px 16px var(--card-shadow);
+            position: relative;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--accent-green);
+            border-radius: 15px 15px 0 0;
+        }
+
+        /* КНОПКА ИГРАТЬ */
+        .play-button {
+            width: 100%;
+            padding: 18px;
+            background: var(--accent-green);
+            border: none;
+            border-radius: 15px;
+            color: var(--text-white);
+            font-size: 18px;
+            font-weight: 900;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 6px 16px rgba(139, 195, 74, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .play-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(139, 195, 74, 0.6);
+        }
+
+        .play-button:active {
+            transform: translateY(0);
+        }
+
+        /* ИГРОВОЙ ЭКРАН */
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 12px 16px;
+            background: var(--card-bg);
+            border-radius: 12px;
+            border: 2px solid var(--card-border);
+            box-shadow: 0 4px 8px var(--card-shadow);
+        }
+
+        .score-display {
+            text-align: center;
+        }
+
+        .score-label {
+            font-size: 11px;
+            color: var(--text-secondary);
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .score-value {
+            font-size: 18px;
+            font-weight: 900;
+            color: var(--text-primary);
+            margin-top: 2px;
+        }
+
+        /* БУСТЕРЫ */
         .game-boosters {
             display: flex;
             justify-content: center;
-            gap: 8px; /* Уменьшил с 15px до 8px */
+            gap: 8px;
             margin-bottom: 20px;
         }
 
@@ -605,772 +365,168 @@
             flex-direction: column;
             align-items: center;
             cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: transform 0.2s ease;
             padding: 10px;
-            border-radius: 10px;
+            border-radius: 12px;
             background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            backdrop-filter: blur(10px);
+            border: 2px solid var(--card-border);
             min-width: 60px;
+            box-shadow: 0 4px 8px var(--card-shadow);
         }
 
         .game-booster:hover {
-            transform: translateY(-5px) scale(1.05);
-            border-color: var(--accent-color);
-            box-shadow: 0 10px 25px rgba(254, 202, 87, 0.3);
+            transform: translateY(-3px);
         }
 
-        .game-booster.disabled {
-            opacity: 0.4;
-            cursor: not-allowed;
-            filter: grayscale(0.8);
+        .booster-icon {
+            width: 32px;
+            height: 32px;
+            margin-bottom: 5px;
+            border-radius: 8px;
         }
 
-        .game-booster.disabled:hover {
-            transform: none;
-            border-color: var(--card-border);
-            box-shadow: none;
-        }
-
-        .game-booster-icon {
-            font-size: 24px;
-            margin-bottom: 4px;
-            filter: drop-shadow(0 3px 8px rgba(0, 0, 0, 0.6));
-            width: 28px;
-            height: 28px;
-            background-size: contain;
-            background-repeat: no-repeat;
-            background-position: center;
-        }
-
-        .booster-shape-choice { background-image: url('./assets/icons/booster-shape-choice.png'); }
-        .booster-row-blast { background-image: url('./assets/icons/booster-row-blast.png'); }
-        .booster-refresh { background-image: url('./assets/icons/booster-refresh.png'); }
-        .booster-lightning { background-image: url('./assets/icons/booster-lightning.png'); }
-        .booster-star-blast { background-image: url('./assets/icons/booster-star-blast.png'); }
-
-        .game-booster-count {
-            font-size: 10px;
+        .booster-count {
+            font-size: 12px;
             font-weight: 700;
-            background: linear-gradient(135deg, #ffd700, #ffed4e);
-            color: #000;
-            padding: 2px 6px;
-            border-radius: 8px;
-            min-width: 16px;
-            text-align: center;
-            box-shadow: 0 2px 8px rgba(255, 215, 0, 0.4);
+            color: var(--text-primary);
         }
 
-        /* GRID AND SHAPES */
-        .game-board {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 20px;
+        /* ИГРОВАЯ СЕТКА */
+        .game-grid-container {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 3px solid var(--card-border);
+            box-shadow: inset 0 4px 8px var(--card-shadow);
         }
 
-        .grid-container {
-            position: relative;
-            background: var(--grid-bg);
-            padding: 8px;
-            border-radius: 10px;
-            box-shadow: 
-                inset 0 4px 20px rgba(0, 0, 0, 0.6),
-                0 0 40px rgba(72, 219, 251, 0.2),
-                0 0 0 1px var(--grid-border);
-            border: 1px solid var(--grid-border);
-            backdrop-filter: blur(20px);
-            background-image: url('./assets/images/grid-container-bg.png');
-            background-size: cover;
-            background-position: center;
-        }
-
-        .grid {
+        .game-grid {
             display: grid;
-            grid-template-columns: repeat(8, 1fr);
-            grid-template-rows: repeat(8, 1fr);
-            gap: 3px;
-            width: 340px;
-            height: 340px;
-            background: rgba(0, 0, 0, 0.3);
+            grid-template-columns: repeat(10, 1fr);
+            grid-template-rows: repeat(10, 1fr);
+            gap: 2px;
+            aspect-ratio: 1;
+            background: rgba(255, 255, 255, 0.3);
             border-radius: 8px;
             padding: 8px;
-            position: relative;
-            background-image: url('./assets/images/grid-bg.png');
-            background-size: cover;
-            background-position: center;
         }
 
         .cell {
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%);
-            border-radius: 4px;
-            border: 0.5px solid rgba(255, 255, 255, 0.05);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 3px;
+            border: 1px solid rgba(255, 255, 255, 0.8);
             position: relative;
-            overflow: hidden;
-            background-image: url('./assets/images/empty-cell.png');
-            background-size: cover;
-            background-position: center;
+            aspect-ratio: 1;
         }
 
         .cell.filled {
-            animation: blockExplode 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-            transform-origin: center;
+            border: 2px solid rgba(255, 255, 255, 0.9);
+            box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
         }
 
-        .cell.filled.color-red {
-            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
-            background-image: url('./assets/images/block-red.png');
-            background-size: cover;
-            background-position: center;
-            border-color: #ff5252;
-            box-shadow: 0 0 20px rgba(255, 107, 107, 0.8);
-        }
+        /* ЦВЕТА БЛОКОВ */
+        .color-red { background: var(--accent-red) !important; }
+        .color-blue { background: var(--accent-blue) !important; }
+        .color-green { background: var(--accent-green) !important; }
+        .color-purple { background: linear-gradient(145deg, #AB47BC 0%, #7B1FA2 100%) !important; }
+        .color-orange { background: var(--accent-orange) !important; }
 
-        .cell.filled.color-blue {
-            background: linear-gradient(135deg, #48dbfb 0%, #0abde3 100%);
-            background-image: url('./assets/images/block-blue.png');
-            background-size: cover;
-            background-position: center;
-            border-color: #0abde3;
-            box-shadow: 0 0 20px rgba(72, 219, 251, 0.8);
-        }
-
-        .cell.filled.color-green {
-            background: linear-gradient(135deg, #1dd1a1 0%, #10ac84 100%);
-            background-image: url('./assets/images/block-green.png');
-            background-size: cover;
-            background-position: center;
-            border-color: #10ac84;
-            box-shadow: 0 0 20px rgba(29, 209, 161, 0.8);
-        }
-
-        .cell.filled.color-purple {
-            background: linear-gradient(135deg, #a55eea 0%, #8854d0 100%);
-            background-image: url('./assets/images/block-purple.png');
-            background-size: cover;
-            background-position: center;
-            border-color: #8854d0;
-            box-shadow: 0 0 20px rgba(165, 94, 234, 0.8);
-        }
-
-        .cell.filled.color-orange {
-            background: linear-gradient(135deg, #feca57 0%, #ff9ff3 100%);
-            background-image: url('./assets/images/block-orange.png');
-            background-size: cover;
-            background-position: center;
-            border-color: #ff9ff3;
-            box-shadow: 0 0 20px rgba(254, 202, 87, 0.8);
-        }
-
-        /* ЯРКАЯ ТЕНЬ ФИГУРЫ - ОСНОВНОЕ ИЗМЕНЕНИЕ */
+        /* ПРЕВЬЮ ТЕНИ */
         .cell.preview {
-            background: rgba(255, 255, 255, 0.8) !important;
-            background-image: none !important;
-            border: 2px solid rgba(255, 255, 255, 0.9) !important;
-            animation: previewPulse 0.8s ease-in-out infinite !important;
-            box-shadow: 0 0 30px rgba(255, 255, 255, 0.8), inset 0 0 15px rgba(255, 255, 255, 0.5) !important;
+            background: rgba(255, 255, 255, 0.95) !important;
+            border: 2px solid rgba(255, 255, 255, 1) !important;
+            box-shadow: 0 0 12px rgba(255, 255, 255, 0.8) !important;
             transform: scale(1.05) !important;
             z-index: 10 !important;
         }
 
+        /* АНИМАЦИЯ ОЧИСТКИ */
         .cell.clearing {
-            animation: clearNova 0.8s ease-out forwards;
+            animation: clearSimple 0.4s ease-out forwards;
             z-index: 10;
         }
 
-        @keyframes blockExplode {
-            0% { 
-                transform: scale(0) rotate(180deg); 
-                opacity: 0;
-                filter: brightness(2);
-            }
-            70% { 
-                transform: scale(1.2) rotate(10deg); 
-                opacity: 1;
-                filter: brightness(1.5);
-            }
-            100% { 
-                transform: scale(1) rotate(0deg); 
-                opacity: 1;
-                filter: brightness(1);
-            }
+        @keyframes clearSimple {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.2); opacity: 0.7; }
+            100% { transform: scale(0); opacity: 0; }
         }
 
-        @keyframes previewPulse {
-            0%, 100% { 
-                opacity: 0.7; 
-                transform: scale(1.05); 
-                filter: brightness(1.2);
-            }
-            50% { 
-                opacity: 1; 
-                transform: scale(1.1); 
-                filter: brightness(1.5);
-            }
-        }
-
-        @keyframes clearNova {
-            0% { 
-                transform: scale(1) rotate(0deg); 
-                opacity: 1;
-                filter: brightness(1);
-            }
-            50% { 
-                transform: scale(1.5) rotate(180deg); 
-                opacity: 0.8;
-                filter: brightness(3) hue-rotate(90deg);
-            }
-            100% { 
-                transform: scale(0) rotate(360deg); 
-                opacity: 0;
-                filter: brightness(5) hue-rotate(180deg);
-            }
-        }
-
+        /* ОБЛАСТЬ ФИГУР */
         .shapes-area {
-            width: 100%;
-            max-width: 350px;
-            height: 120px;
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 20px;
+            border: 3px solid var(--card-border);
+            box-shadow: 0 6px 16px var(--card-shadow);
+        }
+
+        .shapes-container {
             display: flex;
             justify-content: space-around;
-            align-items: center;
-            background: var(--card-bg);
-            border-radius: 10px;
-            padding: 15px;
-            position: relative;
-            border: 1px solid var(--card-border);
-            backdrop-filter: blur(15px);
-            overflow: hidden;
-            background-image: url('./assets/images/shapes-area-bg.png');
-            background-size: cover;
-            background-position: center;
+            gap: 10px;
         }
 
         .shape-slot {
-            width: 80px;
-            height: 80px;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.03) 100%);
-            border-radius: 10px;
-            border: 1px dashed rgba(255, 255, 255, 0.3);
-            position: relative;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            overflow: hidden;
-            background-image: url('./assets/images/shape-slot-bg.png');
-            background-size: cover;
-            background-position: center;
+            min-height: 80px;
+            background: rgba(255, 255, 255, 0.4);
+            border-radius: 12px;
+            border: 2px dashed var(--card-border);
+            flex: 1;
         }
 
         .shape {
             display: grid;
-            gap: 1.5px;
+            gap: 2px;
             cursor: grab;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: transform 0.2s ease;
             position: relative;
             z-index: 100;
-            padding: 3px;
-        }
-
-        .shape:active {
-            cursor: grabbing;
+            padding: 4px;
         }
 
         .shape:hover {
-            transform: scale(1.15) rotate(2deg);
-            filter: brightness(1.3) drop-shadow(0 8px 20px rgba(0, 0, 0, 0.6));
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: scale(1.1);
         }
 
         .shape:active {
-            transform: scale(1.05) rotate(-1deg);
-            filter: brightness(1.1) drop-shadow(0 4px 12px rgba(0, 0, 0, 0.5));
+            transform: scale(1.05);
         }
 
         .shape.dragging {
-            opacity: 0.3;
-            transform: scale(0.85);
-            pointer-events: none;
-            filter: grayscale(0.7);
-        }
-
-        .shape.used {
-            opacity: 0;
-            transform: scale(0) rotate(270deg);
-            pointer-events: none;
-            transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            opacity: 0.5;
         }
 
         .shape-block {
-            width: 18px;
-            height: 18px;
+            width: 20px;
+            height: 20px;
             border-radius: 4px;
-            box-shadow: 
-                0 3px 10px rgba(0, 0, 0, 0.4),
-                inset 0 1px 3px rgba(255, 255, 255, 0.4);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            position: relative;
-            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.6);
         }
 
         .shape-block.empty {
-            background: transparent;
-            box-shadow: none;
-            border: none;
-        }
-
-        .shape[data-color="red"] .shape-block:not(.empty) {
-            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
-            background-image: url('./assets/images/shape-block-red.png');
-            background-size: cover;
-            background-position: center;
-        }
-
-        .shape[data-color="blue"] .shape-block:not(.empty) {
-            background: linear-gradient(135deg, #48dbfb 0%, #0abde3 100%);
-            background-image: url('./assets/images/shape-block-blue.png');
-            background-size: cover;
-            background-position: center;
-        }
-
-        .shape[data-color="green"] .shape-block:not(.empty) {
-            background: linear-gradient(135deg, #1dd1a1 0%, #10ac84 100%);
-            background-image: url('./assets/images/shape-block-green.png');
-            background-size: cover;
-            background-position: center;
-        }
-
-        .shape[data-color="purple"] .shape-block:not(.empty) {
-            background: linear-gradient(135deg, #a55eea 0%, #8854d0 100%);
-            background-image: url('./assets/images/shape-block-purple.png');
-            background-size: cover;
-            background-position: center;
-        }
-
-        .shape[data-color="orange"] .shape-block:not(.empty) {
-            background: linear-gradient(135deg, #feca57 0%, #ff9ff3 100%);
-            background-image: url('./assets/images/shape-block-orange.png');
-            background-size: cover;
-            background-position: center;
-        }
-
-        /* COMBO DISPLAY */
-        .combo-display {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            background: linear-gradient(135deg, #ff6b6b, #ee5a52);
-            background-image: url('./assets/images/combo-bg.png');
-            background-size: cover;
-            background-position: center;
-            color: white;
-            padding: 8px 12px;
-            border-radius: 12px;
-            font-size: 12px;
-            font-weight: 900;
             opacity: 0;
-            transform: scale(0.8);
-            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-            box-shadow: 0 8px 25px rgba(255, 107, 107, 0.4);
-            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
-        .combo-display.active {
-            opacity: 1;
-            transform: scale(1);
-            animation: comboRave 2s ease-in-out infinite;
-        }
-
-        @keyframes comboRave {
-            0%, 100% { 
-                box-shadow: 0 8px 25px rgba(255, 107, 107, 0.4);
-                filter: brightness(1);
-            }
-            50% { 
-                box-shadow: 0 8px 35px rgba(255, 107, 107, 0.8);
-                filter: brightness(1.3);
-            }
-        }
-
-        /* PLAYER SCREEN */
-        .player-screen {
-            padding: 20px 0;
-        }
-
-        .player-card {
-            background: var(--card-bg);
-            border-radius: 15px;
-            padding: 25px;
-            margin-bottom: 20px;
-            border: 1px solid var(--card-border);
-            backdrop-filter: blur(15px);
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .player-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
-            animation: cardShine 4s linear infinite;
-        }
-
-        @keyframes cardShine {
-            0% { left: -100%; }
-            100% { left: 100%; }
-        }
-
-        .player-avatar-large {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            border: 4px solid rgba(255, 255, 255, 0.3);
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 32px;
-            margin: 0 auto 15px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .player-avatar-large img {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-
-        .player-name-large {
-            font-size: 24px;
-            font-weight: 900;
-            margin-bottom: 8px;
-            background: var(--accent-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .player-level-large {
-            font-size: 16px;
-            color: var(--text-secondary);
-            margin-bottom: 20px;
-        }
-
-        .xp-progress {
-            margin: 20px 0;
-        }
-
-        .xp-bar {
-            width: 100%;
-            height: 8px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 4px;
-            overflow: hidden;
-            margin-bottom: 8px;
-            position: relative;
-        }
-
-        .xp-fill {
-            height: 100%;
-            background: var(--accent-gradient);
-            border-radius: 4px;
-            transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .xp-text {
-            font-size: 12px;
-            color: var(--text-secondary);
-            text-align: center;
-        }
-
-        .achievements-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-            gap: 15px;
-            margin-top: 20px;
-        }
-
-        .achievement-item {
-            background: var(--card-bg);
-            border-radius: 10px;
-            padding: 15px;
-            text-align: center;
-            border: 1px solid var(--card-border);
-            transition: all 0.3s ease;
-        }
-
-        .achievement-item:hover {
-            transform: translateY(-3px);
-            border-color: var(--accent-color);
-            box-shadow: 0 8px 25px rgba(254, 202, 87, 0.3);
-        }
-
-        .achievement-icon {
-            font-size: 24px;
-            margin-bottom: 8px;
-        }
-
-        .achievement-name {
-            font-size: 12px;
-            font-weight: 600;
-            margin-bottom: 4px;
-        }
-
-        .achievement-desc {
-            font-size: 10px;
-            opacity: 0.7;
-        }
-
-        /* SHOP SCREEN */
-        .shop-section {
-            margin-bottom: 30px;
-        }
-
-        .shop-title {
-            font-size: 18px;
-            font-weight: 900;
-            margin-bottom: 15px;
-            text-align: center;
-            background: var(--accent-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .shop-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 15px;
-        }
-
-        .shop-item {
-            background: var(--card-bg);
-            border-radius: 12px;
-            padding: 15px;
-            border: 1px solid var(--card-border);
-            cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            text-align: center;
-            backdrop-filter: blur(10px);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .shop-item:hover {
-            border-color: var(--accent-color);
-            transform: translateY(-5px) scale(1.02);
-            box-shadow: 0 15px 30px rgba(254, 202, 87, 0.3);
-        }
-
-        .shop-item-icon {
-            font-size: 32px;
-            margin-bottom: 10px;
-            filter: drop-shadow(0 3px 8px rgba(0, 0, 0, 0.5));
-            width: 36px;
-            height: 36px;
-            background-size: contain;
-            background-repeat: no-repeat;
-            background-position: center;
-            margin: 0 auto 10px;
-        }
-
-        .shop-item-name {
-            font-size: 14px;
-            font-weight: 700;
-            margin-bottom: 6px;
-        }
-
-        .shop-item-description {
-            font-size: 11px;
-            opacity: 0.7;
-            margin-bottom: 10px;
-            line-height: 1.3;
-        }
-
-        .shop-item-price {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, #ffd700, #ffed4e);
-            color: #000;
-            padding: 8px 12px;
-            border-radius: 8px;
-            font-weight: 700;
-            font-size: 12px;
-            box-shadow: 0 3px 10px rgba(255, 215, 0, 0.4);
-        }
-
-        /* LEADERBOARD & FRIENDS */
-        .leaderboard-tabs {
-            display: flex;
-            background: var(--card-bg);
-            border-radius: 8px;
-            padding: 3px;
-            margin-bottom: 20px;
-            backdrop-filter: blur(10px);
-        }
-
-        .leaderboard-tab {
-            flex: 1;
-            padding: 8px 12px;
-            text-align: center;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 12px;
-            font-weight: 600;
-            background: transparent;
-            border: none;
-            color: rgba(255, 255, 255, 0.6);
-        }
-
-        .leaderboard-tab.active {
-            background: linear-gradient(135deg, #a55eea, #8854d0);
-            color: white;
-            box-shadow: 0 3px 10px rgba(165, 94, 234, 0.4);
-        }
-
-        .leaderboard-list {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .leaderboard-item {
-            display: flex;
-            align-items: center;
-            background: var(--card-bg);
-            padding: 15px;
-            border-radius: 10px;
-            border: 1px solid var(--card-border);
-            backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
-        }
-
-        .leaderboard-item:hover {
-            transform: translateX(5px);
-            border-color: rgba(255, 255, 255, 0.2);
-        }
-
-        .leaderboard-item.me {
-            border-color: var(--accent-color);
-            background: rgba(254, 202, 87, 0.1);
-            box-shadow: 0 0 20px rgba(254, 202, 87, 0.3);
-        }
-
-        .leaderboard-rank {
-            font-size: 16px;
-            font-weight: 900;
-            margin-right: 15px;
-            min-width: 30px;
-            text-align: center;
-        }
-
-        .leaderboard-rank.gold { 
-            color: #ffd700; 
-            text-shadow: 0 0 10px #ffd700;
-        }
-        .leaderboard-rank.silver { 
-            color: #c0c0c0; 
-            text-shadow: 0 0 10px #c0c0c0;
-        }
-        .leaderboard-rank.bronze { 
-            color: #cd7f32; 
-            text-shadow: 0 0 10px #cd7f32;
-        }
-
-        .leaderboard-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 12px;
-            font-size: 18px;
-            box-shadow: 0 3px 10px rgba(102, 126, 234, 0.4);
-            object-fit: cover;
-        }
-
-        .leaderboard-info {
-            flex: 1;
-        }
-
-        .leaderboard-name {
-            font-size: 14px;
-            font-weight: 600;
-            margin-bottom: 2px;
-        }
-
-        .leaderboard-level {
-            font-size: 11px;
-            opacity: 0.7;
-        }
-
-        .leaderboard-score {
-            font-size: 16px;
-            font-weight: 900;
-            color: var(--accent-color);
-            text-shadow: 0 0 8px rgba(254, 202, 87, 0.5);
-        }
-
-        /* NOTIFICATION */
-        .notification {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: linear-gradient(135deg, var(--success-color), #10ac84);
-            color: white;
-            padding: 12px 16px;
-            border-radius: 8px;
-            font-weight: 700;
-            font-size: 12px;
-            box-shadow: 0 10px 25px rgba(29, 209, 161, 0.4);
-            transform: translateX(100%);
-            transition: transform 0.4s ease;
-            z-index: 4000;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .notification.show {
-            transform: translateX(0);
-            animation: notificationPulse 0.5s ease-out;
-        }
-
-        @keyframes notificationPulse {
-            0% { transform: translateX(0) scale(0.9); }
-            50% { transform: translateX(0) scale(1.05); }
-            100% { transform: translateX(0) scale(1); }
-        }
-
-        /* OVERLAYS */
+        /* ОВЕРЛЕИ */
         .overlay {
             position: fixed;
             top: 0;
             left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.95);
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
             display: flex;
             align-items: center;
             justify-content: center;
+            z-index: 1000;
             opacity: 0;
             visibility: hidden;
-            transition: all 0.4s ease;
-            z-index: 3000;
-            backdrop-filter: blur(15px);
+            transition: all 0.3s ease;
         }
 
         .overlay.active {
@@ -1379,466 +535,514 @@
         }
 
         .overlay-content {
-            background: linear-gradient(135deg, #2c3e50, #34495e);
+            background: var(--card-bg);
+            border-radius: 20px;
             padding: 30px;
-            border-radius: 15px;
-            text-align: center;
             max-width: 320px;
             width: 90%;
-            border: 2px solid var(--card-border);
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.7);
-            transform: scale(0.8);
-            transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            text-align: center;
+            border: 3px solid var(--card-border);
+            box-shadow: 0 10px 30px var(--card-shadow);
             position: relative;
-            overflow: hidden;
         }
 
-        .overlay.active .overlay-content {
-            transform: scale(1);
+        /* ЛЕНТОЧКА ЗАГОЛОВКА */
+        .ribbon {
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--accent-red);
+            color: var(--text-white);
+            padding: 8px 25px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 900;
+            text-transform: uppercase;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.3);
         }
 
-        /* ПРОСТЫЕ КНОПКИ ДЛЯ OVERLAY */
+        .ribbon::before,
+        .ribbon::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            width: 0;
+            height: 0;
+            border-style: solid;
+        }
+
+        .ribbon::before {
+            left: 0;
+            border-width: 8px 0 0 8px;
+            border-color: transparent transparent transparent #C62828;
+        }
+
+        .ribbon::after {
+            right: 0;
+            border-width: 8px 8px 0 0;
+            border-color: transparent #C62828 transparent transparent;
+        }
+
+        /* ПРОСТЫЕ КНОПКИ */
         .simple-button {
             padding: 12px 20px;
             border: none;
-            border-radius: 8px;
+            border-radius: 12px;
             font-size: 14px;
             font-weight: 700;
             cursor: pointer;
             transition: all 0.2s ease;
-            font-family: 'Exo 2', sans-serif;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
         }
 
         .restart-btn {
-            background: linear-gradient(135deg, #1dd1a1, #10ac84);
-            color: white;
+            background: var(--accent-green);
+            color: var(--text-white);
         }
 
         .menu-btn {
             background: rgba(255, 255, 255, 0.2);
-            color: white;
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: var(--text-primary);
+            border: 2px solid var(--card-border);
         }
 
         .simple-button:hover {
             transform: translateY(-2px);
-            opacity: 0.9;
         }
 
         .simple-button:active {
             transform: translateY(0);
         }
 
-        .overlay-content h2 {
-            font-size: 24px;
-            margin-bottom: 16px;
-            font-weight: 900;
-            background: linear-gradient(45deg, #ff6b6b, #feca57);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            position: relative;
-            z-index: 1;
+        /* МАГАЗИН */
+        .shop-item {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border: 2px solid var(--card-border);
+            box-shadow: 0 6px 16px var(--card-shadow);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        /* RESPONSIVE DESIGN */
-        @media (max-width: 480px) {
-            .header-content {
-                gap: 10px;
-            }
+        .shop-item-info {
+            flex: 1;
+        }
 
-            .profile-avatar {
-                width: 45px;
-                height: 45px;
-            }
+        .shop-item-title {
+            font-size: 16px;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 5px;
+        }
 
-            .profile-name {
-                font-size: 14px;
-            }
+        .shop-item-description {
+            font-size: 12px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
 
-            .stats-section {
-                gap: 10px;
-            }
+        .shop-item-price {
+            background: var(--accent-orange);
+            color: var(--text-white);
+            padding: 8px 15px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 14px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
 
+        .shop-item-price:hover {
+            transform: scale(1.05);
+        }
+
+        /* ЛИДЕРБОРД */
+        .leaderboard-header {
+            background: var(--wood-bg);
+            border-radius: 15px 15px 0 0;
+            padding: 15px 20px;
+            border: 3px solid var(--wood-border);
+            border-bottom: none;
+            color: var(--text-white);
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 0;
+        }
+
+        .leaderboard-list {
+            background: var(--card-bg);
+            border-radius: 0 0 15px 15px;
+            border: 3px solid var(--card-border);
+            border-top: none;
+            box-shadow: 0 6px 16px var(--card-shadow);
+        }
+
+        .leaderboard-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        .leaderboard-item:last-child {
+            border-bottom: none;
+        }
+
+        .leaderboard-rank {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: var(--accent-orange);
+            color: var(--text-white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            font-size: 14px;
+        }
+
+        .leaderboard-rank.gold { background: linear-gradient(145deg, #FFD700 0%, #FFA000 100%); }
+        .leaderboard-rank.silver { background: linear-gradient(145deg, #C0C0C0 0%, #757575 100%); }
+        .leaderboard-rank.bronze { background: linear-gradient(145deg, #CD7F32 0%, #8D5524 100%); }
+
+        .leaderboard-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--accent-blue);
+            border: 2px solid var(--card-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-white);
+            font-weight: 900;
+        }
+
+        .leaderboard-info {
+            flex: 1;
+        }
+
+        .leaderboard-name {
+            font-weight: 700;
+            color: var(--text-primary);
+            font-size: 14px;
+        }
+
+        .leaderboard-score {
+            font-size: 12px;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        /* УВЕДОМЛЕНИЯ */
+        .notification {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            background: var(--card-bg);
+            color: var(--text-primary);
+            padding: 12px 20px;
+            border-radius: 10px;
+            border: 2px solid var(--card-border);
+            box-shadow: 0 6px 16px var(--card-shadow);
+            z-index: 10000;
+            font-weight: 700;
+            font-size: 14px;
+            opacity: 0;
+            transition: all 0.4s ease;
+        }
+
+        .notification.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* АДАПТИВНОСТЬ */
+        @media (max-width: 350px) {
+            .stats-row {
+                flex-direction: column;
+                gap: 5px;
+            }
+            
             .stat-item {
-                padding: 6px 10px;
+                padding: 6px;
             }
-
-            .grid {
-                width: 320px;
-                height: 320px;
+            
+            .game-grid {
+                gap: 1px;
+                padding: 6px;
             }
-
-            .shape-slot {
-                width: 70px;
-                height: 70px;
-            }
-
+            
             .shape-block {
                 width: 16px;
                 height: 16px;
             }
-
-            .shop-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .achievements-grid {
-                grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-            }
-
-            /* Better touch targets on mobile */
-            .nav-item {
-                padding: 18px 8px;
-            }
-
-            .game-booster {
-                min-width: 70px;
-                padding: 12px;
-            }
-
-            .play-button {
-                padding: 20px;
-                font-size: 16px;
-            }
-        }
-
-        @media (max-height: 700px) {
-            .content-area {
-                padding: 15px;
-            }
-
-            .game-content {
-                padding: 15px;
-                gap: 15px;
-            }
-
-            .shapes-area {
-                height: 100px;
-                padding: 10px;
-            }
-
-            .shape-slot {
-                width: 70px;
-                height: 70px;
-            }
-
-            .grid {
-                width: 310px;
-                height: 310px;
-            }
-        }
-
-        /* VK specific optimizations */
-        .vk-ready {
-            position: relative;
-        }
-
-        .vk-loading {
-            opacity: 0.7;
-            pointer-events: none;
-        }
-
-        /* Image loading fallbacks */
-        .loading-logo:not([style*="background-image"]) {
-            text-indent: 0;
-            font-size: 36px;
-        }
-
-        .game-booster-icon:not([class*="booster-"]) {
-            text-indent: 0;
-            font-size: 24px;
-        }
-
-        .shop-item-icon:not([class*="shop-icon-"]) {
-            text-indent: 0;
-            font-size: 32px;
         }
     </style>
 </head>
 <body>
-    <!-- Loading Screen -->
-    <div class="loading-screen" id="loadingScreen">
-        <div class="loading-logo">⚡ БЛОК ВЗРЫВ! ⚡</div>
+    <!-- ЗАГРУЗОЧНЫЙ ЭКРАН -->
+    <div id="loadingScreen">
+        <div class="loading-logo">🧩 БЛОК ВЗРЫВ!</div>
         <div class="loading-spinner"></div>
-        <div class="loading-text">Подключение к ВКонтакте...</div>
     </div>
 
-    <!-- APP CONTAINER -->
-    <div class="app-container" id="appContainer">
-        
-        <!-- MAIN SCREEN -->
-        <div class="main-screen" id="mainScreen">
+    <!-- ОСНОВНОЕ ПРИЛОЖЕНИЕ -->
+    <div id="appContainer">
+        <!-- ШАПКА -->
+        <div class="header">
+            <div class="profile-section">
+                <div class="profile-avatar" id="userAvatar">👤</div>
+                <div class="profile-info">
+                    <h2 id="userName">Игрок</h2>
+                    <p>Уровень <span id="userLevel">1</span></p>
+                </div>
+            </div>
             
-            <!-- NEW HEADER -->
-            <div class="new-header">
-                <div class="header-content">
-                    <div class="profile-section">
-                        <div class="profile-avatar" id="profileAvatar">👤</div>
-                        <div class="profile-info">
-                            <div class="profile-name" id="profileName">Игрок</div>
-                            <div class="profile-level">
-                                <div class="level-icon"></div>
-                                Уровень <span id="profileLevel">1</span>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="stats-section">
-                        <div class="stat-item">
-                            <div class="stat-icon energy-icon"></div>
-                            <div class="stat-value" id="headerEnergy">5/5</div>
-                        </div>
-                        
-                        <div class="stat-item">
-                            <div class="stat-icon coins-icon"></div>
-                            <div class="stat-value" id="headerCoins">100</div>
-                            <button class="buy-coins-btn" onclick="showTab('shop')" title="Купить монеты">+</button>
-                        </div>
-                    </div>
+            <div class="stats-row">
+                <div class="stat-item">
+                    <div class="stat-icon level">🏆</div>
+                    <span id="headerLevel">1</span>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-icon energy">⚡</div>
+                    <span id="headerEnergy">5/5</span>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-icon coins">🪙</div>
+                    <span id="headerCoins">100</span>
                 </div>
             </div>
-
-            <!-- NEW NAVIGATION -->
-            <div class="new-nav">
-                <button class="nav-item active" onclick="showTab('player')">
-                    <div class="nav-icon nav-player"></div>
-                    Игрок
-                </button>
-                <button class="nav-item" onclick="showTab('shop')">
-                    <div class="nav-icon nav-shop"></div>
-                    Магазин
-                </button>
-                <button class="nav-item" onclick="showTab('leaderboard')">
-                    <div class="nav-icon nav-leaderboard"></div>
-                    Рейтинг
-                </button>
-                <button class="nav-item" onclick="showTab('friends')">
-                    <div class="nav-icon nav-friends"></div>
-                    Друзья
-                </button>
-            </div>
-
-            <!-- CONTENT AREA -->
-            <div class="content-area">
-                
-                <!-- PLAYER SCREEN -->
-                <div class="content-screen active" id="playerScreen">
-                    <div class="player-screen">
-                        <div class="player-card">
-                            <div class="player-avatar-large" id="playerAvatarLarge">👤</div>
-                            <div class="player-name-large" id="playerNameLarge">Игрок</div>
-                            <div class="player-level-large">Уровень <span id="playerLevelLarge">1</span></div>
-                            
-                            <div class="xp-progress">
-                                <div class="xp-bar">
-                                    <div class="xp-fill" id="playerXpFill" style="width: 0%"></div>
-                                </div>
-                                <div class="xp-text" id="playerXpText">0 / 100 XP</div>
-                            </div>
-                        </div>
-
-                        <div class="player-card">
-                            <h3 style="margin-bottom: 15px; font-size: 18px;">📊 Статистика</h3>
-                            <div class="achievements-grid">
-                                <div class="achievement-item">
-                                    <div class="achievement-icon">🎯</div>
-                                    <div class="achievement-name">Лучший счет</div>
-                                    <div class="achievement-desc" id="playerBestScore">0</div>
-                                </div>
-                                <div class="achievement-item">
-                                    <div class="achievement-icon">🏆</div>
-                                    <div class="achievement-name">Игр сыграно</div>
-                                    <div class="achievement-desc" id="playerGamesPlayed">0</div>
-                                </div>
-                                <div class="achievement-item">
-                                    <div class="achievement-icon">💎</div>
-                                    <div class="achievement-name">Линий очищено</div>
-                                    <div class="achievement-desc" id="playerTotalLines">0</div>
-                                </div>
-                                <div class="achievement-item">
-                                    <div class="achievement-icon">🔥</div>
-                                    <div class="achievement-name">Макс комбо</div>
-                                    <div class="achievement-desc" id="playerMaxCombo">0</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- SHOP SCREEN -->
-                <div class="content-screen" id="shopScreen">
-                    <div class="shop-section">
-                        <div class="shop-title">🎁 Наборы Усилителей</div>
-                        <div class="shop-grid">
-                            <div class="shop-item" onclick="buyPack('starter')">
-                                <div class="shop-item-icon">📦</div>
-                                <div class="shop-item-name">Стартовый Набор</div>
-                                <div class="shop-item-description">Отлично для новичков</div>
-                                <div class="shop-item-price">
-                                    <span>🪙 150</span>
-                                </div>
-                            </div>
-                            <div class="shop-item" onclick="buyPack('premium')">
-                                <div class="shop-item-icon">🎁</div>
-                                <div class="shop-item-name">Премиум Набор</div>
-                                <div class="shop-item-description">Выгодно для профи</div>
-                                <div class="shop-item-price">
-                                    <span>🪙 450</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="shop-section">
-                        <div class="shop-title">⚡ Энергия</div>
-                        <div class="shop-grid">
-                            <div class="shop-item" onclick="buyEnergy(1)">
-                                <div class="shop-item-icon">⚡</div>
-                                <div class="shop-item-name">+1 Энергия</div>
-                                <div class="shop-item-description">Мгновенное восполнение</div>
-                                <div class="shop-item-price">
-                                    <span>🪙 50</span>
-                                </div>
-                            </div>
-                            <div class="shop-item" onclick="buyEnergy(5)">
-                                <div class="shop-item-icon">🔋</div>
-                                <div class="shop-item-name">Полная Энергия</div>
-                                <div class="shop-item-description">Полное восстановление</div>
-                                <div class="shop-item-price">
-                                    <span>🪙 200</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- LEADERBOARD SCREEN -->
-                <div class="content-screen" id="leaderboardScreen">
-                    <div class="leaderboard-tabs">
-                        <button class="leaderboard-tab active" onclick="showLeaderboard('global')">🌍 Общий</button>
-                        <button class="leaderboard-tab" onclick="showLeaderboard('weekly')">📅 Недельный</button>
-                        <button class="leaderboard-tab" onclick="showLeaderboard('friends')">👥 Друзья</button>
-                    </div>
-
-                    <div class="leaderboard-list" id="leaderboardList">
-                        <!-- Leaderboard items will be populated here -->
-                    </div>
-                </div>
-
-                <!-- FRIENDS SCREEN -->
-                <div class="content-screen" id="friendsScreen">
-                    <div class="player-card">
-                        <h3 style="margin-bottom: 15px; font-size: 18px;">👥 Пригласить друзей</h3>
-                        <p style="margin-bottom: 15px; opacity: 0.8; font-size: 14px;">Приглашай друзей и получай награды!</p>
-                        
-                        <div class="achievements-grid" style="margin-bottom: 20px;">
-                            <div class="achievement-item">
-                                <div class="achievement-icon">📨</div>
-                                <div class="achievement-name">Приглашения</div>
-                                <div class="achievement-desc" id="invitesSent">0</div>
-                            </div>
-                            <div class="achievement-item">
-                                <div class="achievement-icon">👥</div>
-                                <div class="achievement-name">Присоединились</div>
-                                <div class="achievement-desc" id="friendsJoined">0</div>
-                            </div>
-                        </div>
-
-                        <button class="play-button" onclick="inviteFriends()" style="margin: 0;">
-                            📱 Пригласить Друзей
-                        </button>
-                    </div>
-                </div>
-
-            </div>
-
-            <!-- PLAY BUTTON -->
-            <div class="play-button-container">
-                <button class="play-button" id="playButton" onclick="startGame()">
-                    🎮 ИГРАТЬ
-                </button>
-            </div>
-
         </div>
 
-        <!-- GAME SCREEN -->
-        <div class="game-screen" id="gameScreen">
-            
-            <!-- GAME HEADER -->
+        <!-- ЭКРАН ИГРОКА -->
+        <div class="screen active" id="playerScreen">
+            <div class="card">
+                <h3 style="text-align: center; margin-bottom: 20px; font-size: 20px; color: var(--text-primary);">
+                    🎮 Готов к игре?
+                </h3>
+                <button class="play-button" onclick="startNewGameFromMenu()">
+                    🚀 ИГРАТЬ
+                </button>
+            </div>
+
+            <div class="card">
+                <h4 style="margin-bottom: 15px; color: var(--text-primary);">📊 Статистика</h4>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 24px; font-weight: 900; color: var(--text-primary);" id="bestScore">0</div>
+                        <div style="font-size: 12px; color: var(--text-secondary); font-weight: 600;">Лучший счёт</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 24px; font-weight: 900; color: var(--text-primary);" id="gamesPlayed">0</div>
+                        <div style="font-size: 12px; color: var(--text-secondary); font-weight: 600;">Игр сыграно</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ИГРОВОЙ ЭКРАН -->
+        <div class="screen" id="gameScreen">
             <div class="game-header">
-                <button class="back-button" onclick="exitGame()">← Назад</button>
-                
-                <div class="game-stats">
-                    <div class="game-stat">
-                        <div class="game-stat-label">Очки</div>
-                        <div class="game-stat-value" id="gameScore">0</div>
-                    </div>
-                    <div class="game-stat">
-                        <div class="game-stat-label">Линии</div>
-                        <div class="game-stat-value" id="gameLines">0</div>
-                    </div>
+                <div class="score-display">
+                    <div class="score-label">Счёт</div>
+                    <div class="score-value" id="gameScore">0</div>
                 </div>
-                
-                <div class="combo-display" id="comboDisplay">
-                    🔥 ×<span id="comboValue">1</span>
+                <div class="score-display">
+                    <div class="score-label">Линии</div>
+                    <div class="score-value" id="gameLines">0</div>
+                </div>
+                <div class="score-display">
+                    <div class="score-label">Комбо</div>
+                    <div class="score-value" id="gameCombo">0</div>
                 </div>
             </div>
 
-            <!-- GAME CONTENT -->
-            <div class="game-content">
-                
-                <!-- BOOSTERS -->
-                <div class="game-boosters">
-                    <div class="game-booster" onclick="useBooster('shape_choice')" id="gameBooster_shape_choice">
-                        <div class="game-booster-icon booster-shape-choice">🎯</div>
-                        <div class="game-booster-count" id="gameCount_shape_choice">0</div>
-                    </div>
-                    <div class="game-booster" onclick="useBooster('row_blast')" id="gameBooster_row_blast">
-                        <div class="game-booster-icon booster-row-blast">💣</div>
-                        <div class="game-booster-count" id="gameCount_row_blast">0</div>
-                    </div>
-                    <div class="game-booster" onclick="useBooster('refresh')" id="gameBooster_refresh">
-                        <div class="game-booster-icon booster-refresh">🔄</div>
-                        <div class="game-booster-count" id="gameCount_refresh">2</div>
-                    </div>
-                    <div class="game-booster" onclick="useBooster('lightning')" id="gameBooster_lightning">
-                        <div class="game-booster-icon booster-lightning">⚡</div>
-                        <div class="game-booster-count" id="gameCount_lightning">0</div>
-                    </div>
-                    <div class="game-booster" onclick="useBooster('star_blast')" id="gameBooster_star_blast">
-                        <div class="game-booster-icon booster-star-blast">🌟</div>
-                        <div class="game-booster-count" id="gameCount_star_blast">0</div>
-                    </div>
+            <div class="game-boosters">
+                <div class="game-booster" onclick="useBooster('refresh')">
+                    <div class="booster-icon" style="background: var(--accent-green); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 900;">🔄</div>
+                    <div class="booster-count" id="refreshCount">2</div>
                 </div>
-
-                <!-- GAME BOARD -->
-                <div class="game-board">
-                    <div class="grid-container">
-                        <div class="grid" id="gameGrid"></div>
-                    </div>
-
-                    <div class="shapes-area" id="shapesArea">
-                        <div class="shape-slot" id="slot0"></div>
-                        <div class="shape-slot" id="slot1"></div>
-                        <div class="shape-slot" id="slot2"></div>
-                    </div>
+                <div class="game-booster" onclick="useBooster('shape_choice')">
+                    <div class="booster-icon" style="background: var(--accent-blue); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 900;">🎯</div>
+                    <div class="booster-count" id="shapeChoiceCount">0</div>
                 </div>
-
+                <div class="game-booster" onclick="useBooster('row_blast')">
+                    <div class="booster-icon" style="background: var(--accent-red); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 900;">💥</div>
+                    <div class="booster-count" id="rowBlastCount">0</div>
+                </div>
             </div>
 
+            <div class="game-grid-container">
+                <div class="game-grid" id="gameGrid"></div>
+            </div>
+
+            <div class="shapes-area" id="shapesArea">
+                <div class="shapes-container">
+                    <div class="shape-slot" id="slot0"></div>
+                    <div class="shape-slot" id="slot1"></div>
+                    <div class="shape-slot" id="slot2"></div>
+                </div>
+            </div>
         </div>
 
+        <!-- ЭКРАН МАГАЗИНА -->
+        <div class="screen" id="shopScreen">
+            <div class="card">
+                <h3 style="text-align: center; margin-bottom: 20px; font-size: 18px; color: var(--text-primary);">
+                    🛒 Наборы бустеров
+                </h3>
+                
+                <div class="shop-item">
+                    <div class="shop-item-info">
+                        <div class="shop-item-title">Стартовый набор</div>
+                        <div class="shop-item-description">3 Выбора + 2 Обновления + 1 Взрыв</div>
+                    </div>
+                    <div class="shop-item-price" onclick="buyPack('starter')">150 🪙</div>
+                </div>
+
+                <div class="shop-item">
+                    <div class="shop-item-info">
+                        <div class="shop-item-title">Премиум набор</div>
+                        <div class="shop-item-description">5 Выборов + 3 Взрыва + бонусы</div>
+                    </div>
+                    <div class="shop-item-price" onclick="buyPack('premium')">450 🪙</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3 style="text-align: center; margin-bottom: 20px; font-size: 18px; color: var(--text-primary);">
+                    ⚡ Энергия
+                </h3>
+                
+                <div class="shop-item">
+                    <div class="shop-item-info">
+                        <div class="shop-item-title">1 Энергия</div>
+                        <div class="shop-item-description">Одна дополнительная игра</div>
+                    </div>
+                    <div class="shop-item-price" onclick="buyEnergy(1)">50 🪙</div>
+                </div>
+
+                <div class="shop-item">
+                    <div class="shop-item-info">
+                        <div class="shop-item-title">5 Энергии</div>
+                        <div class="shop-item-description">Выгодное предложение!</div>
+                    </div>
+                    <div class="shop-item-price" onclick="buyEnergy(5)">200 🪙</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ЭКРАН ЛИДЕРБОРДА -->
+        <div class="screen" id="leaderboardScreen">
+            <div class="leaderboard-header">
+                🏆 ТОП ИГРОКИ
+            </div>
+            <div class="leaderboard-list">
+                <div class="leaderboard-item">
+                    <div class="leaderboard-rank gold">1</div>
+                    <div class="leaderboard-avatar">🤖</div>
+                    <div class="leaderboard-info">
+                        <div class="leaderboard-name">ProGamer</div>
+                        <div class="leaderboard-score">50,000 очков</div>
+                    </div>
+                </div>
+                <div class="leaderboard-item">
+                    <div class="leaderboard-rank silver">2</div>
+                    <div class="leaderboard-avatar">👑</div>
+                    <div class="leaderboard-info">
+                        <div class="leaderboard-name">BlockMaster</div>
+                        <div class="leaderboard-score">45,000 очков</div>
+                    </div>
+                </div>
+                <div class="leaderboard-item">
+                    <div class="leaderboard-rank bronze">3</div>
+                    <div class="leaderboard-avatar">⭐</div>
+                    <div class="leaderboard-info">
+                        <div class="leaderboard-name">PuzzlePro</div>
+                        <div class="leaderboard-score">42,000 очков</div>
+                    </div>
+                </div>
+                <div class="leaderboard-item">
+                    <div class="leaderboard-rank">4</div>
+                    <div class="leaderboard-avatar">🎮</div>
+                    <div class="leaderboard-info">
+                        <div class="leaderboard-name">Вы</div>
+                        <div class="leaderboard-score" id="playerScore">0 очков</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ЭКРАН ДРУЗЕЙ -->
+        <div class="screen" id="friendsScreen">
+            <div class="card">
+                <h3 style="text-align: center; margin-bottom: 20px; font-size: 18px; color: var(--text-primary);">
+                    👥 Пригласи друзей
+                </h3>
+                <p style="text-align: center; color: var(--text-secondary); margin-bottom: 20px; font-weight: 500; line-height: 1.4;">
+                    За каждого друга получи <strong>20 монет</strong> и <strong>1 энергию</strong>!
+                </p>
+                <button class="play-button" onclick="inviteFriends()" style="font-size: 16px;">
+                    📱 ПРИГЛАСИТЬ ДРУЗЕЙ
+                </button>
+            </div>
+
+            <div class="card">
+                <h4 style="margin-bottom: 15px; color: var(--text-primary);">📈 Статистика приглашений</h4>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 20px; font-weight: 900; color: var(--text-primary);" id="invitesSent">0</div>
+                        <div style="font-size: 12px; color: var(--text-secondary); font-weight: 600;">Отправлено</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 20px; font-weight: 900; color: var(--text-primary);" id="friendsJoined">0</div>
+                        <div style="font-size: 12px; color: var(--text-secondary); font-weight: 600;">Присоединились</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- НАВИГАЦИЯ -->
+        <div class="navigation">
+            <button class="nav-item active" onclick="switchTab('player')">
+                <div class="nav-icon">🎮</div>
+                <span>Игрок</span>
+            </button>
+            <button class="nav-item" onclick="switchTab('shop')">
+                <div class="nav-icon">🛒</div>
+                <span>Магазин</span>
+            </button>
+            <button class="nav-item" onclick="switchTab('leaderboard')">
+                <div class="nav-icon">🏆</div>
+                <span>Рейтинг</span>
+            </button>
+            <button class="nav-item" onclick="switchTab('friends')">
+                <div class="nav-icon">👥</div>
+                <span>Друзья</span>
+            </button>
+        </div>
     </div>
 
-    <!-- OVERLAYS -->
+    <!-- ОВЕРЛЕЙ GAME OVER -->
     <div class="overlay" id="gameOverOverlay">
         <div class="overlay-content">
-            <h2>🎯 ИГРА ОКОНЧЕНА!</h2>
-            <div style="font-size: 18px; margin-bottom: 12px;">Очки: <span id="finalScore" style="color: #feca57; font-weight: 700;">0</span></div>
-            <div style="font-size: 14px; margin-bottom: 16px;">Получено XP: <span id="finalXP" style="color: #48dbfb; font-weight: 700;">+0</span></div>
+            <div class="ribbon">ИГРА ОКОНЧЕНА</div>
+            <div style="margin-top: 25px; margin-bottom: 20px;">
+                <h3 style="margin-bottom: 10px; color: var(--text-primary);">Финальный счёт</h3>
+                <div style="font-size: 32px; font-weight: 900; color: var(--text-primary); margin-bottom: 10px;" id="finalScore">0</div>
+                <div style="font-size: 14px; color: var(--text-secondary);">Опыт: <span id="finalXP">+0</span></div>
+            </div>
             <div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;">
                 <button class="simple-button restart-btn" onclick="restartGame()">🔥 СНОВА</button>
                 <button class="simple-button menu-btn" onclick="exitGame()">🏠 МЕНЮ</button>
@@ -1846,447 +1050,270 @@
         </div>
     </div>
 
-    <div class="overlay" id="energyDepletedOverlay">
-        <div class="overlay-content">
-            <h2>⚡ Нет Энергии!</h2>
-            <div style="font-size: 14px; margin-bottom: 16px;">Подождите восстановления энергии или купите больше в магазине!</div>
-            <div style="font-size: 12px; margin-bottom: 20px;">Следующая энергия через: <span id="nextEnergyTime" style="color: #feca57; font-weight: 700;">--:--</span></div>
-            <div style="display: flex; gap: 12px; justify-content: center;">
-                <button class="play-button" onclick="showTab('shop'); closeOverlay('energyDepletedOverlay')" style="margin: 0; width: auto; padding: 12px 20px;">🛒 МАГАЗИН</button>
-                <button class="play-button" onclick="closeOverlay('energyDepletedOverlay')" style="margin: 0; width: auto; padding: 12px 20px; background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));">⏰ ЖДАТЬ</button>
-            </div>
-        </div>
-    </div>
-
     <script>
-        // App State Management
+        // VK BRIDGE КОНФИГУРАЦИЯ
+        const APP_CONFIG = {
+            APP_ID: 51912419
+        };
+
+        let vkBridge = null;
+        let isVKReady = false;
+        let currentUser = null;
+
+        // СОСТОЯНИЕ ПРИЛОЖЕНИЯ
         const AppState = {
-            currentScreen: 'main', // 'main' or 'game'
             currentTab: 'player',
-            gameState: null, // Will store game instance
-            isGameActive: false,
+            gameState: null,
             hasUnfinishedGame: false
         };
 
-        // VK Bridge initialization
-        let vkBridge;
-        let isVKReady = false;
-        let currentUser = null;
-        
-        // App Configuration
-        const APP_CONFIG = {
-            APP_ID: 53745312,
-            version: '1.0.0',
-            environment: 'production'
-        };
-
-        // Initialize VK Bridge
+        // VK BRIDGE ИНИЦИАЛИЗАЦИЯ
         async function initVK() {
-            try {
-                if (window.vkBridge) {
-                    vkBridge = window.vkBridge;
-                } else if (window.VKWebAppInit) {
-                    await window.VKWebAppInit();
-                    vkBridge = window.vkBridge;
-                } else {
-                    throw new Error('VK Bridge не найден');
-                }
-
-                vkBridge.send('VKWebAppInit');
-                
+            if (window.vkBridge) {
+                vkBridge = window.vkBridge;
                 try {
-                    const userInfo = await vkBridge.send('VKWebAppGetUserInfo');
-                    currentUser = userInfo;
-                    updateUserProfile(userInfo);
-                    console.log('✅ Информация о пользователе обновлена');
+                    await vkBridge.send('VKWebAppInit');
+                    
+                    const userResult = await vkBridge.send('VKWebAppGetUserInfo');
+                    currentUser = userResult;
+                    
+                    document.getElementById('userName').textContent = 
+                        userResult.first_name || 'Игрок';
+                    document.getElementById('userAvatar').textContent = 
+                        userResult.first_name ? userResult.first_name[0].toUpperCase() : '👤';
+                    
+                    isVKReady = true;
+                    console.log('✅ VK Bridge инициализирован');
+                    
+                    await loadGameData();
+                    
                 } catch (error) {
-                    console.log('Ошибка получения информации пользователя:', error);
+                    console.log('❌ Ошибка VK Bridge:', error);
+                    isVKReady = false;
                 }
-
-                isVKReady = true;
-                await loadGameData();
-                console.log('✅ VK Bridge успешно инициализирован');
-                
-            } catch (error) {
-                console.log('❌ Ошибка инициализации VK Bridge:', error);
-                initMockVK();
+            } else {
+                console.log('⚠️ VK Bridge недоступен');
+                isVKReady = false;
             }
         }
 
-        function initMockVK() {
-            console.log('🔧 Инициализация Mock VK для разработки');
-            
-            vkBridge = {
-                send: (method, params = {}) => {
-                    console.log(`VK Mock: ${method}`, params);
-                    return Promise.resolve(mockVKResponse(method, params));
-                },
-                subscribe: (callback) => {
-                    console.log('VK Mock: подписка на события');
-                }
-            };
-            
-            currentUser = {
-                id: 123456789,
-                first_name: 'Тестовый',
-                last_name: 'Игрок',
-                photo_100: ''
-            };
-            
-            updateUserProfile(currentUser);
-        }
-
-        function mockVKResponse(method, params) {
-            switch (method) {
-                case 'VKWebAppStorageGet':
-                    return { keys: params.keys.map(key => ({ key, value: '' })) };
-                case 'VKWebAppStorageSet':
-                    return { result: true };
-                case 'VKWebAppGetUserInfo':
-                    return currentUser;
-                case 'VKWebAppShare':
-                    return { result: true };
-                case 'VKWebAppShowWallPostBox':
-                    return { result: true };
-                default:
-                    return { result: true };
-            }
-        }
-
-        function updateUserProfile(userInfo) {
-            const avatars = [
-                document.getElementById('profileAvatar'),
-                document.getElementById('playerAvatarLarge')
-            ];
-            
-            const names = [
-                document.getElementById('profileName'),
-                document.getElementById('playerNameLarge')
-            ];
-            
-            avatars.forEach(avatar => {
-                if (userInfo.photo_100) {
-                    avatar.innerHTML = `<img src="${userInfo.photo_100}" alt="Avatar">`;
-                } else {
-                    avatar.textContent = userInfo.first_name ? userInfo.first_name[0] : '👤';
-                }
-            });
-            
-            names.forEach(name => {
-                name.textContent = `${userInfo.first_name || 'Игрок'}`;
-            });
-        }
-
-        // Save/Load game data
+        // СОХРАНЕНИЕ И ЗАГРУЗКА ДАННЫХ
         async function saveGameData() {
-            if (!vkBridge || !AppState.gameState) return;
+            if (!AppState.gameState) return;
             
-            try {
-                const gameData = {
-                    bestScore: AppState.gameState.bestScore,
-                    level: AppState.gameState.level.current,
-                    totalXP: AppState.gameState.level.totalXP,
-                    coins: AppState.gameState.coins,
-                    boosters: AppState.gameState.boosters.inventory,
-                    stats: AppState.gameState.stats,
-                    hasUnfinishedGame: AppState.hasUnfinishedGame,
-                    gameSnapshot: AppState.hasUnfinishedGame ? AppState.gameState.getSnapshot() : null,
-                    lastSave: Date.now()
-                };
-                
-                await vkBridge.send('VKWebAppStorageSet', {
-                    key: 'gameData',
-                    value: JSON.stringify(gameData)
-                });
-                
-                console.log('💾 Данные игры сохранены');
-            } catch (error) {
-                console.log('❌ Ошибка сохранения данных:', error);
+            const gameData = {
+                coins: AppState.gameState.coins,
+                bestScore: AppState.gameState.bestScore,
+                level: AppState.gameState.level,
+                energy: AppState.gameState.energy,
+                boosters: AppState.gameState.boosters,
+                stats: AppState.gameState.stats,
+                referrals: AppState.gameState.referrals,
+                hasUnfinishedGame: AppState.hasUnfinishedGame,
+                gameSnapshot: AppState.hasUnfinishedGame ? AppState.gameState.getSnapshot() : null,
+                timestamp: Date.now()
+            };
+
+            if (isVKReady && vkBridge) {
+                try {
+                    await vkBridge.send('VKWebAppStorageSet', {
+                        key: 'gameData',
+                        value: JSON.stringify(gameData)
+                    });
+                    console.log('💾 Данные сохранены');
+                } catch (error) {
+                    console.log('❌ Ошибка сохранения:', error);
+                    localStorage.setItem('blockBlastData', JSON.stringify(gameData));
+                }
+            } else {
+                localStorage.setItem('blockBlastData', JSON.stringify(gameData));
             }
         }
 
         async function loadGameData() {
-            if (!vkBridge) return;
-            
-            try {
-                const result = await vkBridge.send('VKWebAppStorageGet', {
-                    keys: ['gameData']
-                });
-                
-                if (result.keys && result.keys[0] && result.keys[0].value) {
-                    const gameData = JSON.parse(result.keys[0].value);
+            let gameData = null;
+
+            if (isVKReady && vkBridge) {
+                try {
+                    const result = await vkBridge.send('VKWebAppStorageGet', {
+                        keys: ['gameData']
+                    });
                     
-                    if (AppState.gameState) {
-                        AppState.gameState.bestScore = gameData.bestScore || 0;
-                        AppState.gameState.level.current = gameData.level || 1;
-                        AppState.gameState.level.totalXP = gameData.totalXP || 0;
-                        AppState.gameState.coins = gameData.coins || 100;
-                        AppState.gameState.boosters.inventory = { ...AppState.gameState.boosters.inventory, ...gameData.boosters };
-                        AppState.gameState.stats = { ...AppState.gameState.stats, ...gameData.stats };
-                        
-                        AppState.hasUnfinishedGame = gameData.hasUnfinishedGame || false;
-                        
-                        if (AppState.hasUnfinishedGame && gameData.gameSnapshot) {
-                            AppState.gameState.loadSnapshot(gameData.gameSnapshot);
-                        }
-                        
-                        updateAllUI();
-                        console.log('📥 Данные игры загружены');
+                    if (result.keys[0] && result.keys[0].value) {
+                        gameData = JSON.parse(result.keys[0].value);
+                        console.log('📁 Данные загружены из VK');
                     }
+                } catch (error) {
+                    console.log('❌ Ошибка загрузки из VK:', error);
                 }
-            } catch (error) {
-                console.log('❌ Ошибка загрузки данных:', error);
+            }
+
+            if (!gameData) {
+                const localData = localStorage.getItem('blockBlastData');
+                if (localData) {
+                    gameData = JSON.parse(localData);
+                    console.log('📁 Данные загружены локально');
+                }
+            }
+
+            if (gameData && AppState.gameState) {
+                AppState.gameState.coins = gameData.coins || 100;
+                AppState.gameState.bestScore = gameData.bestScore || 0;
+                
+                if (gameData.level) {
+                    AppState.gameState.level = gameData.level;
+                }
+                if (gameData.energy) {
+                    AppState.gameState.energy = gameData.energy;
+                }
+                if (gameData.boosters) {
+                    AppState.gameState.boosters = gameData.boosters;
+                }
+                if (gameData.stats) {
+                    AppState.gameState.stats = gameData.stats;
+                }
+                if (gameData.referrals) {
+                    AppState.gameState.referrals = gameData.referrals;
+                }
+
+                AppState.hasUnfinishedGame = gameData.hasUnfinishedGame || false;
+                
+                if (AppState.hasUnfinishedGame && gameData.gameSnapshot) {
+                    AppState.gameState.loadSnapshot(gameData.gameSnapshot);
+                    console.log('🎮 Незавершённая игра восстановлена');
+                }
+
+                updateAllUI();
             }
         }
 
-        // Tab Management
-        function showTab(tabName) {
-            // Update navigation
+        // UI ФУНКЦИИ
+        function switchTab(tabName) {
+            AppState.currentTab = tabName;
+            
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
             document.querySelectorAll('.nav-item').forEach(item => {
                 item.classList.remove('active');
             });
-            event.target.classList.add('active');
-
-            // Update content
-            document.querySelectorAll('.content-screen').forEach(screen => {
-                screen.classList.remove('active');
-            });
+            
             document.getElementById(tabName + 'Screen').classList.add('active');
+            document.querySelector(`[onclick="switchTab('${tabName}')"]`).classList.add('active');
 
-            AppState.currentTab = tabName;
-
-            // Load specific content
-            if (tabName === 'leaderboard') {
-                showLeaderboard('global');
+            if (tabName === 'game' && AppState.gameState) {
+                AppState.gameState.renderShapes();
             }
         }
 
-        function showLeaderboard(type) {
-            document.querySelectorAll('.leaderboard-tab').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            event.target.classList.add('active');
-
-            // Mock leaderboard data for now
-            const mockData = generateMockLeaderboard(type);
-            updateLeaderboardDisplay(mockData);
-        }
-
-        function generateMockLeaderboard(type) {
-            const names = ['Алекс П.', 'Мария К.', 'Иван С.', 'Анна М.', 'Сергей В.'];
-            const avatars = ['👨', '👩', '🧑', '👱', '🤓'];
-            
-            const data = [];
-            for (let i = 0; i < 10; i++) {
-                data.push({
-                    rank: i + 1,
-                    name: names[i % names.length],
-                    avatar: avatars[i % avatars.length],
-                    score: Math.floor(Math.random() * 50000) + 1000,
-                    level: Math.floor(Math.random() * 20) + 1,
-                    isMe: i === 3 // Player at 4th place
-                });
-            }
-            
-            return data.sort((a, b) => b.score - a.score);
-        }
-
-        function updateLeaderboardDisplay(data) {
-            const list = document.getElementById('leaderboardList');
-            list.innerHTML = '';
-            
-            data.forEach(player => {
-                const item = document.createElement('div');
-                item.className = `leaderboard-item ${player.isMe ? 'me' : ''}`;
-                
-                let rankClass = '';
-                if (player.rank === 1) rankClass = 'gold';
-                else if (player.rank === 2) rankClass = 'silver';
-                else if (player.rank === 3) rankClass = 'bronze';
-                
-                item.innerHTML = `
-                    <div class="leaderboard-rank ${rankClass}">${player.rank}</div>
-                    <div class="leaderboard-avatar">${player.avatar}</div>
-                    <div class="leaderboard-info">
-                        <div class="leaderboard-name">${player.name}</div>
-                        <div class="leaderboard-level">Уровень ${player.level}</div>
-                    </div>
-                    <div class="leaderboard-score">${player.score.toLocaleString()}</div>
-                `;
-                
-                list.appendChild(item);
-            });
-        }
-
-        // Game Management
-        function startGame() {
+        function startNewGameFromMenu() {
             if (!AppState.gameState.energy.canPlay()) {
-                showOverlay('energyDepletedOverlay');
+                showNotification('Недостаточно энергии! ⚡');
                 return;
             }
 
-            AppState.currentScreen = 'game';
-            AppState.isGameActive = true;
-            AppState.hasUnfinishedGame = true;
-            
-            // Consume energy
-            AppState.gameState.energy.consume(1);
-            
-            // Initialize or resume game
-            if (!AppState.gameState.gameStarted) {
-                AppState.gameState.startNewGame();
+            if (!AppState.gameState.energy.consume(1)) {
+                showNotification('Недостаточно энергии! ⚡');
+                return;
             }
-            
-            // Switch to game screen
-            document.getElementById('gameScreen').classList.add('active');
-            document.getElementById('mainScreen').classList.add('slide-left');
-            
-            // Update UI
-            updateGameUI();
-            updatePlayButton();
-            
-            console.log('🎮 Игра запущена');
-        }
 
-        function exitGame() {
-            AppState.currentScreen = 'main';
-            AppState.isGameActive = false;
-            
-            // Save game state if game is not over
-            if (!AppState.gameState.isGameOver) {
-                AppState.hasUnfinishedGame = true;
-                saveGameData();
-            } else {
-                AppState.hasUnfinishedGame = false;
-            }
-            
-            // Switch back to main screen
-            document.getElementById('gameScreen').classList.remove('active');
-            document.getElementById('mainScreen').classList.remove('slide-left');
-            
-            // Update UI
+            AppState.gameState.startNewGame();
+            AppState.hasUnfinishedGame = true;
+            switchTab('game');
             updateAllUI();
-            updatePlayButton();
             
-            console.log('🏠 Возврат в меню');
+            if (isVKReady) {
+                saveGameData();
+            }
         }
 
         function restartGame() {
             closeOverlay('gameOverOverlay');
             
             if (!AppState.gameState.energy.canPlay()) {
-                showOverlay('energyDepletedOverlay');
+                showNotification('Недостаточно энергии! ⚡');
+                switchTab('player');
                 return;
             }
-            
-            AppState.gameState.energy.consume(1);
-            AppState.gameState.restart();
-            AppState.hasUnfinishedGame = true;
-            
-            updateGameUI();
-            console.log('🔄 Игра перезапущена');
-        }
 
-        function updatePlayButton() {
-            const playButton = document.getElementById('playButton');
+            if (!AppState.gameState.energy.consume(1)) {
+                showNotification('Недостаточно энергии! ⚡');
+                switchTab('player');
+                return;
+            }
+
+            AppState.gameState.startNewGame();
+            AppState.hasUnfinishedGame = true;
+            switchTab('game');
+            updateAllUI();
             
-            if (AppState.hasUnfinishedGame && !AppState.gameState.isGameOver) {
-                playButton.textContent = '▶️ ПРОДОЛЖИТЬ';
-                playButton.classList.add('continue');
-            } else {
-                playButton.textContent = '🎮 ИГРАТЬ';
-                playButton.classList.remove('continue');
+            if (isVKReady) {
+                saveGameData();
             }
         }
 
-        // UI Updates
-        function updateAllUI() {
-            if (!AppState.gameState) return;
-            
-            const gs = AppState.gameState;
-            
-            // Header stats
-            document.getElementById('headerEnergy').textContent = `${gs.energy.current}/${gs.energy.max}`;
-            document.getElementById('headerCoins').textContent = gs.coins.toLocaleString();
-            document.getElementById('profileLevel').textContent = gs.level.current;
-            document.getElementById('playerLevelLarge').textContent = gs.level.current;
-            
-            // Player screen
-            document.getElementById('playerXpFill').style.width = gs.level.getProgress() + '%';
-            document.getElementById('playerXpText').textContent = 
-                `${gs.level.currentXP} / ${gs.level.getXPRequired(gs.level.current)} XP`;
-            document.getElementById('playerBestScore').textContent = gs.bestScore.toLocaleString();
-            document.getElementById('playerGamesPlayed').textContent = gs.stats.gamesPlayed;
-            document.getElementById('playerTotalLines').textContent = gs.stats.totalLinesCleared;
-            document.getElementById('playerMaxCombo').textContent = gs.stats.maxCombo;
-            
-            // Friends screen
-            document.getElementById('invitesSent').textContent = gs.referrals.invitesSent;
-            document.getElementById('friendsJoined').textContent = gs.referrals.friendsJoined;
-            
-            updatePlayButton();
+        function exitGame() {
+            closeOverlay('gameOverOverlay');
+            switchTab('player');
         }
 
         function updateGameUI() {
             if (!AppState.gameState) return;
             
-            const gs = AppState.gameState;
+            document.getElementById('gameScore').textContent = AppState.gameState.score.toLocaleString();
+            document.getElementById('gameLines').textContent = AppState.gameState.linesCleared;
+            document.getElementById('gameCombo').textContent = AppState.gameState.combo;
             
-            // Game stats
-            document.getElementById('gameScore').textContent = gs.score.toLocaleString();
-            document.getElementById('gameLines').textContent = gs.linesCleared;
-            
-            // Boosters
-            Object.keys(gs.boosters.inventory).forEach(type => {
-                const countElement = document.getElementById(`gameCount_${type}`);
-                const boosterElement = document.getElementById(`gameBooster_${type}`);
-                if (countElement) {
-                    countElement.textContent = gs.boosters.inventory[type];
-                    if (gs.boosters.inventory[type] === 0) {
-                        boosterElement.classList.add('disabled');
-                    } else {
-                        boosterElement.classList.remove('disabled');
-                    }
-                }
-            });
-            
-            // Combo
-            if (gs.combo > 1) {
-                document.getElementById('comboDisplay').classList.add('active');
-                document.getElementById('comboValue').textContent = Math.min(gs.combo, 10);
-            } else {
-                document.getElementById('comboDisplay').classList.remove('active');
-            }
+            document.getElementById('refreshCount').textContent = AppState.gameState.boosters.inventory.refresh;
+            document.getElementById('shapeChoiceCount').textContent = AppState.gameState.boosters.inventory.shape_choice;
+            document.getElementById('rowBlastCount').textContent = AppState.gameState.boosters.inventory.row_blast;
         }
 
-        // Simplified Game Class for new architecture
+        function updateAllUI() {
+            if (!AppState.gameState) return;
+            
+            document.getElementById('headerLevel').textContent = AppState.gameState.level.current;
+            document.getElementById('headerEnergy').textContent = 
+                `${AppState.gameState.energy.current}/${AppState.gameState.energy.max}`;
+            document.getElementById('headerCoins').textContent = AppState.gameState.coins.toLocaleString();
+            
+            document.getElementById('userLevel').textContent = AppState.gameState.level.current;
+            document.getElementById('bestScore').textContent = AppState.gameState.bestScore.toLocaleString();
+            document.getElementById('gamesPlayed').textContent = AppState.gameState.stats.gamesPlayed;
+            
+            document.getElementById('playerScore').textContent = `${AppState.gameState.bestScore.toLocaleString()} очков`;
+            
+            document.getElementById('invitesSent').textContent = AppState.gameState.referrals.invitesSent;
+            document.getElementById('friendsJoined').textContent = AppState.gameState.referrals.friendsJoined;
+            
+            updateGameUI();
+        }
+
+        // КЛАСС ИГРЫ
         class BlockBlastGame {
             constructor() {
-                this.gridSize = 8;
-                this.grid = [];
+                this.gridSize = 10;
                 this.score = 0;
                 this.bestScore = 0;
                 this.linesCleared = 0;
                 this.combo = 0;
-                this.currentShapes = [];
+                this.coins = 100;
                 this.isGameOver = false;
                 this.gameStarted = false;
-                this.draggedShape = null;
+                
+                this.grid = [];
+                this.currentShapes = [];
                 this.isDragging = false;
-
-                // Systems
+                this.draggedShape = null;
+                
+                this.colors = ['red', 'blue', 'green', 'purple', 'orange'];
+                
                 this.energy = this.initEnergySystem();
                 this.level = this.initLevelSystem();
                 this.boosters = this.initBoostersSystem();
+                this.stats = this.initStatsSystem();
                 this.referrals = this.initReferralSystem();
-                this.coins = 100;
-                this.stats = {
-                    gamesPlayed: 0,
-                    totalLinesCleared: 0,
-                    maxCombo: 0
-                };
-
-                this.colors = ['red', 'blue', 'green', 'purple', 'orange'];
+                
                 this.shapeTemplates = [
                     // Точки
                     { pattern: [[1]], name: 'dot' },
@@ -2321,8 +1348,6 @@
                 ];
 
                 this.init();
-                // Убрал звуковую систему для лучшей производительности
-                // this.soundSystem = new SoundSystem();
             }
 
             init() {
@@ -2473,6 +1498,15 @@
                 };
             }
 
+            initStatsSystem() {
+                return {
+                    gamesPlayed: 0,
+                    totalLinesCleared: 0,
+                    maxCombo: 0,
+                    totalScore: 0
+                };
+            }
+
             initReferralSystem() {
                 return {
                     invitesSent: 0,
@@ -2495,7 +1529,6 @@
                         this.invitesSent++;
                         this.dailyInvites++;
                         
-                        // Rewards for invitation
                         AppState.gameState.energy.add(1);
                         AppState.gameState.addCoins(5);
                         
@@ -2540,7 +1573,6 @@
 
                 this.renderShapes();
                 
-                // Check Game Over after generating new shapes
                 setTimeout(() => {
                     if (this.gameStarted && this.checkGameOver()) {
                         this.gameOver();
@@ -2579,6 +1611,9 @@
                     for (let col = 0; col < cols; col++) {
                         const block = document.createElement('div');
                         block.className = pattern[row][col] ? 'shape-block' : 'shape-block empty';
+                        if (pattern[row][col]) {
+                            block.classList.add(`color-${shape.color}`);
+                        }
                         shapeDiv.appendChild(block);
                     }
                 }
@@ -2602,7 +1637,6 @@
                 console.log('🎮 Новая игра начата');
             }
 
-            // ПОЛНОСТЬЮ ПЕРЕПИСАННАЯ ЛОГИКА ПЕРЕТАСКИВАНИЯ - БЕЗ СИЛУЭТА
             setupDragAndDrop() {
                 let touchIdentifier = null;
 
@@ -2638,7 +1672,6 @@
                     this.isDragging = true;
                     this.draggedShape = shape;
 
-                    // Делаем оригинальную фигуру полупрозрачной
                     shapeElement.classList.add('dragging');
 
                     const coords = getCoords(e);
@@ -2653,7 +1686,6 @@
                     const coords = getCoords(e);
                     if (!coords) return;
 
-                    // Обновляем превью без силуэта
                     this.showPlacementPreview(coords);
                 };
 
@@ -2701,7 +1733,6 @@
                 document.addEventListener('touchend', endDrag);
             }
 
-            // НОВАЯ ЛОГИКА ПРЕВЬЮ - ТЕНЬ ВЫШЕ КУРСОРА И ПО ЦЕНТРУ
             showPlacementPreview(coords) {
                 this.clearPreview();
 
@@ -2713,18 +1744,15 @@
 
                 const pattern = this.draggedShape.pattern;
                 
-                // НОВОЕ: Тень фигуры должна быть ВЫШЕ курсора (на 120 пикселей)
-                const shadowOffset = 120; // Увеличенное расстояние выше курсора
+                const shadowOffset = 120;
                 const shadowY = coords.y - shadowOffset;
                 
-                // Вычисляем позицию на сетке с учетом смещения тени
                 const relativeX = coords.x - gridRect.left - 8;
                 const relativeY = shadowY - gridRect.top - 8;
                 
                 const cursorGridCol = relativeX / cellSize;
                 const cursorGridRow = relativeY / cellSize;
 
-                // Вычисляем геометрический центр фигуры
                 let minRow = pattern.length, maxRow = -1;
                 let minCol = pattern[0].length, maxCol = -1;
                 
@@ -2742,11 +1770,9 @@
                 const shapeCenterRow = (minRow + maxRow) / 2;
                 const shapeCenterCol = (minCol + maxCol) / 2;
 
-                // УЛУЧШЕННЫЙ SNAPPING - фигура "прилипает" к ближайшей подходящей позиции
                 let bestGridCol = Math.round(cursorGridCol - shapeCenterCol);
                 let bestGridRow = Math.round(cursorGridRow - shapeCenterRow);
                 
-                // Ищем ближайшую валидную позицию в радиусе 1-2 клеток
                 const searchRadius = 1.5;
                 let bestDistance = Infinity;
                 let foundValidPosition = false;
@@ -2768,13 +1794,11 @@
                     }
                 }
 
-                // Показываем превью только если нашли валидную позицию
                 if (foundValidPosition) {
                     this.highlightCells(pattern, bestGridRow, bestGridCol, 'preview');
                 }
             }
 
-            // ОБНОВЛЕННАЯ ЛОГИКА РАЗМЕЩЕНИЯ С УЧЕТОМ SNAPPING
             tryPlaceShape(coords) {
                 if (!this.draggedShape) return false;
 
@@ -2784,8 +1808,7 @@
 
                 const pattern = this.draggedShape.pattern;
                 
-                // Тень выше курсора (как в превью)
-                const shadowOffset = 120; // Такой же как в превью
+                const shadowOffset = 120;
                 const shadowY = coords.y - shadowOffset;
                 
                 const relativeX = coords.x - gridRect.left - 8;
@@ -2794,7 +1817,6 @@
                 const cursorGridCol = relativeX / cellSize;
                 const cursorGridRow = relativeY / cellSize;
 
-                // Вычисляем центр фигуры
                 let minRow = pattern.length, maxRow = -1;
                 let minCol = pattern[0].length, maxCol = -1;
                 
@@ -2812,8 +1834,7 @@
                 const shapeCenterRow = (minRow + maxRow) / 2;
                 const shapeCenterCol = (minCol + maxCol) / 2;
 
-                // РАСШИРЕННЫЙ SNAPPING для размещения - больше прощения
-                const searchRadius = 2.0; // Увеличенный радиус поиска
+                const searchRadius = 2.0;
                 let bestDistance = Infinity;
                 let bestGridRow = -1;
                 let bestGridCol = -1;
@@ -2834,7 +1855,6 @@
                     }
                 }
 
-                // Размещаем фигуру если нашли подходящее место
                 if (bestGridRow >= 0 && bestGridCol >= 0) {
                     this.placeShape(this.draggedShape, bestGridRow, bestGridCol);
                     return true;
@@ -2861,11 +1881,8 @@
                 return true;
             }
 
-            // ОПТИМИЗИРОВАННОЕ размещение фигуры
             placeShape(shape, startRow, startCol) {
                 const gridElement = document.getElementById('gameGrid');
-                
-                // Кэшируем children для быстрого доступа
                 const cells = gridElement.children;
                 
                 for (let row = 0; row < shape.pattern.length; row++) {
@@ -2877,7 +1894,6 @@
 
                             const cellIndex = newRow * this.gridSize + newCol;
                             const cell = cells[cellIndex];
-                            // Прямое изменение className быстрее
                             cell.className = `cell filled color-${shape.color}`;
                         }
                     }
@@ -2886,18 +1902,16 @@
                 shape.used = true;
                 this.addScore(this.calculateShapeScore(shape.pattern));
 
-                // Упрощенная обратная связь
                 if (navigator.vibrate) {
-                    navigator.vibrate(30); // Сократил с 50 до 30
+                    navigator.vibrate(30);
                 }
 
-                // Оптимизированная задержка
                 setTimeout(() => {
                     const clearedLines = this.clearCompletedLines();
                     if (clearedLines > 0) {
                         this.handleLinesCleared(clearedLines);
                         if (navigator.vibrate && clearedLines >= 2) {
-                            navigator.vibrate([50, 25, 50]); // Сократил вибрацию
+                            navigator.vibrate([50, 25, 50]);
                         }
                     } else {
                         this.combo = 0;
@@ -2907,15 +1921,15 @@
                     if (this.allShapesUsed()) {
                         setTimeout(() => {
                             this.generateShapes();
-                        }, 200); // Сократил с 400 до 200
+                        }, 200);
                     } else {
                         setTimeout(() => {
                             if (this.checkGameOver()) {
                                 this.gameOver();
                             }
-                        }, 300); // Сократил с 600 до 300
+                        }, 300);
                     }
-                }, 50); // Сократил с 100 до 50
+                }, 50);
 
                 updateGameUI();
                 this.renderShapes();
@@ -2932,8 +1946,7 @@
                             if (newRow >= 0 && newRow < this.gridSize &&
                                 newCol >= 0 && newCol < this.gridSize) {
                                 const cellIndex = newRow * this.gridSize + newCol;
-                                const cell = gridElement.children[cellIndex];
-                                cell.classList.add(className);
+                                gridElement.children[cellIndex].classList.add(className);
                             }
                         }
                     }
@@ -2941,8 +1954,11 @@
             }
 
             clearPreview() {
-                const cells = document.getElementById('gameGrid').querySelectorAll('.cell');
-                cells.forEach(cell => cell.classList.remove('preview'));
+                const gridElement = document.getElementById('gameGrid');
+                const previewCells = gridElement.querySelectorAll('.cell.preview');
+                for (let i = 0; i < previewCells.length; i++) {
+                    previewCells[i].classList.remove('preview');
+                }
             }
 
             clearCompletedLines() {
@@ -2972,24 +1988,24 @@
                     
                     setTimeout(() => {
                         const gridElement = document.getElementById('gameGrid');
+                        const cells = gridElement.children;
+                        
                         linesToClear.forEach(line => {
                             if (line.type === 'row') {
                                 for (let col = 0; col < this.gridSize; col++) {
                                     this.grid[line.index][col] = null;
                                     const cellIndex = line.index * this.gridSize + col;
-                                    const cell = gridElement.children[cellIndex];
-                                    cell.className = 'cell';
+                                    cells[cellIndex].className = 'cell';
                                 }
                             } else {
                                 for (let row = 0; row < this.gridSize; row++) {
                                     this.grid[row][line.index] = null;
                                     const cellIndex = row * this.gridSize + line.index;
-                                    const cell = gridElement.children[cellIndex];
-                                    cell.className = 'cell';
+                                    cells[cellIndex].className = 'cell';
                                 }
                             }
                         });
-                    }, 800);
+                    }, 400);
                 }
 
                 return linesToClear.length;
@@ -2997,18 +2013,18 @@
 
             animateLineClear(lines) {
                 const gridElement = document.getElementById('gameGrid');
+                const cells = gridElement.children;
+                
                 lines.forEach(line => {
                     if (line.type === 'row') {
                         for (let col = 0; col < this.gridSize; col++) {
                             const cellIndex = line.index * this.gridSize + col;
-                            const cell = gridElement.children[cellIndex];
-                            cell.classList.add('clearing');
+                            cells[cellIndex].classList.add('clearing');
                         }
                     } else {
                         for (let row = 0; row < this.gridSize; row++) {
                             const cellIndex = row * this.gridSize + line.index;
-                            const cell = gridElement.children[cellIndex];
-                            cell.classList.add('clearing');
+                            cells[cellIndex].classList.add('clearing');
                         }
                     }
                 });
@@ -3024,19 +2040,19 @@
                 }
 
                 let multiplier = 1;
-                if (count >= 2) multiplier = 2;
-                if (count >= 3) multiplier = 4;
-                if (count >= 4) multiplier = 8;
+                if (count >= 2) multiplier = 3;
+                if (count >= 3) multiplier = 6;
+                if (count >= 4) multiplier = 12;
 
-                const comboBonus = Math.min(this.combo, 10);
-                const lineScore = count * 100 * multiplier * comboBonus;
+                const comboBonus = Math.min(this.combo, 15);
+                const lineScore = count * 200 * multiplier * comboBonus;
 
                 this.addScore(lineScore);
                 updateGameUI();
 
-                if (count >= 3) {
-                    this.addCoins(count * 10);
-                    showNotification(`💥 ${count} линий! +${count * 10} монет!`);
+                if (count >= 2) {
+                    this.addCoins(count * 15);
+                    showNotification(`💥 ${count} линий! +${count * 15} монет!`);
                 }
             }
 
@@ -3047,7 +2063,7 @@
                         if (cell) blockCount++;
                     }
                 }
-                return blockCount * 10;
+                return blockCount * 25;
             }
 
             addScore(points) {
@@ -3056,7 +2072,6 @@
                     this.bestScore = this.score;
                 }
                 
-                // Add XP
                 const xpGained = Math.floor(points * 0.1);
                 this.level.addXP(xpGained);
                 
@@ -3103,18 +2118,13 @@
                 this.isGameOver = true;
                 AppState.hasUnfinishedGame = false;
                 
-                // Убрал звуковой эффект для оптимизации
-                
-                // Calculate final XP
                 const finalXpGained = Math.floor(this.score * 0.05);
                 this.level.addXP(finalXpGained);
                 
-                // Save data
                 if (isVKReady) {
                     await saveGameData();
                 }
                 
-                // Show game over screen
                 document.getElementById('finalScore').textContent = this.score.toLocaleString();
                 document.getElementById('finalXP').textContent = `+${finalXpGained}`;
                 
@@ -3127,19 +2137,14 @@
             }
 
             handleLevelUp(oldLevel, newLevel) {
-                // Убрал звуковой эффект для оптимизации
-                
-                // Level rewards
                 const coinsReward = 50 * newLevel;
                 this.addCoins(coinsReward);
                 
-                // Every 5 levels
                 if (newLevel % 5 === 0) {
                     this.boosters.add('shape_choice', 1);
                     this.addCoins(200);
                 }
                 
-                // Every 10 levels
                 if (newLevel % 10 === 0) {
                     this.boosters.add('row_blast', 1);
                     this.energy.max += 1;
@@ -3185,7 +2190,7 @@
                         const cell = gridElement.children[cellIndex];
                         
                         if (this.grid[row][col] !== null) {
-                            cell.classList.add('filled', `color-${this.grid[row][col]}`);
+                            cell.className = `cell filled color-${this.grid[row][col]}`;
                         } else {
                             cell.className = 'cell';
                         }
@@ -3311,69 +2316,6 @@
             }
         }
 
-        // Sound System for better UX
-        class SoundSystem {
-            constructor() {
-                this.audioContext = null;
-                this.enabled = true;
-                this.masterVolume = 0.3;
-                this.init();
-            }
-
-            init() {
-                try {
-                    this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                } catch (error) {
-                    console.log('Web Audio API не поддерживается');
-                    this.enabled = false;
-                }
-            }
-
-            playTone(frequency, duration, type = 'sine', volume = 1) {
-                if (!this.enabled || !this.audioContext) return;
-
-                try {
-                    const oscillator = this.audioContext.createOscillator();
-                    const gainNode = this.audioContext.createGain();
-
-                    oscillator.connect(gainNode);
-                    gainNode.connect(this.audioContext.destination);
-
-                    oscillator.frequency.setValueAtTime(frequency, this.audioContext.currentTime);
-                    oscillator.type = type;
-
-                    gainNode.gain.setValueAtTime(0, this.audioContext.currentTime);
-                    gainNode.gain.linearRampToValueAtTime(this.masterVolume * volume, this.audioContext.currentTime + 0.01);
-                    gainNode.gain.exponentialRampToValueAtTime(0.001, this.audioContext.currentTime + duration);
-
-                    oscillator.start(this.audioContext.currentTime);
-                    oscillator.stop(this.audioContext.currentTime + duration);
-                } catch (error) {
-                    // Ignore audio errors
-                }
-            }
-
-            placePiece() {
-                this.playTone(440, 0.1, 'square', 0.3);
-            }
-
-            clearLine() {
-                this.playTone(660, 0.2, 'sawtooth', 0.5);
-                setTimeout(() => this.playTone(880, 0.1, 'sine', 0.3), 50);
-            }
-
-            gameOver() {
-                this.playTone(220, 0.3, 'triangle', 0.4);
-                setTimeout(() => this.playTone(165, 0.4, 'triangle', 0.4), 150);
-            }
-
-            levelUp() {
-                this.playTone(523, 0.15, 'sine', 0.5);
-                setTimeout(() => this.playTone(659, 0.15, 'sine', 0.5), 100);
-                setTimeout(() => this.playTone(784, 0.2, 'sine', 0.5), 200);
-            }
-        }
-
         function showNotification(message) {
             const notification = document.createElement('div');
             notification.className = 'notification';
@@ -3397,16 +2339,14 @@
             overlay.classList.remove('active');
         }
 
-        // Auto-save
         function startAutoSave() {
             setInterval(() => {
                 if (AppState.gameState && isVKReady) {
                     saveGameData();
                 }
-            }, 30000); // Save every 30 seconds
+            }, 30000);
         }
 
-        // Initialize app
         async function initializeApp() {
             try {
                 document.getElementById('loadingScreen').style.display = 'flex';
@@ -3432,14 +2372,12 @@
             }
         }
 
-        // Handle orientation change
         window.addEventListener('orientationchange', () => {
             setTimeout(() => {
                 if (AppState.gameState) updateAllUI();
             }, 300);
         });
 
-        // Handle page visibility for energy timer
         document.addEventListener('visibilitychange', () => {
             if (!document.hidden && AppState.gameState) {
                 AppState.gameState.energy.updateEnergy();
@@ -3447,10 +2385,9 @@
             }
         });
 
-        // Initialize app when DOM is loaded
         document.addEventListener('DOMContentLoaded', initializeApp);
 
-        console.log('🎮 Блок Взрыв! VK Mini App v2.0.0 - Готов к запуску! 🚀');
+        console.log('🎮 Блок Взрыв! VK Mini App v3.0.0 - Оптимизирован и готов! 🚀');
     </script>
 </body>
 </html>
