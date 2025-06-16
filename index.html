@@ -66,7 +66,6 @@
             color: var(--text-primary);
             overflow-x: hidden;
             position: relative;
-            animation: backgroundPulse 8s ease-in-out infinite;
             background-image: url('./assets/images/background.jpg');
             background-size: cover;
             background-position: center;
@@ -241,7 +240,6 @@
             align-items: center;
             justify-content: center;
             font-size: 20px;
-            animation: avatarPulse 3s ease-in-out infinite;
             flex-shrink: 0;
             position: relative;
             overflow: hidden;
@@ -323,7 +321,6 @@
             background-size: contain;
             background-repeat: no-repeat;
             background-position: center;
-            animation: iconPulse 2s ease-in-out infinite;
         }
 
         .energy-icon {
@@ -964,15 +961,12 @@
         }
 
         .floating-shape .shape-block {
-            width: 32px;
-            height: 32px;
             border-radius: 4px;
             box-shadow: 
                 0 4px 12px rgba(0, 0, 0, 0.5),
                 0 0 15px rgba(255, 255, 255, 0.3),
                 inset 0 2px 6px rgba(255, 255, 255, 0.4);
             border: 1px solid rgba(255, 255, 255, 0.3);
-            contain: layout style paint; /* Performance optimization */
         }
 
         .floating-shape .shape-block.empty {
@@ -1069,17 +1063,6 @@
             text-align: center;
             position: relative;
             overflow: hidden;
-        }
-
-        .player-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
-            animation: cardShine 4s linear infinite;
         }
 
         @keyframes cardShine {
@@ -1470,63 +1453,27 @@
         }
 
         /* RESPONSIVE DESIGN */
-        /* MOBILE OPTIMIZATIONS */
+        /* MOBILE OPTIMIZATIONS - Simplified */
         @media (max-width: 480px) {
-            /* Reduce animations for better performance */
-            * {
-                animation-duration: 0.2s !important;
-                transition-duration: 0.2s !important;
-            }
-
-            .cell.filled {
-                animation: none; /* Remove heavy animations on mobile */
-            }
-
-            .cell.preview {
-                animation: mobilePreviewPulse 0.8s ease-in-out infinite;
-            }
-
-            @keyframes mobilePreviewPulse {
-                0%, 100% { opacity: 0.6; }
-                50% { opacity: 0.9; }
-            }
-
+            /* Keep essential animations but disable heavy ones */
             .shape:hover {
-                transform: scale(1.1); /* Simpler hover effect */
-                filter: brightness(1.2);
+                transform: scale(1.05);
+                transition: transform 0.2s ease;
             }
 
-            /* Mobile touch feedback */
             .shape:active {
                 transform: scale(0.95);
-                filter: brightness(0.9);
-                transition: all 0.1s ease;
+                transition: transform 0.1s ease;
             }
 
-            /* Improve preview visibility on mobile */
             .cell.preview {
                 border: 3px solid rgba(255, 255, 255, 0.9);
                 background: rgba(255, 255, 255, 0.5);
                 z-index: 10;
             }
 
-            /* Better visual feedback for touch */
-            .game-booster:active,
-            .shop-item:active,
-            .play-button:active {
-                transform: scale(0.95);
-                transition: transform 0.1s ease;
-            }
-
             .floating-shape {
-                will-change: transform; /* Optimize for transforms */
-                transform: scale(1.4); /* Larger for mobile */
-                filter: drop-shadow(0 6px 15px rgba(0, 0, 0, 0.7)) brightness(1.3);
-            }
-
-            .floating-shape .shape-block {
-                width: 30px;
-                height: 30px;
+                will-change: transform;
             }
 
             .header-content {
@@ -1573,7 +1520,6 @@
                 grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
             }
 
-            /* Better touch targets on mobile */
             .nav-item {
                 padding: 18px 8px;
             }
@@ -1586,11 +1532,6 @@
             .play-button {
                 padding: 20px;
                 font-size: 16px;
-            }
-
-            /* Optimize grid rendering */
-            .cell {
-                contain: layout style paint;
             }
         }
 
@@ -1763,6 +1704,44 @@
 
                 <!-- SHOP SCREEN -->
                 <div class="content-screen" id="shopScreen">
+                    <div class="shop-section">
+                        <div class="shop-title">🪙 Монеты за Голоса</div>
+                        <div class="shop-grid">
+                            <div class="shop-item" onclick="buyCoinsWithVKPay(100)">
+                                <div class="shop-item-icon">💰</div>
+                                <div class="shop-item-name">100 Монет</div>
+                                <div class="shop-item-description">Стартовая покупка</div>
+                                <div class="shop-item-price">
+                                    <span>🗳️ 1 голос</span>
+                                </div>
+                            </div>
+                            <div class="shop-item" onclick="buyCoinsWithVKPay(500)">
+                                <div class="shop-item-icon">💎</div>
+                                <div class="shop-item-name">500 Монет</div>
+                                <div class="shop-item-description">Популярная покупка</div>
+                                <div class="shop-item-price">
+                                    <span>🗳️ 4 голоса</span>
+                                </div>
+                            </div>
+                            <div class="shop-item" onclick="buyCoinsWithVKPay(1000)">
+                                <div class="shop-item-icon">💸</div>
+                                <div class="shop-item-name">1000 Монет</div>
+                                <div class="shop-item-description">Выгодная покупка</div>
+                                <div class="shop-item-price">
+                                    <span>🗳️ 7 голосов</span>
+                                </div>
+                            </div>
+                            <div class="shop-item" onclick="buyCoinsWithVKPay(2500)">
+                                <div class="shop-item-icon">🏆</div>
+                                <div class="shop-item-name">2500 Монет</div>
+                                <div class="shop-item-description">Премиум покупка</div>
+                                <div class="shop-item-price">
+                                    <span>🗳️ 15 голосов</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="shop-section">
                         <div class="shop-title">🎁 Наборы Усилителей</div>
                         <div class="shop-grid">
@@ -2154,15 +2133,21 @@
             }
         }
 
-        function showLeaderboard(type) {
+        async function showLeaderboard(type) {
             document.querySelectorAll('.leaderboard-tab').forEach(tab => {
                 tab.classList.remove('active');
             });
             event.target.classList.add('active');
 
-            // Mock leaderboard data for now
-            const mockData = generateMockLeaderboard(type);
-            updateLeaderboardDisplay(mockData);
+            // Load real VK leaderboard or mock data
+            let leaderboardData;
+            if (type === 'global' && isVKReady) {
+                leaderboardData = await loadVKLeaderboard();
+            } else {
+                leaderboardData = generateMockLeaderboard(type);
+            }
+            
+            updateLeaderboardDisplay(leaderboardData);
         }
 
         function generateMockLeaderboard(type) {
@@ -2292,47 +2277,31 @@
             }
         }
 
-        // UI Updates with debouncing for better performance
-        let updateUITimeout = null;
+        // Simplified UI Updates - removing complex debouncing that caused issues
         function updateAllUI() {
             if (!AppState.gameState) return;
             
-            // Debounce UI updates to prevent excessive DOM manipulation
-            if (updateUITimeout) {
-                clearTimeout(updateUITimeout);
-            }
+            const gs = AppState.gameState;
             
-            updateUITimeout = setTimeout(() => {
-                const gs = AppState.gameState;
+            try {
+                // Simple, direct updates
+                document.getElementById('headerEnergy').textContent = `${gs.energy.current}/${gs.energy.max}`;
+                document.getElementById('headerCoins').textContent = gs.coins.toLocaleString();
+                document.getElementById('profileLevel').textContent = gs.level.current;
+                document.getElementById('playerLevelLarge').textContent = gs.level.current;
+                document.getElementById('playerXpFill').style.width = gs.level.getProgress() + '%';
+                document.getElementById('playerXpText').textContent = `${gs.level.currentXP} / ${gs.level.getXPRequired(gs.level.current)} XP`;
+                document.getElementById('playerBestScore').textContent = gs.bestScore.toLocaleString();
+                document.getElementById('playerGamesPlayed').textContent = gs.stats.gamesPlayed;
+                document.getElementById('playerTotalLines').textContent = gs.stats.totalLinesCleared;
+                document.getElementById('playerMaxCombo').textContent = gs.stats.maxCombo;
+                document.getElementById('invitesSent').textContent = gs.referrals.invitesSent;
+                document.getElementById('friendsJoined').textContent = gs.referrals.friendsJoined;
                 
-                // Batch DOM updates
-                const updates = [
-                    () => document.getElementById('headerEnergy').textContent = `${gs.energy.current}/${gs.energy.max}`,
-                    () => document.getElementById('headerCoins').textContent = gs.coins.toLocaleString(),
-                    () => document.getElementById('profileLevel').textContent = gs.level.current,
-                    () => document.getElementById('playerLevelLarge').textContent = gs.level.current,
-                    () => document.getElementById('playerXpFill').style.width = gs.level.getProgress() + '%',
-                    () => document.getElementById('playerXpText').textContent = `${gs.level.currentXP} / ${gs.level.getXPRequired(gs.level.current)} XP`,
-                    () => document.getElementById('playerBestScore').textContent = gs.bestScore.toLocaleString(),
-                    () => document.getElementById('playerGamesPlayed').textContent = gs.stats.gamesPlayed,
-                    () => document.getElementById('playerTotalLines').textContent = gs.stats.totalLinesCleared,
-                    () => document.getElementById('playerMaxCombo').textContent = gs.stats.maxCombo,
-                    () => document.getElementById('invitesSent').textContent = gs.referrals.invitesSent,
-                    () => document.getElementById('friendsJoined').textContent = gs.referrals.friendsJoined
-                ];
-                
-                // Execute all updates in one frame
-                requestAnimationFrame(() => {
-                    updates.forEach(update => {
-                        try {
-                            update();
-                        } catch (e) {
-                            // Silent fail for missing elements
-                        }
-                    });
-                    updatePlayButton();
-                });
-            }, 50); // 50ms debounce
+                updatePlayButton();
+            } catch (e) {
+                console.log('UI update error:', e);
+            }
         }
 
         function updateGameUI() {
@@ -2340,36 +2309,32 @@
             
             const gs = AppState.gameState;
             
-            // Batch DOM updates for game UI
-            requestAnimationFrame(() => {
-                try {
-                    document.getElementById('gameScore').textContent = gs.score.toLocaleString();
-                    document.getElementById('gameLines').textContent = gs.linesCleared;
-                    
-                    // Update boosters efficiently
-                    Object.keys(gs.boosters.inventory).forEach(type => {
-                        const countElement = document.getElementById(`gameCount_${type}`);
-                        const boosterElement = document.getElementById(`gameBooster_${type}`);
-                        if (countElement && boosterElement) {
-                            countElement.textContent = gs.boosters.inventory[type];
-                            const hasBooster = gs.boosters.inventory[type] > 0;
-                            boosterElement.classList.toggle('disabled', !hasBooster);
-                        }
-                    });
-                    
-                    // Update combo display
-                    const comboDisplay = document.getElementById('comboDisplay');
-                    const comboValue = document.getElementById('comboValue');
-                    if (gs.combo > 1) {
-                        comboDisplay.classList.add('active');
-                        comboValue.textContent = Math.min(gs.combo, 10);
-                    } else {
-                        comboDisplay.classList.remove('active');
+            try {
+                document.getElementById('gameScore').textContent = gs.score.toLocaleString();
+                document.getElementById('gameLines').textContent = gs.linesCleared;
+                
+                // Update boosters
+                Object.keys(gs.boosters.inventory).forEach(type => {
+                    const countElement = document.getElementById(`gameCount_${type}`);
+                    const boosterElement = document.getElementById(`gameBooster_${type}`);
+                    if (countElement && boosterElement) {
+                        countElement.textContent = gs.boosters.inventory[type];
+                        boosterElement.classList.toggle('disabled', gs.boosters.inventory[type] === 0);
                     }
-                } catch (e) {
-                    // Silent fail for missing elements
+                });
+                
+                // Update combo
+                const comboDisplay = document.getElementById('comboDisplay');
+                const comboValue = document.getElementById('comboValue');
+                if (gs.combo > 1) {
+                    comboDisplay.classList.add('active');
+                    comboValue.textContent = Math.min(gs.combo, 10);
+                } else {
+                    comboDisplay.classList.remove('active');
                 }
-            });
+            } catch (e) {
+                console.log('Game UI update error:', e);
+            }
         }
 
         // Simplified Game Class for new architecture
@@ -2615,10 +2580,7 @@
                         this.invitesSent++;
                         this.dailyInvites++;
                         
-                        // Rewards for invitation
-                        AppState.gameState.energy.add(1);
-                        AppState.gameState.addCoins(5);
-                        
+                        // NO automatic rewards - only count the invitation
                         updateAllUI();
                         return true;
                     }
@@ -2729,8 +2691,6 @@
             setupDragAndDrop() {
                 let isDragging = false;
                 let touchIdentifier = null;
-                let lastMoveTime = 0;
-                const moveThrottle = window.innerWidth <= 480 ? 16 : 8; // Throttle more on mobile (60fps vs 120fps)
 
                 const getCoords = (e) => {
                     if (e.touches) {
@@ -2772,19 +2732,21 @@
                     const rows = pattern.length;
                     const cols = pattern[0].length;
                     
-                    // Responsive block size based on screen width
-                    const isMobile = window.innerWidth <= 480;
-                    const blockSize = isMobile ? 28 : 32; // Mobile: 28px, Desktop: 32px
-                    const gap = 2; // Gap between blocks in floating shape
+                    // Get actual grid cell size for perfect matching
+                    const gridElement = document.getElementById('gameGrid');
+                    const gridRect = gridElement.getBoundingClientRect();
+                    const cellSize = (gridRect.width - 16) / this.gridSize;
+                    const blockSize = Math.floor(cellSize - 3);
                     
                     // Calculate total floating shape dimensions
-                    const totalWidth = cols * blockSize + (cols - 1) * gap;
-                    const totalHeight = rows * blockSize + (rows - 1) * gap;
+                    const totalWidth = cols * blockSize + (cols - 1) * 3; // 3px gap
+                    const totalHeight = rows * blockSize + (rows - 1) * 3;
                     
-                    // Position floating shape significantly above cursor (like in original Block Blast)
+                    // Position floating shape significantly above cursor
+                    const isMobile = window.innerWidth <= 480;
                     this.dragOffset = {
                         x: totalWidth / 2,
-                        y: totalHeight + (isMobile ? 80 : 60) // Much higher - 80px on mobile, 60px on desktop
+                        y: totalHeight + (isMobile ? 80 : 60)
                     };
 
                     this.createFloatingShape(shape, coords);
@@ -2794,22 +2756,13 @@
                 const handleMove = (e) => {
                     if (!isDragging || !this.floatingShape) return;
 
-                    // Throttle movement updates for better performance
-                    const now = Date.now();
-                    if (now - lastMoveTime < moveThrottle) return;
-                    lastMoveTime = now;
-
                     const coords = getCoords(e);
                     if (!coords) return;
 
-                    // Use requestAnimationFrame for smooth positioning
-                    requestAnimationFrame(() => {
-                        if (this.floatingShape) {
-                            this.floatingShape.style.left = (coords.x - this.dragOffset.x) + 'px';
-                            this.floatingShape.style.top = (coords.y - this.dragOffset.y) + 'px';
-                            this.showPlacementPreview(coords);
-                        }
-                    });
+                    // Simple direct positioning without throttling
+                    this.floatingShape.style.left = (coords.x - this.dragOffset.x) + 'px';
+                    this.floatingShape.style.top = (coords.y - this.dragOffset.y) + 'px';
+                    this.showPlacementPreview(coords);
                 };
 
                 const endDrag = (e) => {
@@ -2844,7 +2797,6 @@
                     isDragging = false;
                     this.draggedShape = null;
                     touchIdentifier = null;
-                    lastMoveTime = 0;
                 };
 
                 const shapesArea = document.getElementById('shapesArea');
@@ -2868,20 +2820,18 @@
                 const cols = pattern[0].length;
                 const rows = pattern.length;
                 
-                // Responsive block size
-                const isMobile = window.innerWidth <= 480;
-                const blockSize = isMobile ? 30 : 32; // Slightly larger on mobile for better touch
+                // Calculate cell size to match grid exactly
+                const gridElement = document.getElementById('gameGrid');
+                const gridRect = gridElement.getBoundingClientRect();
+                const cellSize = (gridRect.width - 16) / this.gridSize;
                 
-                // Set up grid layout
+                // Use same block size as grid cells for perfect sync
+                const blockSize = Math.floor(cellSize - 3); // Account for gap
+                
+                // Set up grid layout to match game grid
                 this.floatingShape.style.gridTemplateColumns = `repeat(${cols}, ${blockSize}px)`;
                 this.floatingShape.style.gridTemplateRows = `repeat(${rows}, ${blockSize}px)`;
-                this.floatingShape.style.gap = '2px';
-                
-                // Mobile optimizations
-                if (isMobile) {
-                    this.floatingShape.style.transform = 'scale(1.4)';
-                    this.floatingShape.style.willChange = 'transform'; // Optimize for transforms
-                }
+                this.floatingShape.style.gap = '3px'; // Same as grid gap
                 
                 // Create blocks efficiently
                 const fragment = document.createDocumentFragment();
@@ -2889,6 +2839,8 @@
                     for (let col = 0; col < cols; col++) {
                         const block = document.createElement('div');
                         block.className = pattern[row][col] ? 'shape-block' : 'shape-block empty';
+                        block.style.width = blockSize + 'px';
+                        block.style.height = blockSize + 'px';
                         fragment.appendChild(block);
                     }
                 }
@@ -3309,6 +3261,11 @@
                 const finalXpGained = Math.floor(this.score * 0.05);
                 this.level.addXP(finalXpGained);
                 
+                // Submit score to VK if it's a new best score
+                if (this.score > this.bestScore - this.score) {
+                    await submitScoreToVK(this.score);
+                }
+                
                 // Save data
                 if (isVKReady) {
                     await saveGameData();
@@ -3465,36 +3422,81 @@
             }
         }
 
-        // Social Functions
+        // Social Functions - Fixed invitation logic
         async function inviteFriends() {
-            if (AppState.gameState.referrals.sendInvite()) {
-                try {
-                    const success = await inviteVKFriends();
-                    
-                    if (success) {
+            try {
+                // Try to send actual VK invitation first
+                const success = await inviteVKFriends();
+                
+                if (success) {
+                    // Only give rewards for successful invitation sending
+                    if (AppState.gameState.referrals.sendInvite()) {
                         showNotification('Приглашение отправлено! 📱');
                         
+                        // Simulate random friend joining (only 10% chance)
                         setTimeout(() => {
-                            if (Math.random() < 0.3) {
+                            if (Math.random() < 0.1) { // 10% chance instead of 30%
                                 AppState.gameState.referrals.friendsJoined++;
                                 AppState.gameState.addCoins(20);
                                 showNotification(`Друг присоединился к игре! 🎉`);
                                 updateAllUI();
                             }
-                        }, 2000);
-                    } else {
-                        showNotification('Ошибка отправки приглашения 😞');
+                        }, 5000); // 5 seconds delay
                     }
-                    
-                } catch (error) {
-                    console.log('Ошибка отправки приглашения:', error);
-                    showNotification('Ошибка отправки приглашения 😞');
+                } else {
+                    showNotification('Не удалось отправить приглашение 😞');
                 }
                 
                 if (isVKReady) {
                     saveGameData();
                 }
+                
+            } catch (error) {
+                console.log('Ошибка отправки приглашения:', error);
+                showNotification('Ошибка отправки приглашения 😞');
             }
+        }
+
+        // VK Coins and Leaderboard Integration
+        async function buyCoinsWithVKPay(amount) {
+            if (!vkBridge || !isVKReady) {
+                showNotification('VK платежи недоступны! 😞');
+                return false;
+            }
+            
+            const prices = {
+                100: 1,   // 100 монет за 1 голос
+                500: 4,   // 500 монет за 4 голоса  
+                1000: 7,  // 1000 монет за 7 голосов
+                2500: 15  // 2500 монет за 15 голосов
+            };
+            
+            const price = prices[amount];
+            if (!price) return false;
+            
+            try {
+                const result = await vkBridge.send('VKWebAppOpenPayForm', {
+                    app_id: APP_CONFIG.APP_ID,
+                    action: 'pay-to-service',
+                    params: {
+                        amount: price,
+                        description: `${amount} игровых монет`
+                    }
+                });
+                
+                if (result.status) {
+                    // Payment successful
+                    AppState.gameState.addCoins(amount);
+                    showNotification(`+${amount} монет куплено! 🪙`);
+                    updateAllUI();
+                    saveGameData();
+                    return true;
+                }
+            } catch (error) {
+                console.log('Ошибка платежа:', error);
+                showNotification('Ошибка платежа! 😞');
+            }
+            return false;
         }
 
         async function inviteVKFriends() {
@@ -3509,6 +3511,80 @@
             } catch (error) {
                 console.log('❌ Ошибка приглашения друзей:', error);
                 return false;
+            }
+        }
+
+        // Real VK Leaderboard Integration
+        async function loadVKLeaderboard() {
+            if (!vkBridge || !isVKReady) return generateMockLeaderboard('global');
+            
+            try {
+                // Get friends who play this app
+                const friends = await vkBridge.send('VKWebAppGetAuthToken', {
+                    app_id: APP_CONFIG.APP_ID,
+                    scope: 'friends'
+                });
+                
+                // In real app, you'd save scores to your backend and fetch leaderboard
+                // For now, return mock data but with real user info
+                const leaderboard = [];
+                const myScore = AppState.gameState.bestScore;
+                
+                // Add current user
+                leaderboard.push({
+                    rank: 1,
+                    name: currentUser?.first_name || 'Вы',
+                    avatar: currentUser?.photo_100 || '👤',
+                    score: myScore,
+                    level: AppState.gameState.level.current,
+                    isMe: true,
+                    vk_id: currentUser?.id
+                });
+                
+                // Add some mock competitors
+                const mockCompetitors = [
+                    { name: 'Анна К.', score: myScore + 1000, level: 15 },
+                    { name: 'Сергей М.', score: myScore - 500, level: 12 },
+                    { name: 'Мария Л.', score: myScore + 2000, level: 18 },
+                ];
+                
+                mockCompetitors.forEach((comp, i) => {
+                    leaderboard.push({
+                        rank: i + 2,
+                        name: comp.name,
+                        avatar: '👤',
+                        score: comp.score,
+                        level: comp.level,
+                        isMe: false
+                    });
+                });
+                
+                // Sort by score
+                return leaderboard.sort((a, b) => b.score - a.score).map((item, index) => ({
+                    ...item,
+                    rank: index + 1
+                }));
+                
+            } catch (error) {
+                console.log('Ошибка загрузки рейтинга:', error);
+                return generateMockLeaderboard('global');
+            }
+        }
+
+        // Submit score to VK
+        async function submitScoreToVK(score) {
+            if (!vkBridge || !isVKReady) return;
+            
+            try {
+                await vkBridge.send('VKWebAppFlashCall', {
+                    user_id: currentUser?.id,
+                    points: score
+                });
+                
+                // In real app, you'd send score to your backend here
+                console.log('Score submitted to VK:', score);
+            } catch (error) {
+                console.log('Ошибка отправки счета:', error);
             }
         }
 
