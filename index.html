@@ -34,6 +34,8 @@
             -webkit-user-select: none;
         }
 
+        // Utility Functions
+
         @import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@400;700;900&display=swap');
 
         /* CSS Variables for easy theming */
@@ -688,8 +690,8 @@
             grid-template-columns: repeat(8, 1fr);
             grid-template-rows: repeat(8, 1fr);
             gap: 3px;
-            width: 320px;
-            height: 320px;
+            width: 340px;
+            height: 340px;
             background: rgba(0, 0, 0, 0.3);
             border-radius: 8px;
             padding: 8px;
@@ -874,8 +876,14 @@
         }
 
         .shape:hover {
-            transform: scale(1.08) rotate(2deg);
-            filter: brightness(1.2) drop-shadow(0 5px 15px rgba(0, 0, 0, 0.5));
+            transform: scale(1.15) rotate(2deg);
+            filter: brightness(1.3) drop-shadow(0 8px 20px rgba(0, 0, 0, 0.6));
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .shape:active {
+            transform: scale(1.05) rotate(-1deg);
+            filter: brightness(1.1) drop-shadow(0 4px 12px rgba(0, 0, 0, 0.5));
         }
 
         .shape.dragging {
@@ -948,14 +956,19 @@
             position: fixed;
             pointer-events: none;
             z-index: 2000;
-            transform: scale(1.2);
+            transform: scale(1.8);
             opacity: 0.95;
-            filter: drop-shadow(0 10px 25px rgba(0, 0, 0, 0.6)) brightness(1.2);
+            filter: drop-shadow(0 15px 35px rgba(0, 0, 0, 0.8)) brightness(1.3);
+            transition: none;
         }
 
         .floating-shape .shape-block {
-            width: 22px;
-            height: 22px;
+            width: 24px;
+            height: 24px;
+            box-shadow: 
+                0 8px 20px rgba(0, 0, 0, 0.6),
+                0 0 25px rgba(255, 255, 255, 0.4),
+                inset 0 3px 8px rgba(255, 255, 255, 0.6);
         }
 
         /* COMBO DISPLAY */
@@ -1435,8 +1448,8 @@
             }
 
             .grid {
-                width: 300px;
-                height: 300px;
+                width: 320px;
+                height: 320px;
             }
 
             .shape-slot {
@@ -1447,6 +1460,10 @@
             .shape-block {
                 width: 16px;
                 height: 16px;
+            }
+
+            .floating-shape {
+                transform: scale(2.0); /* Larger on mobile for better visibility */
             }
 
             .floating-shape .shape-block {
@@ -1460,6 +1477,21 @@
 
             .achievements-grid {
                 grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            }
+
+            /* Better touch targets on mobile */
+            .nav-item {
+                padding: 18px 8px;
+            }
+
+            .game-booster {
+                min-width: 70px;
+                padding: 12px;
+            }
+
+            .play-button {
+                padding: 20px;
+                font-size: 16px;
             }
         }
 
@@ -1484,8 +1516,12 @@
             }
 
             .grid {
-                width: 280px;
-                height: 280px;
+                width: 310px;
+                height: 310px;
+            }
+
+            .floating-shape {
+                transform: scale(1.6); /* Smaller on short screens */
             }
         }
 
@@ -2247,21 +2283,75 @@
 
                 this.colors = ['red', 'blue', 'green', 'purple', 'orange'];
                 this.shapeTemplates = [
+                    // Dots and lines
                     { pattern: [[1]], name: 'dot' },
                     { pattern: [[1, 1]], name: 'line2h' },
                     { pattern: [[1, 1, 1]], name: 'line3h' },
                     { pattern: [[1, 1, 1, 1]], name: 'line4h' },
+                    { pattern: [[1, 1, 1, 1, 1]], name: 'line5h' },
                     { pattern: [[1], [1]], name: 'line2v' },
                     { pattern: [[1], [1], [1]], name: 'line3v' },
+                    { pattern: [[1], [1], [1], [1]], name: 'line4v' },
+                    { pattern: [[1], [1], [1], [1], [1]], name: 'line5v' },
+                    
+                    // Squares
                     { pattern: [[1, 1], [1, 1]], name: 'square2' },
                     { pattern: [[1, 1, 1], [1, 1, 1], [1, 1, 1]], name: 'square3' },
+                    
+                    // L-shapes (all rotations)
                     { pattern: [[1, 1, 1], [1, 0, 0]], name: 'L1' },
                     { pattern: [[1, 1, 1], [0, 0, 1]], name: 'L2' },
+                    { pattern: [[1, 0, 0], [1, 1, 1]], name: 'L3' },
+                    { pattern: [[0, 0, 1], [1, 1, 1]], name: 'L4' },
+                    { pattern: [[1, 1], [1, 0], [1, 0]], name: 'L5' },
+                    { pattern: [[1, 1], [0, 1], [0, 1]], name: 'L6' },
+                    { pattern: [[0, 1], [0, 1], [1, 1]], name: 'L7' },
+                    { pattern: [[1, 0], [1, 0], [1, 1]], name: 'L8' },
+                    
+                    // Big L-shapes
+                    { pattern: [[1, 1, 1, 1], [1, 0, 0, 0]], name: 'bigL1' },
+                    { pattern: [[1, 1, 1, 1], [0, 0, 0, 1]], name: 'bigL2' },
+                    { pattern: [[1, 0, 0, 0], [1, 1, 1, 1]], name: 'bigL3' },
+                    { pattern: [[0, 0, 0, 1], [1, 1, 1, 1]], name: 'bigL4' },
+                    
+                    // T-shapes (all rotations)
+                    { pattern: [[1, 1, 1], [0, 1, 0]], name: 'T1' },
+                    { pattern: [[0, 1, 0], [1, 1, 1]], name: 'T2' },
+                    { pattern: [[1, 0], [1, 1], [1, 0]], name: 'T3' },
+                    { pattern: [[0, 1], [1, 1], [0, 1]], name: 'T4' },
+                    
+                    // Z-shapes (both directions)
                     { pattern: [[1, 1, 0], [0, 1, 1]], name: 'Z1' },
-                    { pattern: [[1, 1, 1], [0, 1, 0]], name: 'T1' }
+                    { pattern: [[0, 1, 1], [1, 1, 0]], name: 'Z2' },
+                    { pattern: [[1, 0], [1, 1], [0, 1]], name: 'Z3' },
+                    { pattern: [[0, 1], [1, 1], [1, 0]], name: 'Z4' },
+                    
+                    // Plus/Cross shapes
+                    { pattern: [[0, 1, 0], [1, 1, 1], [0, 1, 0]], name: 'plus' },
+                    
+                    // Corner shapes
+                    { pattern: [[1, 1], [1, 0]], name: 'corner1' },
+                    { pattern: [[1, 1], [0, 1]], name: 'corner2' },
+                    { pattern: [[1, 0], [1, 1]], name: 'corner3' },
+                    { pattern: [[0, 1], [1, 1]], name: 'corner4' },
+                    
+                    // S-shapes
+                    { pattern: [[1, 1, 1], [1, 0, 1]], name: 'S1' },
+                    { pattern: [[1, 0, 1], [1, 1, 1]], name: 'S2' },
+                    
+                    // V-shapes
+                    { pattern: [[1, 0, 1], [1, 1, 1]], name: 'V1' },
+                    { pattern: [[1, 1, 1], [1, 0, 1]], name: 'V2' },
+                    
+                    // Small complex shapes
+                    { pattern: [[1, 1, 0], [1, 1, 1]], name: 'boot1' },
+                    { pattern: [[0, 1, 1], [1, 1, 1]], name: 'boot2' },
+                    { pattern: [[1, 1, 1], [1, 1, 0]], name: 'boot3' },
+                    { pattern: [[1, 1, 1], [0, 1, 1]], name: 'boot4' }
                 ];
 
                 this.init();
+                this.soundSystem = new SoundSystem();
             }
 
             init() {
@@ -2557,6 +2647,30 @@
                     return { x: e.clientX, y: e.clientY };
                 };
 
+                // Calculate geometric center of shape pattern
+                const getShapeCenter = (pattern) => {
+                    let minRow = pattern.length, maxRow = -1;
+                    let minCol = pattern[0].length, maxCol = -1;
+                    
+                    for (let row = 0; row < pattern.length; row++) {
+                        for (let col = 0; col < pattern[row].length; col++) {
+                            if (pattern[row][col]) {
+                                minRow = Math.min(minRow, row);
+                                maxRow = Math.max(maxRow, row);
+                                minCol = Math.min(minCol, col);
+                                maxCol = Math.max(maxCol, col);
+                            }
+                        }
+                    }
+                    
+                    return {
+                        centerRow: (minRow + maxRow) / 2,
+                        centerCol: (minCol + maxCol) / 2,
+                        width: maxCol - minCol + 1,
+                        height: maxRow - minRow + 1
+                    };
+                };
+
                 const startDrag = (e) => {
                     if (this.isGameOver) return;
 
@@ -2580,10 +2694,13 @@
                     const coords = getCoords(e);
                     if (!coords) return;
 
-                    const shapeRect = shapeElement.getBoundingClientRect();
+                    // Calculate shape center for perfect positioning
+                    const shapeCenter = getShapeCenter(shape.pattern);
+                    const blockSize = 18; // Size of shape blocks
+                    
                     this.dragOffset = {
-                        x: shapeRect.width / 2,
-                        y: shapeRect.height / 2
+                        x: shapeCenter.centerCol * (blockSize + 1.5), // Account for gap
+                        y: shapeCenter.centerRow * (blockSize + 1.5)
                     };
 
                     this.createFloatingShape(shapeElement, coords);
@@ -2596,6 +2713,7 @@
                     const coords = getCoords(e);
                     if (!coords) return;
 
+                    // Center floating shape exactly under cursor/finger
                     this.floatingShape.style.left = (coords.x - this.dragOffset.x) + 'px';
                     this.floatingShape.style.top = (coords.y - this.dragOffset.y) + 'px';
 
@@ -2667,6 +2785,7 @@
                 }
             }
 
+            // FIXED: Completely rewritten preview logic for all shapes
             showPlacementPreview(coords) {
                 this.clearPreview();
 
@@ -2677,23 +2796,42 @@
                 const cellSize = (gridRect.width - 16) / this.gridSize;
 
                 const pattern = this.draggedShape.pattern;
-                const shapeWidth = pattern[0].length;
-                const shapeHeight = pattern.length;
-
+                
+                // Calculate grid position where cursor is pointing
                 const relativeX = coords.x - gridRect.left - 8;
                 const relativeY = coords.y - gridRect.top - 8;
+                
+                const cursorGridCol = Math.floor(relativeX / cellSize);
+                const cursorGridRow = Math.floor(relativeY / cellSize);
 
-                const centerOffsetX = (shapeWidth * cellSize) / 2;
-                const centerOffsetY = (shapeHeight * cellSize) / 2;
+                // Calculate shape's geometric center
+                let minRow = pattern.length, maxRow = -1;
+                let minCol = pattern[0].length, maxCol = -1;
+                
+                for (let row = 0; row < pattern.length; row++) {
+                    for (let col = 0; col < pattern[row].length; col++) {
+                        if (pattern[row][col]) {
+                            minRow = Math.min(minRow, row);
+                            maxRow = Math.max(maxRow, row);
+                            minCol = Math.min(minCol, col);
+                            maxCol = Math.max(maxCol, col);
+                        }
+                    }
+                }
+                
+                const shapeCenterRow = (minRow + maxRow) / 2;
+                const shapeCenterCol = (minCol + maxCol) / 2;
 
-                const gridCol = Math.floor((relativeX - centerOffsetX) / cellSize);
-                const gridRow = Math.floor((relativeY - centerOffsetY) / cellSize);
+                // Calculate top-left position of shape pattern
+                const gridCol = Math.round(cursorGridCol - shapeCenterCol);
+                const gridRow = Math.round(cursorGridRow - shapeCenterRow);
 
                 if (this.canPlaceShape(pattern, gridRow, gridCol)) {
                     this.highlightCells(pattern, gridRow, gridCol, 'preview');
                 }
             }
 
+            // FIXED: Updated placement logic to match preview
             tryPlaceShape(coords) {
                 if (!this.draggedShape) return false;
 
@@ -2702,17 +2840,35 @@
                 const cellSize = (gridRect.width - 16) / this.gridSize;
 
                 const pattern = this.draggedShape.pattern;
-                const shapeWidth = pattern[0].length;
-                const shapeHeight = pattern.length;
-
+                
+                // Calculate grid position where cursor is pointing
                 const relativeX = coords.x - gridRect.left - 8;
                 const relativeY = coords.y - gridRect.top - 8;
+                
+                const cursorGridCol = Math.floor(relativeX / cellSize);
+                const cursorGridRow = Math.floor(relativeY / cellSize);
 
-                const centerOffsetX = (shapeWidth * cellSize) / 2;
-                const centerOffsetY = (shapeHeight * cellSize) / 2;
+                // Calculate shape's geometric center (same logic as preview)
+                let minRow = pattern.length, maxRow = -1;
+                let minCol = pattern[0].length, maxCol = -1;
+                
+                for (let row = 0; row < pattern.length; row++) {
+                    for (let col = 0; col < pattern[row].length; col++) {
+                        if (pattern[row][col]) {
+                            minRow = Math.min(minRow, row);
+                            maxRow = Math.max(maxRow, row);
+                            minCol = Math.min(minCol, col);
+                            maxCol = Math.max(maxCol, col);
+                        }
+                    }
+                }
+                
+                const shapeCenterRow = (minRow + maxRow) / 2;
+                const shapeCenterCol = (minCol + maxCol) / 2;
 
-                const gridCol = Math.floor((relativeX - centerOffsetX) / cellSize);
-                const gridRow = Math.floor((relativeY - centerOffsetY) / cellSize);
+                // Calculate top-left position of shape pattern
+                const gridCol = Math.round(cursorGridCol - shapeCenterCol);
+                const gridRow = Math.round(cursorGridRow - shapeCenterRow);
 
                 if (this.canPlaceShape(pattern, gridRow, gridCol)) {
                     this.placeShape(this.draggedShape, gridRow, gridCol);
@@ -2758,10 +2914,21 @@
                 shape.used = true;
                 this.addScore(this.calculateShapeScore(shape.pattern));
 
+                // Sound and haptic feedback
+                this.soundSystem.placePiece();
+                if (navigator.vibrate) {
+                    navigator.vibrate(50);
+                }
+
                 setTimeout(() => {
                     const clearedLines = this.clearCompletedLines();
                     if (clearedLines > 0) {
                         this.handleLinesCleared(clearedLines);
+                        // Sound and stronger vibration for line clears
+                        this.soundSystem.clearLine();
+                        if (navigator.vibrate && clearedLines >= 2) {
+                            navigator.vibrate([100, 50, 100]);
+                        }
                     } else {
                         this.combo = 0;
                         updateGameUI();
@@ -2966,6 +3133,9 @@
                 this.isGameOver = true;
                 AppState.hasUnfinishedGame = false;
                 
+                // Sound effect
+                this.soundSystem.gameOver();
+                
                 // Calculate final XP
                 const finalXpGained = Math.floor(this.score * 0.05);
                 this.level.addXP(finalXpGained);
@@ -2988,6 +3158,9 @@
             }
 
             handleLevelUp(oldLevel, newLevel) {
+                // Sound effect
+                this.soundSystem.levelUp();
+                
                 // Level rewards
                 const coinsReward = 50 * newLevel;
                 this.addCoins(coinsReward);
@@ -3170,7 +3343,68 @@
             }
         }
 
-        // Utility Functions
+        // Sound System for better UX
+        class SoundSystem {
+            constructor() {
+                this.audioContext = null;
+                this.enabled = true;
+                this.masterVolume = 0.3;
+                this.init();
+            }
+
+            init() {
+                try {
+                    this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                } catch (error) {
+                    console.log('Web Audio API не поддерживается');
+                    this.enabled = false;
+                }
+            }
+
+            playTone(frequency, duration, type = 'sine', volume = 1) {
+                if (!this.enabled || !this.audioContext) return;
+
+                try {
+                    const oscillator = this.audioContext.createOscillator();
+                    const gainNode = this.audioContext.createGain();
+
+                    oscillator.connect(gainNode);
+                    gainNode.connect(this.audioContext.destination);
+
+                    oscillator.frequency.setValueAtTime(frequency, this.audioContext.currentTime);
+                    oscillator.type = type;
+
+                    gainNode.gain.setValueAtTime(0, this.audioContext.currentTime);
+                    gainNode.gain.linearRampToValueAtTime(this.masterVolume * volume, this.audioContext.currentTime + 0.01);
+                    gainNode.gain.exponentialRampToValueAtTime(0.001, this.audioContext.currentTime + duration);
+
+                    oscillator.start(this.audioContext.currentTime);
+                    oscillator.stop(this.audioContext.currentTime + duration);
+                } catch (error) {
+                    // Ignore audio errors
+                }
+            }
+
+            placePiece() {
+                this.playTone(440, 0.1, 'square', 0.3);
+            }
+
+            clearLine() {
+                this.playTone(660, 0.2, 'sawtooth', 0.5);
+                setTimeout(() => this.playTone(880, 0.1, 'sine', 0.3), 50);
+            }
+
+            gameOver() {
+                this.playTone(220, 0.3, 'triangle', 0.4);
+                setTimeout(() => this.playTone(165, 0.4, 'triangle', 0.4), 150);
+            }
+
+            levelUp() {
+                this.playTone(523, 0.15, 'sine', 0.5);
+                setTimeout(() => this.playTone(659, 0.15, 'sine', 0.5), 100);
+                setTimeout(() => this.playTone(784, 0.2, 'sine', 0.5), 200);
+            }
+        }
         function showNotification(message) {
             const notification = document.createElement('div');
             notification.className = 'notification';
