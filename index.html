@@ -44,7 +44,8 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 10px;
+            padding: 0;
+            margin: 0;
             color: white;
             overflow-x: hidden;
             position: relative;
@@ -54,28 +55,6 @@
         @keyframes backgroundPulse {
             0%, 100% { filter: brightness(1) hue-rotate(0deg); }
             50% { filter: brightness(1.1) hue-rotate(5deg); }
-        }
-
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: 
-                radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.4) 0%, transparent 60%),
-                radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.4) 0%, transparent 60%),
-                radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.3) 0%, transparent 60%),
-                radial-gradient(circle at 60% 80%, rgba(255, 215, 0, 0.2) 0%, transparent 50%);
-            pointer-events: none;
-            z-index: -1;
-            animation: auraBreathe 6s ease-in-out infinite;
-        }
-
-        @keyframes auraBreathe {
-            0%, 100% { opacity: 0.7; transform: scale(1); }
-            50% { opacity: 1; transform: scale(1.05); }
         }
 
         /* Loading Screen */
@@ -143,22 +122,21 @@
         }
 
         .game-container {
-            max-width: 420px;
+            max-width: 100%;
             width: 100%;
-            background: rgba(0, 0, 0, 0.15);
-            border-radius: 12px;
-            backdrop-filter: blur(30px);
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            height: 100vh;
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 35%, #24243e 70%, #1a1a2e 100%);
+            border-radius: 0;
+            backdrop-filter: none;
+            border: none;
             overflow: hidden;
-            box-shadow: 
-                0 30px 60px rgba(0, 0, 0, 0.5),
-                0 0 0 1px rgba(255, 255, 255, 0.05),
-                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            box-shadow: none;
             position: relative;
-            animation: containerFloat 4s ease-in-out infinite;
             opacity: 0;
-            transform: translateY(20px);
+            transform: translateY(0);
             transition: all 0.5s ease;
+            display: flex;
+            flex-direction: column;
         }
 
         .game-container.loaded {
@@ -205,7 +183,7 @@
 
         /* HEADER WITH STATS */
         .header {
-            padding: 18px;
+            padding: 10px 15px;
             text-align: center;
             background: linear-gradient(135deg, rgba(147, 51, 234, 0.25) 0%, rgba(79, 70, 229, 0.25) 100%);
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
@@ -231,9 +209,9 @@
         }
 
         .header h1 {
-            font-size: 26px;
+            font-size: 22px;
             font-weight: 900;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
             background: linear-gradient(45deg, #ff6b6b, #feca57, #48dbfb, #ff9ff3, #1dd1a1, #ff6b6b);
             background-size: 300% 100%;
             -webkit-background-clip: text;
@@ -295,7 +273,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
             gap: 8px;
         }
 
@@ -530,8 +508,10 @@
             background: rgba(0, 0, 0, 0.3);
             border-radius: 8px;
             padding: 3px;
-            margin: 12px 0;
+            margin: 0 0 15px 0;
             backdrop-filter: blur(10px);
+            position: relative;
+            z-index: 2;
         }
 
         .nav-tab {
@@ -587,11 +567,14 @@
         /* GAME CONTENT */
         .game-content {
             display: none;
-            padding: 16px;
+            padding: 10px;
+            flex: 1;
+            overflow-y: auto;
         }
 
         .game-content.active {
-            display: block;
+            display: flex;
+            flex-direction: column;
             animation: contentSlideIn 0.5s ease-out;
         }
 
@@ -644,12 +627,12 @@
             display: grid;
             grid-template-columns: repeat(8, 1fr);
             grid-template-rows: repeat(8, 1fr);
-            gap: 2px;
-            width: 300px;
-            height: 300px;
+            gap: 3px;
+            width: 360px;
+            height: 360px;
             background: rgba(0, 0, 0, 0.3);
             border-radius: 8px;
-            padding: 6px;
+            padding: 8px;
             position: relative;
         }
 
@@ -933,13 +916,13 @@
         /* SHAPES AREA */
         .shapes-area {
             width: 100%;
-            height: 110px;
+            height: 140px;
             display: flex;
             justify-content: space-around;
             align-items: center;
             background: rgba(0, 0, 0, 0.4);
             border-radius: 10px;
-            padding: 12px;
+            padding: 15px;
             position: relative;
             border: 1px solid rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(15px);
@@ -963,8 +946,8 @@
         }
 
         .shape-slot {
-            width: 75px;
-            height: 75px;
+            width: 90px;
+            height: 90px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -1032,8 +1015,8 @@
         }
 
         .shape-block {
-            width: 16px;
-            height: 16px;
+            width: 20px;
+            height: 20px;
             border-radius: 4px;
             box-shadow: 
                 0 3px 10px rgba(0, 0, 0, 0.4),
@@ -1110,8 +1093,8 @@
         }
 
         .floating-shape .shape-block {
-            width: 20px;
-            height: 20px;
+            width: 24px;
+            height: 24px;
             box-shadow: 
                 0 5px 15px rgba(0, 0, 0, 0.5),
                 0 0 20px rgba(255, 255, 255, 0.3),
@@ -1714,7 +1697,7 @@
 
         .combo-display {
             position: absolute;
-            top: 12px;
+            top: 55px;
             right: 12px;
             background: linear-gradient(135deg, #ff6b6b, #ee5a52);
             color: white;
@@ -1932,28 +1915,26 @@
             .game-container {
                 max-width: 100%;
                 border-radius: 0;
-                border-left: none;
-                border-right: none;
             }
 
             .grid {
-                width: 280px;
-                height: 280px;
+                width: 340px;
+                height: 340px;
             }
 
             .header h1 {
-                font-size: 22px;
+                font-size: 20px;
             }
 
             .top-stats {
-                flex-direction: column;
+                flex-direction: row;
                 gap: 6px;
             }
 
             .energy-container,
             .level-container,
             .coins-container {
-                width: 100%;
+                flex: 1;
             }
 
             .nav-tabs {
@@ -1966,18 +1947,18 @@
             }
 
             .shape-slot {
-                width: 65px;
-                height: 65px;
+                width: 80px;
+                height: 80px;
             }
 
             .shape-block {
-                width: 13px;
-                height: 13px;
+                width: 18px;
+                height: 18px;
             }
 
             .floating-shape .shape-block {
-                width: 16px;
-                height: 16px;
+                width: 22px;
+                height: 22px;
             }
 
             .shop-grid {
@@ -1987,21 +1968,26 @@
 
         @media (max-height: 700px) {
             .game-content {
-                padding: 12px;
+                padding: 8px;
             }
 
             .game-board {
-                gap: 16px;
+                gap: 12px;
             }
 
             .shapes-area {
-                height: 95px;
+                height: 120px;
                 padding: 10px;
             }
 
             .shape-slot {
-                width: 65px;
-                height: 65px;
+                width: 75px;
+                height: 75px;
+            }
+
+            .grid {
+                width: 320px;
+                height: 320px;
             }
         }
 
@@ -2035,6 +2021,14 @@
         
         <!-- HEADER WITH STATS -->
         <div class="header">
+            <!-- NAVIGATION TABS -->
+            <div class="nav-tabs">
+                <button class="nav-tab active" onclick="showTab('game')">🎮 Игра</button>
+                <button class="nav-tab" onclick="showTab('shop')">🛒 Магазин</button>
+                <button class="nav-tab" onclick="showTab('leaderboard')">🏆 Рейтинг</button>
+                <button class="nav-tab" onclick="showTab('referral')">👥 Друзья</button>
+            </div>
+
             <h1>⚡ БЛОК ВЗРЫВ! ⚡</h1>
             
             <!-- User Info -->
@@ -2069,6 +2063,21 @@
                 </div>
             </div>
 
+            <div class="combo-display" id="comboDisplay">
+                🔥 КОМБО ×<span id="comboValue">1</span>
+            </div>
+        </div>
+
+        <!-- NAVIGATION TABS -->
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="showTab('game')">🎮 Игра</button>
+            <button class="nav-tab" onclick="showTab('shop')">🛒 Магазин</button>
+            <button class="nav-tab" onclick="showTab('leaderboard')">🏆 Рейтинг</button>
+            <button class="nav-tab" onclick="showTab('referral')">👥 Друзья</button>
+        </div>
+
+        <!-- GAME CONTENT -->
+        <div class="game-content active" id="gameContent">
             <!-- Score container -->
             <div class="score-container">
                 <div class="score-item">
@@ -2085,21 +2094,6 @@
                 </div>
             </div>
 
-            <div class="combo-display" id="comboDisplay">
-                🔥 КОМБО ×<span id="comboValue">1</span>
-            </div>
-        </div>
-
-        <!-- NAVIGATION TABS -->
-        <div class="nav-tabs">
-            <button class="nav-tab active" onclick="showTab('game')">🎮 Игра</button>
-            <button class="nav-tab" onclick="showTab('shop')">🛒 Магазин</button>
-            <button class="nav-tab" onclick="showTab('leaderboard')">🏆 Рейтинг</button>
-            <button class="nav-tab" onclick="showTab('referral')">👥 Друзья</button>
-        </div>
-
-        <!-- GAME CONTENT -->
-        <div class="game-content active" id="gameContent">
             <!-- Boosters panel -->
             <div class="boosters-panel">
                 <div class="booster-item" onclick="useBooster('shape_choice')" id="booster_shape_choice">
@@ -2249,36 +2243,36 @@
                 <div class="shop-section">
                     <div class="shop-title">💎 Монеты за голоса VK</div>
                     <div class="shop-grid">
-                        <div class="shop-item vk-payment" onclick="buyCoinsVK(100, 5)">
+                        <div class="shop-item vk-payment" onclick="buyCoinsVK(100, 1)">
                             <div class="shop-item-icon">🪙</div>
                             <div class="shop-item-name">100 Монет</div>
                             <div class="shop-item-description">Стартовый набор</div>
                             <div class="shop-item-price vk-price">
-                                <span>💙 5 голосов</span>
+                                <span>💙 1 голос</span>
                             </div>
                         </div>
 
-                        <div class="shop-item vk-payment" onclick="buyCoinsVK(500, 20)">
+                        <div class="shop-item vk-payment" onclick="buyCoinsVK(500, 1)">
                             <div class="shop-item-icon">💰</div>
                             <div class="shop-item-name">500 Монет</div>
                             <div class="shop-item-description">Популярный выбор</div>
                             <div class="shop-item-price vk-price">
-                                <span>💙 20 голосов</span>
+                                <span>💙 1 голос</span>
                             </div>
                             <div class="shop-item-badge">🔥 ХИТ</div>
                         </div>
 
-                        <div class="shop-item vk-payment" onclick="buyCoinsVK(1000, 35)">
+                        <div class="shop-item vk-payment" onclick="buyCoinsVK(1000, 1)">
                             <div class="shop-item-icon">💎</div>
                             <div class="shop-item-name">1000 Монет</div>
                             <div class="shop-item-description">Выгодное предложение</div>
                             <div class="shop-item-price vk-price">
-                                <span>💙 35 голосов</span>
+                                <span>💙 1 голос</span>
                             </div>
                             <div class="shop-item-badge">💰 ВЫГОДНО</div>
                         </div>
 
-                        <div class="shop-item vk-payment premium" onclick="buyCoinsVK(2500, 80)">
+                        <div class="shop-item vk-payment premium" onclick="buyCoinsVK(2500, 1)">
                             <div class="shop-item-icon">👑</div>
                             <div class="shop-item-name">2500 Монет</div>
                             <div class="shop-item-description">Королевский пакет + БОНУС</div>
@@ -2288,7 +2282,7 @@
                                 <div class="bonus-item">🌟 Эксклюзивный усилитель</div>
                             </div>
                             <div class="shop-item-price vk-price">
-                                <span>💙 80 голосов</span>
+                                <span>💙 1 голос</span>
                             </div>
                             <div class="shop-item-badge premium-badge">👑 ПРЕМИУМ</div>
                         </div>
@@ -3179,8 +3173,8 @@
 
                     const shapeRect = shapeElement.getBoundingClientRect();
                     this.dragOffset = {
-                        x: coords.x - (shapeRect.left + shapeRect.width / 2),
-                        y: coords.y - (shapeRect.top + shapeRect.height / 2)
+                        x: shapeRect.width / 2,
+                        y: shapeRect.height / 2
                     };
 
                     this.createFloatingShape(shapeElement, coords);
@@ -4333,27 +4327,11 @@
             }
         }
 
-        // Initialize payments when VK is ready
+        // Check VK Pay availability and initialize
         async function initializePayments() {
             if (isVKReady) {
                 const payAvailable = await checkVKPayAvailability();
-                console.log('VK Pay доступен:', payAvailable);
-                
-                if (!payAvailable) {
-                    // Add notice to payment items
-                    const vkPaymentItems = document.querySelectorAll('.vk-payment');
-                    vkPaymentItems.forEach(item => {
-                        const notice = document.createElement('div');
-                        notice.style.cssText = `
-                            font-size: 8px;
-                            color: #ff9800;
-                            margin-top: 4px;
-                            text-align: center;
-                        `;
-                        notice.textContent = 'Тестовый режим';
-                        item.appendChild(notice);
-                    });
-                }
+                console.log('💳 VK Pay готов к использованию:', payAvailable);
             }
         }
 
