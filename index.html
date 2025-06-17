@@ -741,6 +741,7 @@
             padding: 8px;
             position: relative;
             border: 2px solid rgba(245, 222, 179, 0.3);
+            transition: transform 0.2s ease, box-shadow 0.3s ease;
         }
 
         .cell {
@@ -791,6 +792,113 @@
                 inset 0 2px 4px rgba(255, 255, 255, 0.5) !important;
             transform: scale(1.05) !important;
             z-index: 10 !important;
+        }
+
+        .cell.line-preview {
+            background: rgba(255, 69, 0, 0.8) !important;
+            border: 2px solid #FF4500 !important;
+            box-shadow: 
+                0 0 20px rgba(255, 69, 0, 1) !important,
+                inset 0 2px 4px rgba(255, 255, 255, 0.3) !important;
+            transform: scale(1.1) !important;
+            z-index: 15 !important;
+            animation: linePreviewPulse 0.6s ease-in-out infinite alternate;
+        }
+
+        @keyframes linePreviewPulse {
+            0% { 
+                box-shadow: 0 0 20px rgba(255, 69, 0, 0.8);
+                transform: scale(1.1);
+            }
+            100% { 
+                box-shadow: 0 0 30px rgba(255, 69, 0, 1);
+                transform: scale(1.15);
+            }
+        }
+
+        .cell.color-change {
+            animation: colorChange 0.5s ease-out;
+        }
+
+        @keyframes colorChange {
+            0% { 
+                transform: scale(1) rotate(0deg);
+                filter: hue-rotate(0deg) brightness(1);
+            }
+            25% {
+                transform: scale(1.2) rotate(5deg);
+                filter: hue-rotate(60deg) brightness(1.3);
+            }
+            50% {
+                transform: scale(1.1) rotate(-3deg);
+                filter: hue-rotate(120deg) brightness(1.5);
+            }
+            75% {
+                transform: scale(1.15) rotate(2deg);
+                filter: hue-rotate(180deg) brightness(1.2);
+            }
+            100% { 
+                transform: scale(1) rotate(0deg);
+                filter: hue-rotate(0deg) brightness(1);
+            }
+        }
+
+        /* Новые динамические эффекты */
+        .grid.dynamic-glow {
+            box-shadow: 
+                0 0 30px rgba(50, 205, 50, 0.6),
+                inset 0 0 20px rgba(255, 255, 255, 0.1);
+            animation: dynamicGlow 1s ease-in-out;
+        }
+
+        @keyframes dynamicGlow {
+            0%, 100% { 
+                box-shadow: 0 0 30px rgba(50, 205, 50, 0.6);
+            }
+            50% { 
+                box-shadow: 0 0 50px rgba(50, 205, 50, 0.9);
+            }
+        }
+
+        .shape.pulse-effect {
+            animation: shapePulse 0.8s ease-in-out;
+        }
+
+        @keyframes shapePulse {
+            0%, 100% { 
+                transform: scale(1);
+                filter: brightness(1);
+            }
+            50% { 
+                transform: scale(1.1);
+                filter: brightness(1.3);
+            }
+        }
+
+        .dynamic-sparkle {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: radial-gradient(circle, #FFD700, #FFA500);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 2000;
+            animation: sparkleFloat 1.5s ease-out forwards;
+        }
+
+        @keyframes sparkleFloat {
+            0% {
+                transform: scale(0) rotate(0deg);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.5) rotate(180deg);
+                opacity: 0.8;
+            }
+            100% {
+                transform: scale(0) rotate(360deg) translateY(-80px);
+                opacity: 0;
+            }
         }
 
         .cell.booster-preview-horizontal {
@@ -3031,41 +3139,47 @@
 
                 this.colors = ['red', 'blue', 'green', 'purple', 'orange'];
                 
-                // УПРОЩЕННЫЕ ФИГУРЫ - БОЛЕЕ ПРОСТЫЕ ДЛЯ ЛУЧШЕГО ИГРОВОГО ОПЫТА
+                // ПЕРЕРАБОТАННЫЕ ФИГУРЫ - БОЛЬШЕ СЛОЖНЫХ, МЕНЬШЕ ПРОСТЫХ ДЛЯ БЫСТРОЙ ИГРЫ
                 this.shapeTemplates = [
-                    // Точки (чаще)
-                    { pattern: [[1]], name: 'dot', weight: 8 },
+                    // Точки (сильно уменьшили вес)
+                    { pattern: [[1]], name: 'dot', weight: 1 },
                     
-                    // Горизонтальные линии (чаще простые)
-                    { pattern: [[1, 1]], name: 'line2h', weight: 6 },
-                    { pattern: [[1, 1, 1]], name: 'line3h', weight: 5 },
-                    { pattern: [[1, 1, 1, 1]], name: 'line4h', weight: 3 },
-                    { pattern: [[1, 1, 1, 1, 1]], name: 'line5h', weight: 1 },
+                    // Простые линии (уменьшили вес)
+                    { pattern: [[1, 1]], name: 'line2h', weight: 2 },
+                    { pattern: [[1], [1]], name: 'line2v', weight: 2 },
                     
-                    // Вертикальные линии (чаще простые)
-                    { pattern: [[1], [1]], name: 'line2v', weight: 6 },
-                    { pattern: [[1], [1], [1]], name: 'line3v', weight: 5 },
-                    { pattern: [[1], [1], [1], [1]], name: 'line4v', weight: 3 },
-                    { pattern: [[1], [1], [1], [1], [1]], name: 'line5v', weight: 1 },
+                    // Средние линии (увеличили вес)
+                    { pattern: [[1, 1, 1]], name: 'line3h', weight: 6 },
+                    { pattern: [[1], [1], [1]], name: 'line3v', weight: 6 },
+                    { pattern: [[1, 1, 1, 1]], name: 'line4h', weight: 5 },
+                    { pattern: [[1], [1], [1], [1]], name: 'line4v', weight: 5 },
                     
-                    // Квадраты (простые чаще)
-                    { pattern: [[1, 1], [1, 1]], name: 'square2', weight: 4 },
-                    { pattern: [[1, 1, 1], [1, 1, 1], [1, 1, 1]], name: 'square3', weight: 1 },
+                    // Длинные линии (увеличили вес)
+                    { pattern: [[1, 1, 1, 1, 1]], name: 'line5h', weight: 4 },
+                    { pattern: [[1], [1], [1], [1], [1]], name: 'line5v', weight: 4 },
                     
-                    // Простые углы
-                    { pattern: [[1, 1], [1, 0]], name: 'corner1', weight: 2 },
-                    { pattern: [[1, 1], [0, 1]], name: 'corner2', weight: 2 },
+                    // Квадраты (увеличили вес)
+                    { pattern: [[1, 1], [1, 1]], name: 'square2', weight: 7 },
+                    { pattern: [[1, 1, 1], [1, 1, 1], [1, 1, 1]], name: 'square3', weight: 5 },
                     
-                    // Простые L-формы
-                    { pattern: [[1, 1, 1], [1, 0, 0]], name: 'L_simple', weight: 1 },
-                    { pattern: [[1, 1, 1], [0, 0, 1]], name: 'L_simple2', weight: 1 },
+                    // L-формы (увеличили вес)
+                    { pattern: [[1, 1], [1, 0]], name: 'corner1', weight: 6 },
+                    { pattern: [[1, 1], [0, 1]], name: 'corner2', weight: 6 },
+                    { pattern: [[1, 1, 1], [1, 0, 0]], name: 'L_simple', weight: 5 },
+                    { pattern: [[1, 1, 1], [0, 0, 1]], name: 'L_simple2', weight: 5 },
                     
-                    // Сложные фигуры (появляются на высоких уровнях)
-                    { pattern: [[1, 0, 1], [1, 1, 1]], name: 'T_shape', weight: 0.5 },
-                    { pattern: [[0, 1, 0], [1, 1, 1], [0, 1, 0]], name: 'plus', weight: 0.3 },
-                    { pattern: [[1, 1, 0], [0, 1, 1]], name: 'zigzag1', weight: 0.5 },
-                    { pattern: [[0, 1, 1], [1, 1, 0]], name: 'zigzag2', weight: 0.5 },
-                    { pattern: [[1, 0, 0], [1, 1, 1], [0, 0, 1]], name: 'L_complex', weight: 0.2 }
+                    // Сложные фигуры (сильно увеличили вес)
+                    { pattern: [[1, 0, 1], [1, 1, 1]], name: 'T_shape', weight: 6 },
+                    { pattern: [[0, 1, 0], [1, 1, 1], [0, 1, 0]], name: 'plus', weight: 5 },
+                    { pattern: [[1, 1, 0], [0, 1, 1]], name: 'zigzag1', weight: 4 },
+                    { pattern: [[0, 1, 1], [1, 1, 0]], name: 'zigzag2', weight: 4 },
+                    { pattern: [[1, 0, 0], [1, 1, 1], [0, 0, 1]], name: 'L_complex', weight: 3 },
+                    
+                    // Новые большие фигуры для динамики
+                    { pattern: [[1, 1, 1, 1], [1, 0, 0, 0]], name: 'L_big1', weight: 4 },
+                    { pattern: [[1, 0, 0, 0], [1, 1, 1, 1]], name: 'L_big2', weight: 4 },
+                    { pattern: [[1, 1, 1], [1, 0, 0], [1, 0, 0]], name: 'L_thick', weight: 3 },
+                    { pattern: [[1, 1, 0], [1, 1, 0], [0, 1, 1]], name: 'step_shape', weight: 3 }
                 ];
 
                 this.init();
@@ -3876,32 +3990,29 @@
             }
 
             getWeightedRandomShape() {
-                // ПРОГРЕССИВНАЯ СЛОЖНОСТЬ - уменьшаем вес простых фигур с ростом очков
-                const difficultyLevel = Math.floor(this.score / 5000); // Каждые 5000 очков - новый уровень сложности
+                // НОВАЯ СИСТЕМА СЛОЖНОСТИ - БЫСТРАЯ ИГРА С УПОРОМ НА БОЛЬШИЕ ФИГУРЫ
+                const difficultyLevel = Math.floor(this.score / 2000); // Каждые 2000 очков
                 
                 const adjustedTemplates = this.shapeTemplates.map(template => {
                     let adjustedWeight = template.weight;
                     
-                    // Уменьшаем вес простых фигур с ростом сложности
+                    // Еще больше уменьшаем простые фигуры
                     if (template.name === 'dot') {
-                        adjustedWeight = Math.max(1, template.weight - difficultyLevel * 1.5);
+                        adjustedWeight = Math.max(0.1, template.weight - difficultyLevel * 0.8);
                     } else if (template.name.includes('line2')) {
-                        adjustedWeight = Math.max(1, template.weight - difficultyLevel);
-                    } else if (template.name.includes('square2')) {
-                        adjustedWeight = Math.max(1, template.weight - difficultyLevel * 0.5);
-                    } else if (template.name.includes('L_simple') || template.name.includes('corner')) {
-                        // Увеличиваем вес средне-сложных фигур
-                        adjustedWeight = template.weight + difficultyLevel * 0.5;
-                    } else if (template.name.includes('T_shape') || template.name.includes('zigzag')) {
-                        // Сложные фигуры появляются только на высоких уровнях
-                        adjustedWeight = Math.max(0, template.weight + difficultyLevel * 0.8 - 2);
-                    } else if (template.name.includes('plus') || template.name.includes('L_complex')) {
-                        // Очень сложные фигуры - только на очень высоких уровнях
-                        adjustedWeight = Math.max(0, template.weight + difficultyLevel * 1.2 - 4);
+                        adjustedWeight = Math.max(0.5, template.weight - difficultyLevel * 0.5);
+                    } 
+                    // Увеличиваем средние и сложные фигуры
+                    else if (template.name.includes('square') || template.name.includes('L_') || template.name.includes('T_')) {
+                        adjustedWeight = template.weight + difficultyLevel * 0.3;
+                    }
+                    // Очень сложные фигуры появляются раньше
+                    else if (template.name.includes('plus') || template.name.includes('zigzag') || template.name.includes('step')) {
+                        adjustedWeight = Math.max(0, template.weight + difficultyLevel * 0.5);
                     }
                     
                     return { ...template, weight: adjustedWeight };
-                }).filter(template => template.weight > 0); // Убираем фигуры с нулевым весом
+                }).filter(template => template.weight > 0);
                 
                 const totalWeight = adjustedTemplates.reduce((sum, template) => sum + template.weight, 0);
                 let random = Math.random() * totalWeight;
@@ -3913,7 +4024,7 @@
                     }
                 }
                 
-                return adjustedTemplates[0] || this.shapeTemplates[0];
+                return adjustedTemplates[0] || this.shapeTemplates[this.shapeTemplates.length - 1];
             }
 
             renderShapes() {
@@ -4184,6 +4295,92 @@
 
                 if (foundValidPosition) {
                     this.highlightCells(pattern, bestGridRow, bestGridCol, 'preview');
+                    
+                    // НОВАЯ ФУНКЦИЯ: Подсвечиваем линии, которые будут уничтожены
+                    this.previewCompletedLines(pattern, bestGridRow, bestGridCol);
+                    
+                    // Добавляем динамическое свечение к сетке
+                    gridElement.classList.add('dynamic-glow');
+                    setTimeout(() => gridElement.classList.remove('dynamic-glow'), 1000);
+                }
+            }
+
+            // НОВАЯ ФУНКЦИЯ: Предварительный анализ линий для подсветки
+            previewCompletedLines(pattern, startRow, startCol) {
+                // Создаем временную копию сетки с размещенной фигурой
+                const tempGrid = this.grid.map(row => [...row]);
+                
+                for (let row = 0; row < pattern.length; row++) {
+                    for (let col = 0; col < pattern[row].length; col++) {
+                        if (pattern[row][col]) {
+                            const newRow = startRow + row;
+                            const newCol = startCol + col;
+                            if (newRow >= 0 && newRow < this.gridSize && newCol >= 0 && newCol < this.gridSize) {
+                                tempGrid[newRow][newCol] = this.draggedShape.color;
+                            }
+                        }
+                    }
+                }
+
+                const gridElement = document.getElementById('gameGrid');
+                const linesToHighlight = new Set();
+
+                // Проверяем горизонтальные линии
+                for (let row = 0; row < this.gridSize; row++) {
+                    if (tempGrid[row].every(cell => cell !== null)) {
+                        for (let col = 0; col < this.gridSize; col++) {
+                            linesToHighlight.add(`${row}-${col}`);
+                        }
+                    }
+                }
+
+                // Проверяем вертикальные линии
+                for (let col = 0; col < this.gridSize; col++) {
+                    let complete = true;
+                    for (let row = 0; row < this.gridSize; row++) {
+                        if (tempGrid[row][col] === null) {
+                            complete = false;
+                            break;
+                        }
+                    }
+                    if (complete) {
+                        for (let row = 0; row < this.gridSize; row++) {
+                            linesToHighlight.add(`${row}-${col}`);
+                        }
+                    }
+                }
+
+                // Подсвечиваем найденные линии
+                linesToHighlight.forEach(cellKey => {
+                    const [row, col] = cellKey.split('-').map(Number);
+                    const cellIndex = row * this.gridSize + col;
+                    gridElement.children[cellIndex].classList.add('line-preview');
+                });
+
+                // Создаем искорки если есть линии для уничтожения
+                if (linesToHighlight.size > 0) {
+                    this.createDynamicSparkles(gridElement, linesToHighlight.size);
+                }
+            }
+
+            // НОВАЯ ФУНКЦИЯ: Создание динамических искорок
+            createDynamicSparkles(gridElement, intensity) {
+                const gridRect = gridElement.getBoundingClientRect();
+                const sparkleCount = Math.min(intensity * 2, 15);
+                
+                for (let i = 0; i < sparkleCount; i++) {
+                    const sparkle = document.createElement('div');
+                    sparkle.className = 'dynamic-sparkle';
+                    
+                    const x = gridRect.left + Math.random() * gridRect.width;
+                    const y = gridRect.top + Math.random() * gridRect.height;
+                    
+                    sparkle.style.left = x + 'px';
+                    sparkle.style.top = y + 'px';
+                    
+                    document.body.appendChild(sparkle);
+                    
+                    setTimeout(() => sparkle.remove(), 1500);
                 }
             }
 
@@ -4542,15 +4739,29 @@
                 const gridElement = document.getElementById('gameGrid');
                 const cells = gridElement.children;
                 
-                // Анимация исчезновения блоков
-                cellsToRemove.forEach(cellKey => {
+                // УСИЛЕННЫЕ ЭФФЕКТЫ: Анимация исчезновения блоков с дополнительными эффектами
+                cellsToRemove.forEach((cellKey, index) => {
                     const [row, col] = cellKey.split('-').map(Number);
                     const cellIndex = row * this.gridSize + col;
-                    cells[cellIndex].classList.add(this.fireworksMode ? 'fireworks-effect' : 'line-clearing');
+                    const cell = cells[cellIndex];
+                    
+                    // Добавляем задержку для волнового эффекта
+                    setTimeout(() => {
+                        cell.classList.add(this.fireworksMode ? 'fireworks-effect' : 'line-clearing');
+                        
+                        // Создаем дополнительные искорки для каждого блока
+                        this.createBlockDestructionEffect(cell);
+                    }, Math.floor(index / 8) * 50); // Волна по строкам/колонкам
                 });
 
                 // Создаем частицы для эффекта
                 this.createLineParticles(lines);
+                
+                // НОВЫЙ ЭФФЕКТ: Пульсация сетки при очистке линий
+                gridElement.style.transform = 'scale(1.02)';
+                setTimeout(() => {
+                    gridElement.style.transform = 'scale(1)';
+                }, 200);
                 
                 // Показываем достижение за комбо-ряды
                 if (lines.length >= 2) {
@@ -4560,39 +4771,107 @@
                 }
             }
 
+            // НОВАЯ ФУНКЦИЯ: Эффект разрушения блока
+            createBlockDestructionEffect(cell) {
+                const cellRect = cell.getBoundingClientRect();
+                
+                // Создаем 4 мини-частицы, вылетающие в разные стороны
+                const directions = [
+                    {x: -1, y: -1}, {x: 1, y: -1}, 
+                    {x: -1, y: 1}, {x: 1, y: 1}
+                ];
+                
+                directions.forEach((dir, index) => {
+                    setTimeout(() => {
+                        const particle = document.createElement('div');
+                        particle.className = 'dynamic-sparkle';
+                        particle.style.background = `hsl(${Math.random() * 360}deg, 70%, 60%)`;
+                        
+                        const startX = cellRect.left + cellRect.width/2;
+                        const startY = cellRect.top + cellRect.height/2;
+                        
+                        particle.style.left = startX + 'px';
+                        particle.style.top = startY + 'px';
+                        particle.style.transform = `translate(${dir.x * 30}px, ${dir.y * 30}px)`;
+                        
+                        document.body.appendChild(particle);
+                        
+                        setTimeout(() => particle.remove(), 800);
+                    }, index * 25);
+                });
+            }
+
             createLineParticles(lines) {
                 const gridElement = document.getElementById('gameGrid');
                 const gridRect = gridElement.getBoundingClientRect();
                 
-                lines.forEach(line => {
-                    const particleCount = this.fireworksMode ? 20 : 12;
+                lines.forEach((line, lineIndex) => {
+                    const particleCount = this.fireworksMode ? 25 : 15;
+                    
                     for (let i = 0; i < particleCount; i++) {
-                        const particle = document.createElement('div');
-                        particle.className = this.fireworksMode ? 'particle fireworks-particle' : 'particle';
-                        
-                        let x, y;
-                        if (line.type === 'row') {
-                            x = gridRect.left + Math.random() * gridRect.width;
-                            y = gridRect.top + (line.index * gridRect.height / this.gridSize) + (gridRect.height / this.gridSize / 2);
-                        } else {
-                            x = gridRect.left + (line.index * gridRect.width / this.gridSize) + (gridRect.width / this.gridSize / 2);
-                            y = gridRect.top + Math.random() * gridRect.height;
-                        }
-                        
-                        particle.style.left = x + 'px';
-                        particle.style.top = y + 'px';
-                        
-                        if (this.fireworksMode) {
-                            particle.style.background = ['#FF69B4', '#FFD700', '#32CD32', '#1E90FF', '#FF6347'][Math.floor(Math.random() * 5)];
-                        } else {
-                            particle.style.background = ['#FFD700', '#FF6347', '#32CD32', '#FF69B4'][Math.floor(Math.random() * 4)];
-                        }
-                        
-                        document.body.appendChild(particle);
-                        
-                        setTimeout(() => particle.remove(), this.fireworksMode ? 1500 : 1000);
+                        setTimeout(() => {
+                            const particle = document.createElement('div');
+                            particle.className = this.fireworksMode ? 'particle fireworks-particle' : 'particle';
+                            
+                            let x, y;
+                            if (line.type === 'row') {
+                                x = gridRect.left + Math.random() * gridRect.width;
+                                y = gridRect.top + (line.index * gridRect.height / this.gridSize) + (gridRect.height / this.gridSize / 2);
+                            } else {
+                                x = gridRect.left + (line.index * gridRect.width / this.gridSize) + (gridRect.width / this.gridSize / 2);
+                                y = gridRect.top + Math.random() * gridRect.height;
+                            }
+                            
+                            particle.style.left = x + 'px';
+                            particle.style.top = y + 'px';
+                            
+                            if (this.fireworksMode) {
+                                particle.style.background = ['#FF69B4', '#FFD700', '#32CD32', '#1E90FF', '#FF6347', '#9370DB'][Math.floor(Math.random() * 6)];
+                                particle.style.boxShadow = `0 0 10px ${particle.style.background}`;
+                            } else {
+                                particle.style.background = ['#FFD700', '#FF6347', '#32CD32', '#FF69B4', '#00BFFF'][Math.floor(Math.random() * 5)];
+                            }
+                            
+                            document.body.appendChild(particle);
+                            
+                            setTimeout(() => particle.remove(), this.fireworksMode ? 1500 : 1000);
+                        }, i * 30 + lineIndex * 100); // Каскадный эффект
                     }
                 });
+                
+                // ДОПОЛНИТЕЛЬНЫЙ ЭФФЕКТ: Волна света по сетке
+                this.createLightWave();
+            }
+
+            // НОВАЯ ФУНКЦИЯ: Волна света по сетке
+            createLightWave() {
+                const gridElement = document.getElementById('gameGrid');
+                const cells = gridElement.children;
+                
+                // Создаем волну света от центра
+                const centerIndex = Math.floor(this.gridSize/2) * this.gridSize + Math.floor(this.gridSize/2);
+                const centerRow = Math.floor(centerIndex / this.gridSize);
+                const centerCol = centerIndex % this.gridSize;
+                
+                for (let radius = 0; radius < this.gridSize; radius++) {
+                    setTimeout(() => {
+                        for (let row = 0; row < this.gridSize; row++) {
+                            for (let col = 0; col < this.gridSize; col++) {
+                                const distance = Math.abs(row - centerRow) + Math.abs(col - centerCol);
+                                if (distance === radius) {
+                                    const cellIndex = row * this.gridSize + col;
+                                    const cell = cells[cellIndex];
+                                    
+                                    // Кратковременное свечение
+                                    cell.style.boxShadow = '0 0 15px rgba(255, 255, 255, 0.8)';
+                                    setTimeout(() => {
+                                        cell.style.boxShadow = '';
+                                    }, 200);
+                                }
+                            }
+                        }
+                    }, radius * 50);
+                }
             }
 
             handleLinesCleared(count, placementQuality = null) {
@@ -5184,7 +5463,13 @@
 
         document.addEventListener('DOMContentLoaded', initializeApp);
 
-        console.log('🎮 Блок Взрыв! VK Mini App v2.1.0 - Обновленная система GameOver и совместимость с VK! 🚀');
+        console.log('🎮 Блок Взрыв! VK Mini App v2.2.0 - ДИНАМИЧНАЯ ВЕРСИЯ! 🚀');
+        console.log('✨ Новые возможности:');
+        console.log('   • Подсветка линий при предварительном просмотре');
+        console.log('   • Быстрая игра с упором на большие фигуры');
+        console.log('   • Эффекты смены цвета при размещении');
+        console.log('   • Расширенные визуальные эффекты и анимации');
+        console.log('   • Волновые эффекты и динамические искорки');
         console.log('📋 Особенности тестового режима VK:');
         console.log('   • Сохранение игры может работать нестабильно');
         console.log('   • Покупки за голоса недоступны');
