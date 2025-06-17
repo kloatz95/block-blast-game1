@@ -828,6 +828,8 @@
             pointer-events: none;
             z-index: 2000;
             animation: scorePopup 1.2s ease-out forwards;
+            font-family: 'Nunito', sans-serif;
+            letter-spacing: 1px;
         }
 
         @keyframes scorePopup {
@@ -852,15 +854,11 @@
             transform: translate(-50%, -50%);
             font-size: 28px;
             font-weight: 900;
-            color: #FFD700;
+            color: white;
             text-shadow: 0 3px 6px rgba(0, 0, 0, 0.8);
             pointer-events: none;
             z-index: 3500;
             animation: achievementPopup 2s ease-out forwards;
-            background: linear-gradient(45deg, #FFD700, #FFA500);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
             font-family: 'Nunito', sans-serif;
             letter-spacing: 2px;
         }
@@ -1331,22 +1329,21 @@
             background-position: center;
         }
 
-        /* LEADERBOARD & FRIENDS */
+        /* LEADERBOARD & FRIENDS - ПЕРЕРАБОТАННЫЕ ВКЛАДКИ */
         .leaderboard-tabs {
             display: flex;
-            background: var(--card-bg);
-            border-radius: 8px;
-            padding: 3px;
+            background: transparent;
+            border-radius: 0;
+            padding: 0;
             margin-bottom: 20px;
             border: none;
-            box-shadow: 
-                0 3px 8px rgba(139, 69, 19, 0.3),
-                inset 0 1px 3px var(--card-inner-shadow);
+            box-shadow: none;
+            gap: 5px;
         }
 
         .leaderboard-tab {
             flex: 1;
-            padding: 8px 12px;
+            padding: 12px 8px;
             text-align: center;
             border-radius: 6px;
             cursor: pointer;
@@ -1356,26 +1353,31 @@
             background: transparent;
             border: none;
             color: var(--text-secondary);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
         }
 
         .leaderboard-tab.active {
-            background: var(--nav-active-bg);
-            color: white;
-            box-shadow: 0 3px 8px rgba(206, 127, 66, 0.4);
-            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+            background: var(--card-bg);
+            color: var(--text-primary);
+            box-shadow: 
+                0 3px 8px rgba(139, 69, 19, 0.3),
+                inset 0 1px 3px var(--card-inner-shadow);
+            border: 2px solid var(--card-border);
         }
 
         .leaderboard-tab::before {
             content: '';
-            display: inline-block;
+            display: block;
             width: 16px;
             height: 16px;
-            margin-right: 4px;
-            vertical-align: middle;
             background-size: contain;
             background-repeat: no-repeat;
             background-position: center;
             background-image: url('assets/icons/globe.png');
+            order: -1;
         }
 
         .leaderboard-tab:nth-child(2)::before {
@@ -1508,6 +1510,7 @@
             letter-spacing: 0.5px;
             box-shadow: 0 4px 0 #E65100;
             text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+            padding-left: 40px;
         }
 
         .invite-friends-btn::before {
@@ -1538,7 +1541,7 @@
         .invite-friends-btn::after {
             content: '';
             position: absolute;
-            left: 16px;
+            left: 12px;
             top: 50%;
             transform: translateY(-50%);
             width: 20px;
@@ -2092,9 +2095,10 @@
             <h2>ИГРА ОКОНЧЕНА!</h2>
             <div style="font-size: 18px; margin-bottom: 12px;">Очки: <span id="finalScore" style="color: #8B4513; font-weight: 700;">0</span></div>
             <div style="font-size: 14px; margin-bottom: 16px;">Получено XP: <span id="finalXP" style="color: #32CD32; font-weight: 700;">+0</span></div>
-            <div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;">
+            <div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;">
                 <button class="simple-button restart-btn" onclick="restartGame()">СНОВА</button>
                 <button class="simple-button menu-btn" onclick="exitGame()">МЕНЮ</button>
+                <button class="simple-button menu-btn" onclick="shareGameResult()" style="background: #FF9800; color: white; box-shadow: 0 4px 0 #E65100;">РАССКАЗАТЬ ДРУЗЬЯМ</button>
             </div>
         </div>
     </div>
@@ -2578,13 +2582,20 @@
                     { pattern: [[1, 1], [1, 1]], name: 'square2', weight: 4 },
                     { pattern: [[1, 1, 1], [1, 1, 1], [1, 1, 1]], name: 'square3', weight: 1 },
                     
-                    // Только самые простые L-формы (реже)
+                    // Простые углы
                     { pattern: [[1, 1], [1, 0]], name: 'corner1', weight: 2 },
                     { pattern: [[1, 1], [0, 1]], name: 'corner2', weight: 2 },
                     
-                    // Простые тройки
+                    // Простые L-формы
                     { pattern: [[1, 1, 1], [1, 0, 0]], name: 'L_simple', weight: 1 },
-                    { pattern: [[1, 1, 1], [0, 0, 1]], name: 'L_simple2', weight: 1 }
+                    { pattern: [[1, 1, 1], [0, 0, 1]], name: 'L_simple2', weight: 1 },
+                    
+                    // Сложные фигуры (появляются на высоких уровнях)
+                    { pattern: [[1, 0, 1], [1, 1, 1]], name: 'T_shape', weight: 0.5 },
+                    { pattern: [[0, 1, 0], [1, 1, 1], [0, 1, 0]], name: 'plus', weight: 0.3 },
+                    { pattern: [[1, 1, 0], [0, 1, 1]], name: 'zigzag1', weight: 0.5 },
+                    { pattern: [[0, 1, 1], [1, 1, 0]], name: 'zigzag2', weight: 0.5 },
+                    { pattern: [[1, 0, 0], [1, 1, 1], [0, 0, 1]], name: 'L_complex', weight: 0.2 }
                 ];
 
                 this.init();
@@ -2788,6 +2799,12 @@
             generateShapes() {
                 this.currentShapes = [];
                 
+                // Показываем уровень сложности
+                const difficultyLevel = Math.floor(this.score / 5000);
+                if (difficultyLevel > 0) {
+                    console.log(`🎯 Уровень сложности: ${difficultyLevel} (${this.score} очков)`);
+                }
+                
                 for (let i = 0; i < 3; i++) {
                     const template = this.getWeightedRandomShape();
                     const color = this.colors[Math.floor(Math.random() * this.colors.length)];
@@ -2826,12 +2843,18 @@
                     } else if (template.name.includes('square2')) {
                         adjustedWeight = Math.max(1, template.weight - difficultyLevel * 0.5);
                     } else if (template.name.includes('L_simple') || template.name.includes('corner')) {
-                        // Увеличиваем вес сложных фигур
+                        // Увеличиваем вес средне-сложных фигур
                         adjustedWeight = template.weight + difficultyLevel * 0.5;
+                    } else if (template.name.includes('T_shape') || template.name.includes('zigzag')) {
+                        // Сложные фигуры появляются только на высоких уровнях
+                        adjustedWeight = Math.max(0, template.weight + difficultyLevel * 0.8 - 2);
+                    } else if (template.name.includes('plus') || template.name.includes('L_complex')) {
+                        // Очень сложные фигуры - только на очень высоких уровнях
+                        adjustedWeight = Math.max(0, template.weight + difficultyLevel * 1.2 - 4);
                     }
                     
                     return { ...template, weight: adjustedWeight };
-                });
+                }).filter(template => template.weight > 0); // Убираем фигуры с нулевым весом
                 
                 const totalWeight = adjustedTemplates.reduce((sum, template) => sum + template.weight, 0);
                 let random = Math.random() * totalWeight;
@@ -2843,7 +2866,7 @@
                     }
                 }
                 
-                return adjustedTemplates[0];
+                return adjustedTemplates[0] || this.shapeTemplates[0];
             }
 
             renderShapes() {
@@ -3266,7 +3289,6 @@
                 
                 // Подсчитываем окружающие заполненные блоки
                 let surroundingBlocks = 0;
-                let edgeBlocks = 0;
                 
                 for (let row = 0; row < shape.pattern.length; row++) {
                     for (let col = 0; col < shape.pattern[row].length; col++) {
@@ -3285,28 +3307,20 @@
                                     }
                                 }
                             }
-                            
-                            // Проверяем, близко ли к краю
-                            if (newRow === 0 || newRow === this.gridSize-1 || newCol === 0 || newCol === this.gridSize-1) {
-                                edgeBlocks++;
-                            }
                         }
                     }
                 }
                 
-                // Оцениваем качество размещения
-                if (surroundingBlocks >= 12) {
+                // Оцениваем качество размещения - БОЛЕЕ РЕДКИЕ УСЛОВИЯ
+                if (surroundingBlocks >= 15) {
                     score = 3;
                     message = 'ИДЕАЛЬНО!';
-                } else if (surroundingBlocks >= 8) {
+                } else if (surroundingBlocks >= 10) {
                     score = 2;
                     message = 'ПРЕВОСХОДНО!';
-                } else if (surroundingBlocks >= 4) {
+                } else if (surroundingBlocks >= 6) {
                     score = 1;
                     message = 'ЧУДЕСНО!';
-                } else if (edgeBlocks > 0 && surroundingBlocks >= 2) {
-                    score = 1;
-                    message = 'НЕПЛОХО!';
                 }
                 
                 return { score, message, surroundingBlocks };
@@ -3896,6 +3910,28 @@
             } catch (error) {
                 console.log('❌ Ошибка приглашения друзей:', error);
                 return false;
+            }
+        }
+
+        async function shareGameResult() {
+            const score = AppState.gameState?.score || 0;
+            const level = AppState.gameState?.level?.current || 1;
+            
+            const shareText = `🎮 Я набрал ${score.toLocaleString()} очков в Блок Взрыв! (Уровень ${level})\n\nПопробуй обогнать мой результат! 🏆`;
+            
+            if (vkBridge && isVKReady) {
+                try {
+                    await vkBridge.send('VKWebAppShare', {
+                        link: `https://vk.com/app${APP_CONFIG.APP_ID}?ref=${currentUser?.id || 0}`,
+                        text: shareText
+                    });
+                    showNotification('Результат опубликован! 🎉');
+                } catch (error) {
+                    console.log('Ошибка публикации:', error);
+                    showNotification('Ошибка публикации 😞');
+                }
+            } else {
+                showNotification('Функция недоступна 📱');
             }
         }
 
