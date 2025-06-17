@@ -5068,6 +5068,115 @@
                 }, 200);
             }
 
+            async gameOver() {
+                this.isGameOver = true;
+                AppState.hasUnfinishedGame = false;
+                
+                // Деактивируем режим фейерверка
+                if (this.fireworksMode) {
+                    this.deactivateFireworksMode();
+                }
+                
+                const finalXpGained = Math.floor(this.score * 0.05);
+                this.level.addXP(finalXpGained);
+                
+                if (isVKReady) {
+                    await saveGameData();
+                }
+                
+                document.getElementById('finalScore').textContent = this.score.toLocaleString();
+                document.getElementById('finalXP').textContent = `+${finalXpGained}`;
+                
+                setTimeout(() => {
+                    showOverlay('gameOverOverlay');
+                }, 500);
+                
+                updateAllUI();
+                console.log('💀 Игра окончена! Финальный счет:', this.score);
+            }
+
+            handleLevelUp(oldLevel, newLevel) {
+                // Базовая награда за уровень - небольшое количество монет
+                const coinsReward = 10 + (newLevel * 2);
+                this.coins += coinsReward;
+                
+                // Дополнительные награды каждые 5 уровней
+                if (newLevel % 5 === 0) {
+                    this.boosters.add('horizontal_blast', 1);
+                    this.coins += 50;
+                }
+                
+                // Крупные награды каждые 10 уровней
+                if (newLevel % 10 === 0) {
+                    this.boosters.add('vertical_blast', 1);
+                    this.boosters.add('area_blast_3x3', 1);
+                    this.energy.max += 1;
+                    this.coins += 100;
+                }
+                
+                showNotification(`🎉 Уровень ${newLevel}! +${coinsReward} монет!`);
+                
+                // Обновляем интерфейс сразу после повышения уровня
+                updateAllUI();
+                updateGameUI();
+            }
+
+            restart() {
+                this.startNewGame();
+            }
+
+            getSnapshot() {
+                return {
+                    grid: JSON.parse(JSON.stringify(this.grid)),
+                    score: this.score,
+                    linesCleared: this.linesCleared,
+                    combo: this.combo,
+                    currentShapes: JSON.parse(JSON.stringify(this.currentShapes)),
+                    gameStarted: this.gameStarted,
+                    fireworksMode: this.fireworksMode,
+                    fireworksTimer: this.fireworksTimer
+                };
+            }
+
+            loadSnapshot(snapshot) {
+                this.grid = snapshot.grid;
+                this.score = snapshot.score;
+                this.linesCleared = snapshot.linesCleared;
+                this.combo = snapshot.combo;
+                this.currentShapes = snapshot.currentShapes;
+                this.gameStarted = snapshot.gameStarted;
+                this.fireworksMode = snapshot.fireworksMode || false;
+                this.fireworksTimer = snapshot.fireworksTimer || null;
+                
+                this.createGrid();
+                this.restoreGridState();
+                this.renderShapes();
+                
+                // Восстанавливаем режим фейерверка если он был активен
+                if (this.fireworksMode) {
+                    const gameScreen = document.getElementById('gameScreen');
+                    const fireworksIndicator = document.getElementById('fireworksIndicator');
+                    gameScreen.classList.add('fireworks-mode');
+                    fireworksIndicator.style.display = 'block';
+                    document.getElementById('fireworksMultiplier').textContent = this.fireworksMultiplier;
+                }
+            }
+
+            restoreGridState() {
+                const gridElement = document.getElementById('gameGrid');
+                for (let row = 0; row < this.gridSize; row++) {
+                    for (let col = 0; col < this.gridSize; col++) {
+                        const cellIndex = row * this.gridSize + col;
+                        const cell = gridElement.children[cellIndex];
+                        
+                        if (this.grid[row][col] !== null) {
+                            cell.className = `cell filled color-${this.grid[row][col]}`;
+                        } else {
+                            cell.className = 'cell';
+                        }
+                    }
+                }
+            }
         }
 
         // Новые глобальные функции для управления оверлеями
