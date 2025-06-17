@@ -321,11 +321,11 @@
             background-position: center;
         }
 
-        .stat-icon[src*="energy"] {
+        .stat-item:first-child .stat-icon {
             background-image: url('assets/icons/energy-icon.png');
         }
 
-        .stat-icon[src*="coin"] {
+        .stat-item:last-child .stat-icon {
             background-image: url('assets/icons/coin-icon.png');
         }
 
@@ -810,6 +810,21 @@
                 transform: scale(0); 
                 opacity: 0;
                 box-shadow: 0 0 60px rgba(255, 69, 0, 1);
+            }
+        }
+
+        @keyframes lightningFlash {
+            0% { 
+                opacity: 0;
+                transform: scaleY(0);
+            }
+            50% { 
+                opacity: 1;
+                transform: scaleY(1);
+            }
+            100% { 
+                opacity: 0;
+                transform: scaleY(0);
             }
         }
 
@@ -1970,7 +1985,7 @@
                             <div class="shop-item" onclick="buyPack('starter')">
                                 <div class="shop-item-icon"></div>
                                 <div class="shop-item-name">Стартовый Набор</div>
-                                <div class="shop-item-description">3 Выбора + 2 Обновления</div>
+                                <div class="shop-item-description">3 Лучших Выбора + 2 Обновления</div>
                                 <div class="shop-item-price">
                                     <span>150</span>
                                 </div>
@@ -1994,7 +2009,7 @@
                             <div class="shop-item" onclick="buyPack('ultimate')">
                                 <div class="shop-item-icon"></div>
                                 <div class="shop-item-name">Ультимейт Набор</div>
-                                <div class="shop-item-description">15 всех бустеров + 10 энергии</div>
+                                <div class="shop-item-description">15 всех супер-бустеров + 10 энергии</div>
                                 <div class="shop-item-price">
                                     <span>2400</span>
                                 </div>
@@ -2854,7 +2869,7 @@
                 return {
                     current: 20,
                     max: 20,
-                    regenTime: 2 * 60 * 60 * 1000, // 2 hours per energy
+                    regenTime: 40 * 60 * 1000, // 40 minutes per energy (3 energy per 2 hours)
                     lastUpdate: Date.now(),
                     lastDailyReset: new Date().toDateString(),
                     timer: null,
@@ -2991,11 +3006,11 @@
                     
                     getName(type) {
                         const names = {
-                            shape_choice: 'Выбор Фигуры',
-                            row_blast: 'Взрыв Ряда',
-                            refresh: 'Обновление',
-                            lightning: 'Молния',
-                            star_blast: 'Звездный Удар'
+                            shape_choice: 'Выбор Лучших Фигур',
+                            row_blast: 'Взрыв Ряда/Колонки',
+                            refresh: 'Обновление Фигур',
+                            lightning: 'Молния (12 блоков)',
+                            star_blast: 'Звездный Взрыв 3×3'
                         };
                         return names[type] || type;
                     }
@@ -3533,18 +3548,27 @@
                         updateGameUI();
                     }
 
-                    if (this.allShapesUsed()) {
-                        setTimeout(() => {
-                            this.generateShapes();
-                        }, 200);
-                    } else {
-                        // Более надёжная проверка гейм овер с задержкой
-                        setTimeout(() => {
-                            if (this.gameStarted && this.checkGameOver()) {
-                                this.showBoosterOffer();
-                            }
-                        }, 300);
-                    }
+                    // Проверяем гейм овер только после обработки всех эффектов
+                    setTimeout(() => {
+                        if (this.allShapesUsed()) {
+                            setTimeout(() => {
+                                this.generateShapes();
+                                // Проверяем гейм овер только после генерации новых фигур
+                                setTimeout(() => {
+                                    if (this.gameStarted && this.checkGameOver()) {
+                                        this.showBoosterOffer();
+                                    }
+                                }, 100);
+                            }, 200);
+                        } else {
+                            // Более надёжная проверка гейм овер с задержкой
+                            setTimeout(() => {
+                                if (this.gameStarted && this.checkGameOver()) {
+                                    this.showBoosterOffer();
+                                }
+                            }, 300);
+                        }
+                    }, clearedLines > 0 ? 800 : 100); // Больше времени если были очищены линии
                 }, 50);
 
                 updateGameUI();
@@ -3888,6 +3912,8 @@
                 if (this.boosters.has('refresh')) usefulBoosters.push('refresh');
                 if (this.boosters.has('row_blast')) usefulBoosters.push('row_blast');
                 if (this.boosters.has('lightning')) usefulBoosters.push('lightning');
+                if (this.boosters.has('shape_choice')) usefulBoosters.push('shape_choice');
+                if (this.boosters.has('star_blast')) usefulBoosters.push('star_blast');
                 
                 if (usefulBoosters.length > 0) {
                     this.populateBoosterOptions(usefulBoosters);
@@ -3903,8 +3929,10 @@
                 
                 const boosterNames = {
                     'refresh': 'Обновить фигуры',
-                    'row_blast': 'Очистить ряд',
-                    'lightning': 'Очистить блоки'
+                    'row_blast': 'Взорвать ряд/колонку',
+                    'lightning': 'Молния (12 блоков)',
+                    'shape_choice': 'Лучшие фигуры',
+                    'star_blast': 'Звездный взрыв 3×3'
                 };
                 
                 availableBoosters.forEach(boosterType => {
@@ -3922,6 +3950,7 @@
             useSpecificBooster(boosterType) {
                 if (!this.boosters.has(boosterType)) return;
                 
+                closeOverlay('boosterOfferOverlay');
                 this.boosters.use(boosterType);
                 
                 switch (boosterType) {
@@ -3937,9 +3966,15 @@
                         this.clearRandomBlocks(8);
                         showNotification('Блоки очищены! ⚡');
                         break;
+                    case 'shape_choice':
+                        this.activateShapeChoice();
+                        break;
+                    case 'star_blast':
+                        // Для звездного взрыва очищаем центральную область
+                        this.performStarBlast(3, 3);
+                        break;
                 }
                 
-                closeOverlay('boosterOfferOverlay');
                 updateGameUI();
                 
                 // Проверяем снова через небольшую задержку
@@ -4214,23 +4249,22 @@
             }
 
             if (AppState.gameState.boosters.use(type)) {
-                showNotification(`${AppState.gameState.boosters.getName(type)} активирован! ✨`);
-                
                 switch (type) {
+                    case 'shape_choice':
+                        AppState.gameState.activateShapeChoice();
+                        break;
                     case 'refresh':
                         AppState.gameState.generateShapes();
-                        break;
-                    case 'shape_choice':
-                        showNotification('Выберите лучшие фигуры! 🎯');
-                        AppState.gameState.generateShapes();
+                        showNotification('Фигуры обновлены! 🔄');
                         break;
                     case 'row_blast':
-                        AppState.gameState.clearRandomRow();
-                        showNotification('Ряд очищен! 💥');
+                        AppState.gameState.activateRowBlast();
                         break;
                     case 'lightning':
-                        AppState.gameState.clearRandomBlocks(8);
-                        showNotification('Блоки очищены! ⚡');
+                        AppState.gameState.activateLightning();
+                        break;
+                    case 'star_blast':
+                        AppState.gameState.activateStarBlast();
                         break;
                     default:
                         showNotification('Бустер пока в разработке! 🔧');
