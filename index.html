@@ -2366,12 +2366,25 @@
     <div class="overlay" id="boosterOfferOverlay">
         <div class="overlay-content">
             <h2>Нет ходов!</h2>
+            <div style="font-size: 14px; margin-bottom: 16px;">Игра окончена, но вы можете продолжить используя бустеры!</div>
+            <div style="display: flex; gap: 12px; justify-content: center; margin-bottom: 16px;">
+                <button class="simple-button restart-btn" onclick="showBoosterSelection()" style="margin: 0; width: auto; padding: 12px 20px;">ВОСПОЛЬЗОВАТЬСЯ БУСТЕРОМ</button>
+            </div>
+            <div style="display: flex; gap: 12px; justify-content: center;">
+                <button class="simple-button menu-btn" onclick="closeOverlay('boosterOfferOverlay'); AppState.gameState.gameOver()" style="margin: 0; width: auto; padding: 12px 20px;">НАЗАД</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="overlay" id="boosterSelectionOverlay">
+        <div class="overlay-content">
+            <h2>Выберите бустер</h2>
             <div style="font-size: 14px; margin-bottom: 16px;">Выберите бустер для продолжения игры:</div>
             <div id="availableBoosters" style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px;">
                 <!-- Доступные бустеры будут добавлены динамически -->
             </div>
             <div style="display: flex; gap: 12px; justify-content: center;">
-                <button class="simple-button menu-btn" onclick="closeOverlay('boosterOfferOverlay'); AppState.gameState.gameOver()" style="margin: 0; width: auto; padding: 12px 20px;">ВЫЙТИ</button>
+                <button class="simple-button menu-btn" onclick="closeOverlay('boosterSelectionOverlay'); showOverlay('boosterOfferOverlay')" style="margin: 0; width: auto; padding: 12px 20px;">НАЗАД</button>
             </div>
         </div>
     </div>
@@ -2524,7 +2537,7 @@
             });
         }
 
-        // Save/Load game data
+        // Save/Load game data - ИСПРАВЛЕННАЯ ВЕРСИЯ
         async function saveGameData() {
             if (!vkBridge || !AppState.gameState) return;
             
@@ -2570,6 +2583,8 @@
                 console.log('💾 Данные игры сохранены');
             } catch (error) {
                 console.log('❌ Ошибка сохранения данных:', error);
+                // В тестовом режиме VK сохранение может не работать
+                showNotification('⚠️ Сохранение в тестовом режиме ограничено');
             }
         }
 
@@ -2590,7 +2605,17 @@
                         AppState.gameState.level.totalXP = gameData.totalXP || 0;
                         AppState.gameState.level.currentXP = gameData.currentXP || 0;
                         AppState.gameState.coins = gameData.coins || 50;
-                        AppState.gameState.boosters.inventory = { ...AppState.gameState.boosters.inventory, ...gameData.boosters };
+                        
+                        // Объединяем бустеры, сохраняя стартовые значения для новых
+                        const defaultBoosters = {
+                            horizontal_blast: 10,
+                            vertical_blast: 10,
+                            refresh: 10,
+                            area_blast_3x3: 10,
+                            full_field_blast: 10
+                        };
+                        AppState.gameState.boosters.inventory = { ...defaultBoosters, ...gameData.boosters };
+                        
                         AppState.gameState.stats = { ...AppState.gameState.stats, ...gameData.stats };
                         
                         // Восстанавливаем энергию
@@ -2620,9 +2645,12 @@
                         updateAllUI();
                         console.log('📥 Данные игры загружены');
                     }
+                } else {
+                    console.log('📥 Новый игрок - данные не найдены');
                 }
             } catch (error) {
                 console.log('❌ Ошибка загрузки данных:', error);
+                // В тестовом режиме загрузка может не работать
             }
         }
 
@@ -2987,6 +3015,7 @@
                 this.fireworksMode = false;
                 this.fireworksTimer = null;
                 this.fireworksMultiplier = 2;
+                this.availableBoostersForGameOver = []; // Список бустеров для GameOver
 
                 // Systems
                 this.energy = this.initEnergySystem();
@@ -4696,41 +4725,18 @@
                 if (this.boosters.has('full_field_blast')) usefulBoosters.push('full_field_blast');
                 
                 if (usefulBoosters.length > 0) {
-                    this.populateBoosterOptions(usefulBoosters);
+                    // Сохраняем список доступных бустеров для использования позже
+                    this.availableBoostersForGameOver = usefulBoosters;
                     showOverlay('boosterOfferOverlay');
                 } else {
                     this.gameOver();
                 }
             }
 
-            populateBoosterOptions(availableBoosters) {
-                const container = document.getElementById('availableBoosters');
-                container.innerHTML = '';
-                
-                const boosterNames = {
-                    'refresh': 'Обновить фигуры',
-                    'horizontal_blast': 'Горизонтальный взрыв',
-                    'vertical_blast': 'Вертикальный взрыв',
-                    'area_blast_3x3': 'Взрыв области 3×3',
-                    'full_field_blast': 'Полный взрыв поля'
-                };
-                
-                availableBoosters.forEach(boosterType => {
-                    const button = document.createElement('button');
-                    button.className = 'simple-button restart-btn';
-                    button.style.margin = '0';
-                    button.style.width = '100%';
-                    button.style.padding = '12px 20px';
-                    button.textContent = `${boosterNames[boosterType]} (${this.boosters.inventory[boosterType]})`;
-                    button.onclick = () => this.useSpecificBooster(boosterType);
-                    container.appendChild(button);
-                });
-            }
-
             useSpecificBooster(boosterType) {
                 if (!this.boosters.has(boosterType)) return;
                 
-                closeOverlay('boosterOfferOverlay');
+                closeOverlay('boosterSelectionOverlay');
                 
                 if (boosterType === 'refresh') {
                     this.boosters.use(boosterType);
@@ -4778,10 +4784,48 @@
                 // Проверяем снова через небольшую задержку
                 setTimeout(() => {
                     if (this.checkGameOver()) {
-                        this.gameOver();
+                        this.showBoosterOffer();
                     }
                 }, 200);
             }
+
+        }
+
+        // Новые глобальные функции для управления оверлеями
+        function showBoosterSelection() {
+            closeOverlay('boosterOfferOverlay');
+            
+            if (AppState.gameState.availableBoostersForGameOver && AppState.gameState.availableBoostersForGameOver.length > 0) {
+                populateBoosterOptions(AppState.gameState.availableBoostersForGameOver);
+                showOverlay('boosterSelectionOverlay');
+            } else {
+                AppState.gameState.gameOver();
+            }
+        }
+
+        function populateBoosterOptions(availableBoosters) {
+            const container = document.getElementById('availableBoosters');
+            container.innerHTML = '';
+            
+            const boosterNames = {
+                'refresh': 'Обновить фигуры',
+                'horizontal_blast': 'Горизонтальный взрыв',
+                'vertical_blast': 'Вертикальный взрыв',
+                'area_blast_3x3': 'Взрыв области 3×3',
+                'full_field_blast': 'Полный взрыв поля'
+            };
+            
+            availableBoosters.forEach(boosterType => {
+                const button = document.createElement('button');
+                button.className = 'simple-button restart-btn';
+                button.style.margin = '0';
+                button.style.width = '100%';
+                button.style.padding = '12px 20px';
+                button.textContent = `${boosterNames[boosterType]} (${AppState.gameState.boosters.inventory[boosterType]})`;
+                button.onclick = () => AppState.gameState.useSpecificBooster(boosterType);
+                container.appendChild(button);
+            });
+        }
 
             async gameOver() {
                 this.isGameOver = true;
@@ -4894,7 +4938,7 @@
             }
         }
 
-        // Shop Functions (обновленные для новых бустеров)
+        // Shop Functions (обновленные для новых бустеров и тестового режима)
         async function buyCoins(pack) {
             const packs = {
                 small: { price: 1, coins: 500, name: 'Горстка монет' },
@@ -4924,13 +4968,18 @@
                     }
                 } catch (error) {
                     console.log('Ошибка покупки:', error);
-                    showNotification('Ошибка покупки! Попробуйте позже 😞');
+                    // В тестовом режиме покупки за голоса не работают
+                    if (error.error_code === 4 || error.error_type === 'client_error') {
+                        showNotification('⚠️ Покупки за голоса недоступны в тестовом режиме. После публикации всё будет работать! 🚀');
+                    } else {
+                        showNotification('Ошибка покупки! Попробуйте позже 😞');
+                    }
                 }
             } else {
-                // Мок для разработки
+                // Мок для разработки - даём монеты бесплатно в тестовом режиме
                 AppState.gameState.coins += selectedPack.coins;
                 updateAllUI();
-                showNotification(`${selectedPack.name} куплен! +${selectedPack.coins} монет! 🪙`);
+                showNotification(`${selectedPack.name} куплен! +${selectedPack.coins} монет! 🪙 (Тестовый режим)`);
             }
         }
 
@@ -5135,7 +5184,11 @@
 
         document.addEventListener('DOMContentLoaded', initializeApp);
 
-        console.log('🎮 Блок Взрыв! VK Mini App v2.0.0 - Обновленная система бустеров! 🚀');
+        console.log('🎮 Блок Взрыв! VK Mini App v2.1.0 - Обновленная система GameOver и совместимость с VK! 🚀');
+        console.log('📋 Особенности тестового режима VK:');
+        console.log('   • Сохранение игры может работать нестабильно');
+        console.log('   • Покупки за голоса недоступны');
+        console.log('   • После публикации всё будет работать корректно');
     </script>
 </body>
 </html>
