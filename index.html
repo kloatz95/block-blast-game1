@@ -1284,7 +1284,7 @@
             background-image: url('assets/icons/lightning-bolt.png');
         }
 
-        .shop-item[onclick*="buyEnergy(5)"] .shop-item-icon {
+        .shop-item[onclick*="buyEnergy(20)"] .shop-item-icon {
             background-image: url('assets/icons/battery.png');
         }
 
@@ -1845,13 +1845,13 @@
                     <div class="stats-section">
                         <div class="stat-item">
                             <div class="stat-icon"></div>
-                            <div class="stat-value" id="headerEnergy">5/5</div>
+                            <div class="stat-value" id="headerEnergy">20/20</div>
                         </div>
                         
                         <div class="stat-item">
                             <div class="stat-icon"></div>
-                            <div class="stat-value" id="headerCoins">100</div>
-                            <button class="buy-coins-btn" onclick="showTab('shop')" title="Купить монеты">+</button>
+                            <div class="stat-value" id="headerCoins">50</div>
+                            <button class="buy-coins-btn" onclick="buyCoins('small')" title="Купить монеты">+</button>
                         </div>
                     </div>
                 </div>
@@ -1927,6 +1927,44 @@
                 <!-- SHOP SCREEN -->
                 <div class="content-screen" id="shopScreen">
                     <div class="shop-section">
+                        <div class="shop-title">Монеты</div>
+                        <div class="shop-grid">
+                            <div class="shop-item" onclick="buyCoins('small')">
+                                <div class="shop-item-icon" style="background-image: url('assets/icons/coin-small.png');"></div>
+                                <div class="shop-item-name">Горстка монет</div>
+                                <div class="shop-item-description">500 монет</div>
+                                <div class="shop-item-price" style="background: #4285F4; color: white;">
+                                    <span>1 голос</span>
+                                </div>
+                            </div>
+                            <div class="shop-item" onclick="buyCoins('medium')">
+                                <div class="shop-item-icon" style="background-image: url('assets/icons/coin-icon.png');"></div>
+                                <div class="shop-item-name">Мешок монет</div>
+                                <div class="shop-item-description">1200 монет</div>
+                                <div class="shop-item-price" style="background: #4285F4; color: white;">
+                                    <span>2 голоса</span>
+                                </div>
+                            </div>
+                            <div class="shop-item" onclick="buyCoins('large')">
+                                <div class="shop-item-icon" style="background-image: url('assets/icons/treasure-chest.png');"></div>
+                                <div class="shop-item-name">Сундук монет</div>
+                                <div class="shop-item-description">3000 монет</div>
+                                <div class="shop-item-price" style="background: #4285F4; color: white;">
+                                    <span>4 голоса</span>
+                                </div>
+                            </div>
+                            <div class="shop-item" onclick="buyCoins('mega')">
+                                <div class="shop-item-icon" style="background-image: url('assets/icons/diamond.png');"></div>
+                                <div class="shop-item-name">Сокровищница</div>
+                                <div class="shop-item-description">8000 монет</div>
+                                <div class="shop-item-price" style="background: #4285F4; color: white;">
+                                    <span>10 голосов</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="shop-section">
                         <div class="shop-title">Наборы Усилителей</div>
                         <div class="shop-grid">
                             <div class="shop-item" onclick="buyPack('starter')">
@@ -1937,12 +1975,28 @@
                                     <span>150</span>
                                 </div>
                             </div>
+                            <div class="shop-item" onclick="buyPack('advanced')">
+                                <div class="shop-item-icon"></div>
+                                <div class="shop-item-name">Продвинутый Набор</div>
+                                <div class="shop-item-description">5 Выборов + 3 Взрыва + 2 Молнии</div>
+                                <div class="shop-item-price">
+                                    <span>400</span>
+                                </div>
+                            </div>
                             <div class="shop-item" onclick="buyPack('premium')">
                                 <div class="shop-item-icon"></div>
                                 <div class="shop-item-name">Премиум Набор</div>
-                                <div class="shop-item-description">5 Выборов + 3 Взрыва</div>
+                                <div class="shop-item-description">8 Выборов + 5 Взрывов + 4 Молнии + 2 Звезды</div>
                                 <div class="shop-item-price">
-                                    <span>450</span>
+                                    <span>900</span>
+                                </div>
+                            </div>
+                            <div class="shop-item" onclick="buyPack('ultimate')">
+                                <div class="shop-item-icon"></div>
+                                <div class="shop-item-name">Ультимейт Набор</div>
+                                <div class="shop-item-description">15 всех бустеров + 10 энергии</div>
+                                <div class="shop-item-price">
+                                    <span>2400</span>
                                 </div>
                             </div>
                         </div>
@@ -1951,20 +2005,20 @@
                     <div class="shop-section">
                         <div class="shop-title">Энергия</div>
                         <div class="shop-grid">
-                            <div class="shop-item" onclick="buyEnergy(1)">
+                            <div class="shop-item" onclick="buyEnergy(5)">
                                 <div class="shop-item-icon"></div>
-                                <div class="shop-item-name">+1 Энергия</div>
+                                <div class="shop-item-name">+5 Энергия</div>
                                 <div class="shop-item-description">Мгновенное восполнение</div>
                                 <div class="shop-item-price">
-                                    <span>50</span>
+                                    <span>100</span>
                                 </div>
                             </div>
-                            <div class="shop-item" onclick="buyEnergy(5)">
+                            <div class="shop-item" onclick="buyEnergy(20)">
                                 <div class="shop-item-icon"></div>
                                 <div class="shop-item-name">Полная Энергия</div>
                                 <div class="shop-item-description">Полное восстановление</div>
                                 <div class="shop-item-price">
-                                    <span>200</span>
+                                    <span>300</span>
                                 </div>
                             </div>
                         </div>
@@ -1988,9 +2042,12 @@
                 <div class="content-screen" id="friendsScreen">
                     <div class="player-card">
                         <h3 style="margin-bottom: 15px; font-size: 18px;">Пригласить друзей</h3>
-                        <p style="margin-bottom: 15px; opacity: 0.8; font-size: 14px;">Приглашай друзей и получай награды!</p>
+                        <p style="margin-bottom: 15px; opacity: 0.8; font-size: 14px;">
+                            Приглашай друзей и получай награды!<br>
+                            <strong>За каждого друга: +100 монет и +5 энергии!</strong>
+                        </p>
                         
-                        <div class="achievements-grid" style="margin-bottom: 20px;">
+                        <div class="achievements-grid" style="margin-bottom: 20px; grid-template-columns: repeat(2, 1fr);">
                             <div class="achievement-item">
                                 <div class="achievement-icon" style="background-image: url('assets/icons/target-large.png');"></div>
                                 <div class="achievement-name">Приглашения</div>
@@ -2000,6 +2057,16 @@
                                 <div class="achievement-icon" style="background-image: url('assets/icons/lightning-large.png');"></div>
                                 <div class="achievement-name">Присоединились</div>
                                 <div class="achievement-desc" id="friendsJoined">0</div>
+                            </div>
+                            <div class="achievement-item">
+                                <div class="achievement-icon" style="background-image: url('assets/icons/coin-icon.png');"></div>
+                                <div class="achievement-name">Монет получено</div>
+                                <div class="achievement-desc" id="coinsFromInvites">0</div>
+                            </div>
+                            <div class="achievement-item">
+                                <div class="achievement-icon" style="background-image: url('assets/icons/energy-icon.png');"></div>
+                                <div class="achievement-name">Энергии получено</div>
+                                <div class="achievement-desc" id="energyFromInvites">0</div>
                             </div>
                         </div>
 
@@ -2164,6 +2231,21 @@
 
                 vkBridge.send('VKWebAppInit');
                 
+                // Подписываемся на события VK
+                vkBridge.subscribe((e) => {
+                    if (e.detail.type === 'VKWebAppUpdateConfig') {
+                        console.log('VK Config updated:', e.detail.data);
+                    }
+                    
+                    // Обработка события приглашения друга
+                    if (e.detail.type === 'VKWebAppShareResult' && e.detail.data.type === 'app_friend_joined') {
+                        if (AppState.gameState && AppState.gameState.referrals) {
+                            AppState.gameState.referrals.handleFriendJoined();
+                            saveGameData();
+                        }
+                    }
+                });
+                
                 try {
                     const userInfo = await vkBridge.send('VKWebAppGetUserInfo');
                     currentUser = userInfo;
@@ -2218,6 +2300,8 @@
                     return { result: true };
                 case 'VKWebAppShowWallPostBox':
                     return { result: true };
+                case 'VKWebAppShowOrderBox':
+                    return { success: true };
                 default:
                     return { result: true };
             }
@@ -2256,9 +2340,24 @@
                     bestScore: AppState.gameState.bestScore,
                     level: AppState.gameState.level.current,
                     totalXP: AppState.gameState.level.totalXP,
+                    currentXP: AppState.gameState.level.currentXP,
                     coins: AppState.gameState.coins,
                     boosters: AppState.gameState.boosters.inventory,
                     stats: AppState.gameState.stats,
+                    energy: {
+                        current: AppState.gameState.energy.current,
+                        max: AppState.gameState.energy.max,
+                        lastUpdate: AppState.gameState.energy.lastUpdate,
+                        lastDailyReset: AppState.gameState.energy.lastDailyReset
+                    },
+                    referrals: {
+                        invitesSent: AppState.gameState.referrals.invitesSent,
+                        friendsJoined: AppState.gameState.referrals.friendsJoined,
+                        coinsFromInvites: AppState.gameState.referrals.coinsFromInvites,
+                        energyFromInvites: AppState.gameState.referrals.energyFromInvites,
+                        dailyInvites: AppState.gameState.referrals.dailyInvites,
+                        lastInviteDate: AppState.gameState.referrals.lastInviteDate
+                    },
                     hasUnfinishedGame: AppState.hasUnfinishedGame,
                     gameSnapshot: AppState.hasUnfinishedGame ? AppState.gameState.getSnapshot() : null,
                     lastSave: Date.now()
@@ -2267,6 +2366,12 @@
                 await vkBridge.send('VKWebAppStorageSet', {
                     key: 'gameData',
                     value: JSON.stringify(gameData)
+                });
+                
+                // Сохраняем лучший счёт отдельно для рейтинга
+                await vkBridge.send('VKWebAppStorageSet', {
+                    key: 'bestScore',
+                    value: AppState.gameState.bestScore.toString()
                 });
                 
                 console.log('💾 Данные игры сохранены');
@@ -2290,9 +2395,28 @@
                         AppState.gameState.bestScore = gameData.bestScore || 0;
                         AppState.gameState.level.current = gameData.level || 1;
                         AppState.gameState.level.totalXP = gameData.totalXP || 0;
-                        AppState.gameState.coins = gameData.coins || 100;
+                        AppState.gameState.level.currentXP = gameData.currentXP || 0;
+                        AppState.gameState.coins = gameData.coins || 50;
                         AppState.gameState.boosters.inventory = { ...AppState.gameState.boosters.inventory, ...gameData.boosters };
                         AppState.gameState.stats = { ...AppState.gameState.stats, ...gameData.stats };
+                        
+                        // Восстанавливаем энергию
+                        if (gameData.energy) {
+                            AppState.gameState.energy.current = gameData.energy.current || 20;
+                            AppState.gameState.energy.max = gameData.energy.max || 20;
+                            AppState.gameState.energy.lastUpdate = gameData.energy.lastUpdate || Date.now();
+                            AppState.gameState.energy.lastDailyReset = gameData.energy.lastDailyReset || new Date().toDateString();
+                        }
+                        
+                        // Восстанавливаем данные приглашений
+                        if (gameData.referrals) {
+                            AppState.gameState.referrals.invitesSent = gameData.referrals.invitesSent || 0;
+                            AppState.gameState.referrals.friendsJoined = gameData.referrals.friendsJoined || 0;
+                            AppState.gameState.referrals.coinsFromInvites = gameData.referrals.coinsFromInvites || 0;
+                            AppState.gameState.referrals.energyFromInvites = gameData.referrals.energyFromInvites || 0;
+                            AppState.gameState.referrals.dailyInvites = gameData.referrals.dailyInvites || 0;
+                            AppState.gameState.referrals.lastInviteDate = gameData.referrals.lastInviteDate || new Date().toDateString();
+                        }
                         
                         AppState.hasUnfinishedGame = gameData.hasUnfinishedGame || false;
                         
@@ -2331,7 +2455,8 @@
                 document.querySelectorAll('.leaderboard-tab').forEach(tab => {
                     tab.classList.remove('active');
                 });
-                document.querySelector('[data-leaderboard="global"]').classList.add('active');
+                const firstTab = document.querySelector('.leaderboard-tab');
+                if (firstTab) firstTab.classList.add('active');
                 showLeaderboard('global');
             }
         }
@@ -2341,30 +2466,135 @@
             document.querySelectorAll('.leaderboard-tab').forEach(tab => {
                 tab.classList.remove('active');
             });
-            document.querySelector(`[data-leaderboard="${type}"]`).classList.add('active');
+            const targetTab = document.querySelector(`[onclick="showLeaderboard('${type}')"]`);
+            if (targetTab) targetTab.classList.add('active');
 
-            // Mock leaderboard data for now
-            const mockData = generateMockLeaderboard(type);
-            updateLeaderboardDisplay(mockData);
+            if (type === 'friends' && vkBridge && isVKReady) {
+                loadFriendsLeaderboard();
+            } else {
+                // Создаём реалистичный рейтинг на основе текущего игрока
+                const currentScore = AppState.gameState ? AppState.gameState.bestScore : 0;
+                const mockData = generateRealisticLeaderboard(type, currentScore);
+                updateLeaderboardDisplay(mockData);
+            }
         }
 
-        function generateMockLeaderboard(type) {
-            const names = ['Алекс П.', 'Мария К.', 'Иван С.', 'Анна М.', 'Сергей В.'];
-            const avatars = ['👨', '👩', '🧑', '👱', '🤓'];
+        async function loadFriendsLeaderboard() {
+            try {
+                // Получаем список друзей через VK API
+                const friends = await vkBridge.send('VKWebAppCallAPIMethod', {
+                    method: 'friends.getAppUsers',
+                    params: {
+                        access_token: 'app_token',
+                        v: '5.131'
+                    }
+                });
+
+                // Загружаем их данные (это упрощённый пример)
+                const friendsData = await Promise.all(
+                    friends.response.slice(0, 10).map(async (friendId) => {
+                        try {
+                            const userData = await vkBridge.send('VKWebAppStorageGet', {
+                                key: `friend_${friendId}_score`,
+                                user_id: friendId
+                            });
+                            
+                            return {
+                                id: friendId,
+                                score: userData.keys[0]?.value ? parseInt(userData.keys[0].value) : Math.floor(Math.random() * 10000),
+                                name: `Друг ${friendId}`,
+                                level: Math.floor(Math.random() * 20) + 1,
+                                isMe: friendId === currentUser.id
+                            };
+                        } catch {
+                            return {
+                                id: friendId,
+                                score: Math.floor(Math.random() * 10000),
+                                name: `Друг ${friendId}`,
+                                level: Math.floor(Math.random() * 20) + 1,
+                                isMe: false
+                            };
+                        }
+                    })
+                );
+
+                // Добавляем текущего игрока
+                if (AppState.gameState) {
+                    friendsData.push({
+                        id: currentUser.id,
+                        score: AppState.gameState.bestScore,
+                        name: currentUser.first_name || 'Вы',
+                        level: AppState.gameState.level.current,
+                        isMe: true
+                    });
+                }
+
+                // Сортируем по очкам
+                friendsData.sort((a, b) => b.score - a.score);
+                
+                // Обновляем ранги
+                friendsData.forEach((player, index) => {
+                    player.rank = index + 1;
+                });
+
+                updateLeaderboardDisplay(friendsData);
+                
+            } catch (error) {
+                console.log('Ошибка загрузки рейтинга друзей:', error);
+                // Fallback к обычному рейтингу
+                const currentScore = AppState.gameState ? AppState.gameState.bestScore : 0;
+                const mockData = generateRealisticLeaderboard('friends', currentScore);
+                updateLeaderboardDisplay(mockData);
+            }
+        }
+
+        function generateRealisticLeaderboard(type, playerScore) {
+            const names = ['Алекс П.', 'Мария К.', 'Иван С.', 'Анна М.', 'Сергей В.', 'Елена Д.', 'Михаил Р.', 'Ольга Н.', 'Дмитрий Л.', 'Наталья Б.'];
+            const avatars = ['👨', '👩', '🧑', '👱', '🤓', '👩‍🦰', '👨‍🦱', '👩‍🦳', '👨‍🦲', '👩‍🦴'];
             
             const data = [];
+            
+            // Создаём реалистичные очки относительно игрока
+            const baseScores = [];
             for (let i = 0; i < 10; i++) {
-                data.push({
-                    rank: i + 1,
-                    name: names[i % names.length],
-                    avatar: avatars[i % avatars.length],
-                    score: Math.floor(Math.random() * 50000) + 1000,
-                    level: Math.floor(Math.random() * 20) + 1,
-                    isMe: i === 3 // Player at 4th place
-                });
+                if (i < 3) {
+                    // Топ-3: лучше игрока на 20-50%
+                    baseScores.push(Math.floor(playerScore * (1.2 + Math.random() * 0.3)));
+                } else if (i < 7) {
+                    // Средние места: около уровня игрока ±30%
+                    baseScores.push(Math.floor(playerScore * (0.7 + Math.random() * 0.6)));
+                } else {
+                    // Нижние места: хуже игрока на 30-70%
+                    baseScores.push(Math.floor(playerScore * (0.3 + Math.random() * 0.4)));
+                }
             }
             
-            return data.sort((a, b) => b.score - a.score);
+            // Добавляем игрока
+            baseScores.push(playerScore);
+            names.push('Вы');
+            avatars.push('👤');
+            
+            // Сортируем
+            const combined = baseScores.map((score, index) => ({
+                score,
+                name: names[index] || `Игрок ${index}`,
+                avatar: avatars[index] || '👤',
+                isMe: index === baseScores.length - 1
+            })).sort((a, b) => b.score - a.score);
+            
+            // Присваиваем ранги
+            combined.forEach((player, index) => {
+                data.push({
+                    rank: index + 1,
+                    name: player.name,
+                    avatar: player.avatar,
+                    score: Math.max(0, player.score),
+                    level: Math.floor(player.score / 1000) + 1,
+                    isMe: player.isMe
+                });
+            });
+            
+            return data;
         }
 
         function updateLeaderboardDisplay(data) {
@@ -2504,6 +2734,8 @@
             // Friends screen
             document.getElementById('invitesSent').textContent = gs.referrals.invitesSent;
             document.getElementById('friendsJoined').textContent = gs.referrals.friendsJoined;
+            document.getElementById('coinsFromInvites').textContent = gs.referrals.coinsFromInvites;
+            document.getElementById('energyFromInvites').textContent = gs.referrals.energyFromInvites;
             
             updatePlayButton();
         }
@@ -2561,7 +2793,7 @@
                 this.level = this.initLevelSystem();
                 this.boosters = this.initBoostersSystem();
                 this.referrals = this.initReferralSystem();
-                this.coins = 100;
+                this.coins = 50;
                 this.stats = {
                     gamesPlayed: 0,
                     totalLinesCleared: 0,
@@ -2620,13 +2852,15 @@
 
             initEnergySystem() {
                 return {
-                    current: 5,
-                    max: 5,
-                    regenTime: 30 * 60 * 1000, // 30 minutes
+                    current: 20,
+                    max: 20,
+                    regenTime: 2 * 60 * 60 * 1000, // 2 hours per energy
                     lastUpdate: Date.now(),
+                    lastDailyReset: new Date().toDateString(),
                     timer: null,
                     
                     canPlay() {
+                        this.checkDailyReset();
                         this.updateEnergy();
                         return this.current > 0;
                     },
@@ -2642,7 +2876,7 @@
                     },
                     
                     add(amount) {
-                        this.current = Math.min(this.max, this.current + amount);
+                        this.current += amount; // Убираем ограничение максимума для бонусов
                         showNotification(`+${amount} Энергия! ⚡`);
                     },
                     
@@ -2655,6 +2889,16 @@
                         if (energyToAdd > 0) {
                             this.current = Math.min(this.max, this.current + energyToAdd);
                             this.lastUpdate = Date.now();
+                        }
+                    },
+                    
+                    checkDailyReset() {
+                        const today = new Date().toDateString();
+                        if (this.lastDailyReset !== today) {
+                            this.current = this.max;
+                            this.lastDailyReset = today;
+                            this.lastUpdate = Date.now();
+                            showNotification('Энергия восстановлена! 🌅');
                         }
                     },
                     
@@ -2762,6 +3006,8 @@
                 return {
                     invitesSent: 0,
                     friendsJoined: 0,
+                    coinsFromInvites: 0,
+                    energyFromInvites: 0,
                     dailyInvites: 0,
                     lastInviteDate: new Date().toDateString(),
                     
@@ -2780,11 +3026,25 @@
                         this.invitesSent++;
                         this.dailyInvites++;
                         
-                        AppState.gameState.energy.add(1);
-                        AppState.gameState.addCoins(5);
-                        
                         updateAllUI();
                         return true;
+                    },
+                    
+                    handleFriendJoined() {
+                        this.friendsJoined++;
+                        
+                        // Награды за присоединившегося друга
+                        const coinsReward = 100;
+                        const energyReward = 5;
+                        
+                        AppState.gameState.coins += coinsReward;
+                        AppState.gameState.energy.add(energyReward);
+                        
+                        this.coinsFromInvites += coinsReward;
+                        this.energyFromInvites += energyReward;
+                        
+                        showNotification(`Друг присоединился! +${coinsReward} монет, +${energyReward} энергии! 🎉`);
+                        updateAllUI();
                     }
                 };
             }
@@ -3557,11 +3817,6 @@
                 }
                 
                 updateGameUI();
-
-                if (count >= 2) {
-                    this.addCoins(count * 15);
-                    showNotification(`💥 ${count} линий! +${count * 15} монет!`);
-                }
                 
                 // Показываем бонус за очки
                 this.showScorePopup(lineScore);
@@ -3595,12 +3850,6 @@
                 if (leveledUp) {
                     console.log('🎉 Level up occurred, skipping immediate game over check');
                 }
-            }
-
-            addCoins(amount) {
-                this.coins += amount;
-                showNotification(`+${amount} монет! 🪙`);
-                updateAllUI();
             }
 
             allShapesUsed() {
@@ -3785,18 +4034,21 @@
             }
 
             handleLevelUp(oldLevel, newLevel) {
-                const coinsReward = 50 * newLevel;
-                this.addCoins(coinsReward);
+                // Базовая награда за уровень - небольшое количество монет
+                const coinsReward = 10 + (newLevel * 2);
+                this.coins += coinsReward;
                 
+                // Дополнительные награды каждые 5 уровней
                 if (newLevel % 5 === 0) {
                     this.boosters.add('shape_choice', 1);
-                    this.addCoins(200);
+                    this.coins += 50;
                 }
                 
+                // Крупные награды каждые 10 уровней
                 if (newLevel % 10 === 0) {
                     this.boosters.add('row_blast', 1);
                     this.energy.max += 1;
-                    this.addCoins(500);
+                    this.coins += 100;
                 }
                 
                 showNotification(`🎉 Уровень ${newLevel}! +${coinsReward} монет!`);
@@ -3804,8 +4056,6 @@
                 // Обновляем интерфейс сразу после повышения уровня
                 updateAllUI();
                 updateGameUI();
-                
-                // НЕ вызываем gameOver при повышении уровня!
             }
 
             restart() {
@@ -3854,10 +4104,64 @@
         }
 
         // Shop Functions
+        async function buyCoins(pack) {
+            const packs = {
+                small: { price: 1, coins: 500, name: 'Горстка монет' },
+                medium: { price: 2, coins: 1200, name: 'Мешок монет' },
+                large: { price: 4, coins: 3000, name: 'Сундук монет' },
+                mega: { price: 10, coins: 8000, name: 'Сокровищница' }
+            };
+            
+            const selectedPack = packs[pack];
+            
+            if (vkBridge && isVKReady) {
+                try {
+                    const result = await vkBridge.send('VKWebAppShowOrderBox', {
+                        type: 'item',
+                        item: `coins_${pack}`,
+                        amount: selectedPack.price
+                    });
+                    
+                    if (result.success) {
+                        AppState.gameState.coins += selectedPack.coins;
+                        updateAllUI();
+                        showNotification(`${selectedPack.name} куплен! +${selectedPack.coins} монет! 🪙`);
+                        
+                        if (isVKReady) {
+                            saveGameData();
+                        }
+                    }
+                } catch (error) {
+                    console.log('Ошибка покупки:', error);
+                    showNotification('Ошибка покупки! Попробуйте позже 😞');
+                }
+            } else {
+                // Мок для разработки
+                AppState.gameState.coins += selectedPack.coins;
+                updateAllUI();
+                showNotification(`${selectedPack.name} куплен! +${selectedPack.coins} монет! 🪙`);
+            }
+        }
+
         function buyPack(packType) {
             const packs = {
-                starter: { price: 150, items: { shape_choice: 3, refresh: 2, row_blast: 1 } },
-                premium: { price: 450, items: { shape_choice: 5, row_blast: 3, lightning: 2, star_blast: 1 } }
+                starter: { 
+                    price: 150, 
+                    items: { shape_choice: 3, refresh: 2 } 
+                },
+                advanced: { 
+                    price: 400, 
+                    items: { shape_choice: 5, row_blast: 3, lightning: 2 } 
+                },
+                premium: { 
+                    price: 900, 
+                    items: { shape_choice: 8, row_blast: 5, lightning: 4, star_blast: 2 } 
+                },
+                ultimate: { 
+                    price: 2400, 
+                    items: { shape_choice: 15, row_blast: 15, refresh: 15, lightning: 15, star_blast: 15 },
+                    bonusEnergy: 10
+                }
             };
             
             const pack = packs[packType];
@@ -3868,6 +4172,10 @@
                 Object.entries(pack.items).forEach(([type, amount]) => {
                     AppState.gameState.boosters.add(type, amount);
                 });
+                
+                if (pack.bonusEnergy) {
+                    AppState.gameState.energy.add(pack.bonusEnergy);
+                }
                 
                 updateAllUI();
                 showNotification(`${packType.toUpperCase()} набор куплен! 🎁`);
@@ -3881,7 +4189,7 @@
         }
 
         function buyEnergy(amount) {
-            const prices = { 1: 50, 5: 200 };
+            const prices = { 5: 100, 20: 300 };
             const price = prices[amount];
             
             if (AppState.gameState.coins >= price) {
@@ -3940,14 +4248,12 @@
                     if (success) {
                         showNotification('Приглашение отправлено! 📱');
                         
+                        // Симуляция присоединения друга (для демо)
                         setTimeout(() => {
-                            if (Math.random() < 0.3) {
-                                AppState.gameState.referrals.friendsJoined++;
-                                AppState.gameState.addCoins(20);
-                                showNotification(`Друг присоединился к игре! 🎉`);
-                                updateAllUI();
+                            if (Math.random() < 0.15) { // 15% шанс присоединения
+                                AppState.gameState.referrals.handleFriendJoined();
                             }
-                        }, 2000);
+                        }, 3000);
                     } else {
                         showNotification('Ошибка отправки приглашения 😞');
                     }
@@ -4071,7 +4377,7 @@
 
         document.addEventListener('DOMContentLoaded', initializeApp);
 
-        console.log('🎮 Блок Взрыв! VK Mini App v2.0.0 - Card Design Ready! 🚀');
+        console.log('🎮 Блок Взрыв! VK Mini App v2.0.0 - Полная версия с экономикой! 🚀');
     </script>
 </body>
 </html>
