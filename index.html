@@ -34,27 +34,29 @@
             -webkit-user-select: none;
         }
 
-        @import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@400;700;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
 
-        /* CSS Variables for easy theming */
+        /* CSS Variables for card game theme */
         :root {
-            --primary-bg: linear-gradient(135deg, #0f0c29 0%, #302b63 35%, #24243e 70%, #1a1a2e 100%);
-            --card-bg: rgba(0, 0, 0, 0.4);
-            --card-border: rgba(255, 255, 255, 0.1);
-            --accent-color: #feca57;
-            --accent-gradient: linear-gradient(45deg, #feca57, #ff9ff3);
-            --text-primary: white;
-            --text-secondary: #a8b2d1;
-            --energy-color: #feca57;
-            --coin-color: #ffd700;
-            --success-color: #1dd1a1;
-            --danger-color: #e74c3c;
-            --grid-bg: rgba(0, 0, 0, 0.5);
-            --grid-border: rgba(72, 219, 251, 0.4);
+            --primary-bg: linear-gradient(145deg, #8B4513 0%, #D2691E 50%, #CD853F 100%);
+            --card-bg: linear-gradient(145deg, #F5DEB3 0%, #FAEBD7 50%, #FFF8DC 100%);
+            --card-border: #D2691E;
+            --accent-color: #32CD32;
+            --accent-gradient: linear-gradient(45deg, #32CD32, #228B22);
+            --text-primary: #8B4513;
+            --text-secondary: #A0522D;
+            --energy-color: #FF6347;
+            --coin-color: #FFD700;
+            --success-color: #32CD32;
+            --danger-color: #DC143C;
+            --grid-bg: linear-gradient(145deg, #8B4513, #A0522D);
+            --grid-border: #F5DEB3;
+            --scroll-bg: linear-gradient(145deg, #D2691E, #CD853F);
+            --banner-bg: linear-gradient(145deg, #DC143C, #B22222);
         }
 
         body {
-            font-family: 'Exo 2', sans-serif;
+            font-family: 'Nunito', sans-serif;
             background: var(--primary-bg);
             min-height: 100vh;
             display: flex;
@@ -66,7 +68,6 @@
             color: var(--text-primary);
             overflow-x: hidden;
             position: relative;
-            /* Убрал backgroundPulse анимацию */
         }
 
         /* Loading Screen */
@@ -99,7 +100,6 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            /* Убрал logoShimmer анимацию */
             width: 120px;
             height: 120px;
         }
@@ -107,7 +107,7 @@
         .loading-spinner {
             width: 50px;
             height: 50px;
-            border: 4px solid rgba(255, 255, 255, 0.1);
+            border: 4px solid rgba(139, 69, 19, 0.2);
             border-top: 4px solid var(--accent-color);
             border-radius: 50%;
             animation: spin 1s linear infinite;
@@ -122,7 +122,8 @@
         .loading-text {
             font-size: 14px;
             opacity: 0.8;
-            /* Убрал pulse анимацию */
+            color: var(--text-primary);
+            font-weight: 600;
         }
 
         /* MAIN APP CONTAINER */
@@ -156,6 +157,20 @@
             display: flex;
             flex-direction: column;
             transition: transform 0.4s ease;
+            background: var(--scroll-bg);
+            position: relative;
+        }
+
+        .main-screen::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('assets/images/scroll-texture.png') repeat;
+            opacity: 0.1;
+            pointer-events: none;
         }
 
         .main-screen.slide-left {
@@ -180,13 +195,45 @@
             transform: translateX(-100%);
         }
 
-        /* NEW HEADER */
+        /* CARD HEADER */
         .new-header {
-            padding: 15px 20px;
-            background: linear-gradient(135deg, rgba(147, 51, 234, 0.25) 0%, rgba(79, 70, 229, 0.25) 100%);
-            border-bottom: 1px solid var(--card-border);
+            padding: 20px;
+            background: var(--card-bg);
+            border: 3px solid var(--card-border);
+            border-bottom: none;
+            border-radius: 20px 20px 0 0;
+            margin: 10px 10px 0 10px;
+            box-shadow: 
+                0 -5px 15px rgba(139, 69, 19, 0.3),
+                inset 0 2px 5px rgba(255, 255, 255, 0.5);
             position: relative;
-            overflow: hidden;
+        }
+
+        .new-header::before {
+            content: '';
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 150px;
+            height: 30px;
+            background: var(--banner-bg);
+            border-radius: 15px 15px 5px 5px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+            border: 2px solid #8B0000;
+        }
+
+        .new-header::after {
+            content: 'BLOCK BLAST';
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            font-size: 12px;
+            font-weight: 900;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
+            letter-spacing: 1px;
         }
 
         .header-content {
@@ -206,16 +253,18 @@
             width: 50px;
             height: 50px;
             border-radius: 50%;
-            border: 3px solid rgba(255, 255, 255, 0.3);
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            border: 3px solid var(--card-border);
+            background: linear-gradient(145deg, #FFE4B5, #DEB887);
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 20px;
-            /* Убрал avatarPulse анимацию */
             flex-shrink: 0;
             position: relative;
             overflow: hidden;
+            box-shadow: 
+                0 4px 8px rgba(139, 69, 19, 0.4),
+                inset 0 2px 4px rgba(255, 255, 255, 0.3);
         }
 
         .profile-avatar img {
@@ -233,10 +282,11 @@
 
         .profile-name {
             font-size: 16px;
-            font-weight: 700;
+            font-weight: 800;
             color: var(--text-primary);
             line-height: 1.2;
             margin-bottom: 2px;
+            text-shadow: 0 1px 2px rgba(255, 255, 255, 0.5);
         }
 
         .profile-level {
@@ -245,16 +295,19 @@
             display: flex;
             align-items: center;
             gap: 4px;
+            font-weight: 600;
         }
 
         .level-icon {
             width: 14px;
             height: 14px;
+            background: url('assets/images/trophy-small.png') no-repeat center;
+            background-size: contain;
         }
 
         .stats-section {
             display: flex;
-            gap: 15px;
+            gap: 12px;
             align-items: center;
         }
 
@@ -262,35 +315,49 @@
             display: flex;
             align-items: center;
             gap: 6px;
-            background: var(--card-bg);
+            background: linear-gradient(145deg, #FFF8DC, #F5DEB3);
             padding: 8px 12px;
             border-radius: 20px;
-            border: 1px solid var(--card-border);
-            backdrop-filter: blur(10px);
-            transition: all 0.2s ease; /* Ускорил переход */
+            border: 2px solid var(--card-border);
+            box-shadow: 
+                0 3px 8px rgba(139, 69, 19, 0.3),
+                inset 0 1px 3px rgba(255, 255, 255, 0.5);
+            transition: all 0.2s ease;
         }
 
         .stat-item:hover {
             transform: translateY(-2px);
-            border-color: rgba(255, 255, 255, 0.2);
+            box-shadow: 
+                0 5px 12px rgba(139, 69, 19, 0.4),
+                inset 0 1px 3px rgba(255, 255, 255, 0.5);
         }
 
         .stat-icon {
             width: 18px;
             height: 18px;
-            /* Убрал iconPulse анимацию */
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
+        .stat-icon[src*="energy"] {
+            background-image: url('assets/images/energy-icon.png');
+        }
+
+        .stat-icon[src*="coin"] {
+            background-image: url('assets/images/coin-icon.png');
         }
 
         .stat-value {
             font-size: 14px;
-            font-weight: 700;
-            color: var(--accent-color);
-            text-shadow: 0 0 10px rgba(254, 202, 87, 0.5);
+            font-weight: 800;
+            color: var(--text-primary);
+            text-shadow: 0 1px 2px rgba(255, 255, 255, 0.5);
         }
 
         .buy-coins-btn {
-            background: linear-gradient(135deg, #1dd1a1, #10ac84);
-            border: none;
+            background: var(--accent-gradient);
+            border: 2px solid #228B22;
             border-radius: 50%;
             width: 20px;
             height: 20px;
@@ -298,25 +365,31 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            transition: all 0.2s ease; /* Ускорил переход */
+            transition: all 0.2s ease;
             font-size: 10px;
             margin-left: 4px;
+            color: white;
+            font-weight: 800;
+            box-shadow: 0 2px 5px rgba(34, 139, 34, 0.4);
         }
 
         .buy-coins-btn:hover {
             transform: scale(1.1);
-            box-shadow: 0 0 15px rgba(29, 209, 161, 0.5);
+            box-shadow: 0 3px 8px rgba(34, 139, 34, 0.6);
         }
 
-        /* NEW NAVIGATION */
+        /* CARD NAVIGATION */
         .new-nav {
             display: flex;
             background: var(--card-bg);
-            border-radius: 0;
+            border: 3px solid var(--card-border);
+            border-top: none;
+            border-bottom: none;
+            margin: 0 10px;
             padding: 0;
-            margin: 0;
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid var(--card-border);
+            box-shadow: 
+                inset 0 2px 5px rgba(255, 255, 255, 0.3),
+                inset 0 -2px 5px rgba(139, 69, 19, 0.2);
         }
 
         .nav-item {
@@ -324,23 +397,22 @@
             padding: 15px 8px;
             text-align: center;
             cursor: pointer;
-            transition: all 0.2s ease; /* Ускорил переход */
+            transition: all 0.2s ease;
             font-size: 12px;
-            font-weight: 600;
+            font-weight: 700;
             background: transparent;
             border: none;
-            color: rgba(255, 255, 255, 0.6);
+            color: var(--text-secondary);
             position: relative;
             overflow: hidden;
             border-bottom: 3px solid transparent;
         }
 
-        /* Убрал сложные hover эффекты */
-
         .nav-item.active {
-            color: var(--accent-color);
+            color: var(--text-primary);
             border-bottom-color: var(--accent-color);
-            background: rgba(254, 202, 87, 0.1);
+            background: linear-gradient(to bottom, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.1));
+            text-shadow: 0 1px 2px rgba(255, 255, 255, 0.5);
         }
 
         .nav-icon {
@@ -348,6 +420,9 @@
             height: 20px;
             display: block;
             margin: 0 auto 4px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
         }
 
         /* CONTENT AREA */
@@ -356,53 +431,67 @@
             padding: 20px;
             overflow-y: auto;
             position: relative;
+            background: var(--card-bg);
+            border: 3px solid var(--card-border);
+            border-top: none;
+            border-bottom: none;
+            margin: 0 10px;
+            box-shadow: 
+                inset 0 5px 15px rgba(139, 69, 19, 0.1),
+                inset 0 -5px 15px rgba(139, 69, 19, 0.1);
         }
 
         .content-screen {
             display: none;
-            /* Убрал анимацию contentSlideIn */
         }
 
         .content-screen.active {
             display: block;
         }
 
-        /* PLAY BUTTON */
+        /* PLAY BUTTON CONTAINER */
         .play-button-container {
             position: sticky;
             bottom: 0;
             left: 0;
             right: 0;
             padding: 20px;
-            background: linear-gradient(to top, var(--primary-bg) 0%, rgba(15, 12, 41, 0.95) 70%, transparent 100%);
+            background: var(--card-bg);
+            border: 3px solid var(--card-border);
+            border-top: none;
+            border-radius: 0 0 20px 20px;
+            margin: 0 10px 10px 10px;
+            box-shadow: 
+                0 5px 15px rgba(139, 69, 19, 0.3),
+                inset 0 2px 5px rgba(255, 255, 255, 0.5);
             z-index: 50;
         }
 
         .play-button {
             width: 100%;
-            padding: 18px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            height: 60px;
+            background-image: url('assets/images/play-button.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
             border: none;
             border-radius: 15px;
-            color: white;
+            color: transparent;
             font-size: 18px;
             font-weight: 900;
             cursor: pointer;
-            transition: all 0.2s ease; /* Ускорил переход */
-            font-family: 'Exo 2', sans-serif;
-            border: 2px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.2s ease;
+            font-family: 'Nunito', sans-serif;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 8px 16px rgba(139, 69, 19, 0.4);
             text-transform: uppercase;
             letter-spacing: 1px;
         }
 
-        /* Убрал сложные hover эффекты */
-
         .play-button:hover {
             transform: translateY(-3px) scale(1.02);
-            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.6);
+            box-shadow: 0 12px 24px rgba(139, 69, 19, 0.5);
         }
 
         .play-button:active {
@@ -410,41 +499,41 @@
         }
 
         .play-button.continue {
-            background: linear-gradient(135deg, #1dd1a1, #10ac84);
-            box-shadow: 0 8px 25px rgba(29, 209, 161, 0.4);
-        }
-
-        .play-button.continue:hover {
-            box-shadow: 0 15px 35px rgba(29, 209, 161, 0.6);
+            background-image: url('assets/images/continue-button.png');
         }
 
         /* GAME HEADER */
         .game-header {
             padding: 15px 20px;
-            background: linear-gradient(135deg, rgba(147, 51, 234, 0.25) 0%, rgba(79, 70, 229, 0.25) 100%);
-            border-bottom: 1px solid var(--card-border);
+            background: var(--card-bg);
+            border: 3px solid var(--card-border);
+            border-bottom: none;
+            border-radius: 20px 20px 0 0;
+            margin: 10px 10px 0 10px;
             display: flex;
             align-items: center;
             justify-content: space-between;
+            box-shadow: 
+                0 -5px 15px rgba(139, 69, 19, 0.3),
+                inset 0 2px 5px rgba(255, 255, 255, 0.5);
         }
 
         .back-button {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
+            background: linear-gradient(145deg, #F5DEB3, #DEB887);
+            border: 2px solid var(--card-border);
             border-radius: 10px;
             padding: 10px 15px;
             color: var(--text-primary);
             font-size: 14px;
-            font-weight: 600;
+            font-weight: 700;
             cursor: pointer;
-            transition: all 0.2s ease; /* Ускорил переход */
-            backdrop-filter: blur(10px);
+            transition: all 0.2s ease;
+            box-shadow: 0 3px 8px rgba(139, 69, 19, 0.3);
         }
 
         .back-button:hover {
             transform: translateY(-2px);
-            border-color: rgba(255, 255, 255, 0.3);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 5px 12px rgba(139, 69, 19, 0.4);
         }
 
         .game-stats {
@@ -455,11 +544,16 @@
 
         .game-stat {
             text-align: center;
+            background: linear-gradient(145deg, #FFF8DC, #F5DEB3);
+            padding: 8px 12px;
+            border-radius: 10px;
+            border: 2px solid var(--card-border);
+            box-shadow: 0 2px 5px rgba(139, 69, 19, 0.3);
         }
 
         .game-stat-label {
             font-size: 10px;
-            opacity: 0.7;
+            opacity: 0.8;
             margin-bottom: 2px;
             text-transform: uppercase;
             font-weight: 700;
@@ -470,10 +564,8 @@
         .game-stat-value {
             font-size: 16px;
             font-weight: 900;
-            background: var(--accent-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            color: var(--text-primary);
+            text-shadow: 0 1px 2px rgba(255, 255, 255, 0.5);
         }
 
         /* GAME CONTENT */
@@ -485,13 +577,18 @@
             align-items: center;
             gap: 20px;
             justify-content: center;
+            background: var(--card-bg);
+            border: 3px solid var(--card-border);
+            border-top: none;
+            border-bottom: none;
+            margin: 0 10px;
         }
 
-        /* BOOSTERS IN GAME - ПРИБЛИЗИЛ */
+        /* BOOSTERS IN GAME */
         .game-boosters {
             display: flex;
             justify-content: center;
-            gap: 8px; /* Уменьшил с 15px до 8px как просил */
+            gap: 8px;
             margin-bottom: 20px;
         }
 
@@ -500,19 +597,18 @@
             flex-direction: column;
             align-items: center;
             cursor: pointer;
-            transition: all 0.2s ease; /* Ускорил переход */
+            transition: all 0.2s ease;
             padding: 10px;
             border-radius: 10px;
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            backdrop-filter: blur(10px);
+            background: linear-gradient(145deg, #FFF8DC, #F5DEB3);
+            border: 2px solid var(--card-border);
             min-width: 60px;
+            box-shadow: 0 3px 8px rgba(139, 69, 19, 0.3);
         }
 
         .game-booster:hover {
-            transform: translateY(-3px); /* Упростил эффект */
-            border-color: var(--accent-color);
-            box-shadow: 0 10px 25px rgba(254, 202, 87, 0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(139, 69, 19, 0.4);
         }
 
         .game-booster.disabled {
@@ -523,28 +619,31 @@
 
         .game-booster.disabled:hover {
             transform: none;
-            border-color: var(--card-border);
-            box-shadow: none;
+            box-shadow: 0 3px 8px rgba(139, 69, 19, 0.3);
         }
 
         .game-booster-icon {
             font-size: 24px;
             margin-bottom: 4px;
-            filter: drop-shadow(0 3px 8px rgba(0, 0, 0, 0.6));
+            filter: drop-shadow(0 2px 4px rgba(139, 69, 19, 0.3));
             width: 28px;
             height: 28px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
         }
 
         .game-booster-count {
             font-size: 10px;
-            font-weight: 700;
-            background: linear-gradient(135deg, #ffd700, #ffed4e);
-            color: #000;
+            font-weight: 800;
+            background: var(--coin-color);
+            color: #8B4513;
             padding: 2px 6px;
             border-radius: 8px;
             min-width: 16px;
             text-align: center;
-            box-shadow: 0 2px 8px rgba(255, 215, 0, 0.4);
+            box-shadow: 0 2px 5px rgba(255, 215, 0, 0.4);
+            border: 1px solid #DAA520;
         }
 
         /* GRID AND SHAPES */
@@ -558,14 +657,12 @@
         .grid-container {
             position: relative;
             background: var(--grid-bg);
-            padding: 8px;
-            border-radius: 10px;
+            padding: 12px;
+            border-radius: 15px;
+            border: 3px solid var(--card-border);
             box-shadow: 
-                inset 0 4px 20px rgba(0, 0, 0, 0.6),
-                0 0 40px rgba(72, 219, 251, 0.2),
-                0 0 0 1px var(--grid-border);
-            border: 1px solid var(--grid-border);
-            backdrop-filter: blur(20px);
+                0 8px 20px rgba(139, 69, 19, 0.4),
+                inset 0 3px 8px rgba(0, 0, 0, 0.3);
         }
 
         .grid {
@@ -575,69 +672,75 @@
             gap: 3px;
             width: 340px;
             height: 340px;
-            background: rgba(0, 0, 0, 0.3);
+            background: rgba(0, 0, 0, 0.2);
             border-radius: 8px;
             padding: 8px;
             position: relative;
+            border: 2px solid rgba(245, 222, 179, 0.3);
         }
 
         .cell {
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%);
+            background: radial-gradient(circle, rgba(245, 222, 179, 0.3) 0%, rgba(222, 184, 135, 0.1) 100%);
             border-radius: 4px;
-            border: 0.5px solid rgba(255, 255, 255, 0.05);
-            /* Убрал transition для лучшей производительности */
+            border: 1px solid rgba(245, 222, 179, 0.2);
             position: relative;
             overflow: hidden;
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
         }
 
         .cell.filled {
-            /* Упростил анимацию */
             animation: blockPlace 0.3s ease-out;
             transform-origin: center;
+            border: 2px solid rgba(255, 255, 255, 0.3);
         }
 
         .cell.filled.color-red {
-            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
-            border-color: #ff5252;
-            box-shadow: 0 0 20px rgba(255, 107, 107, 0.8);
+            background: linear-gradient(145deg, #FF6B6B 0%, #EE5A52 100%);
+            box-shadow: 
+                0 0 15px rgba(255, 107, 107, 0.6),
+                inset 0 2px 4px rgba(255, 255, 255, 0.3);
         }
 
         .cell.filled.color-blue {
-            background: linear-gradient(135deg, #48dbfb 0%, #0abde3 100%);
-            border-color: #0abde3;
-            box-shadow: 0 0 20px rgba(72, 219, 251, 0.8);
+            background: linear-gradient(145deg, #48DBFB 0%, #0ABDE3 100%);
+            box-shadow: 
+                0 0 15px rgba(72, 219, 251, 0.6),
+                inset 0 2px 4px rgba(255, 255, 255, 0.3);
         }
 
         .cell.filled.color-green {
-            background: linear-gradient(135deg, #1dd1a1 0%, #10ac84 100%);
-            border-color: #10ac84;
-            box-shadow: 0 0 20px rgba(29, 209, 161, 0.8);
+            background: linear-gradient(145deg, #1DD1A1 0%, #10AC84 100%);
+            box-shadow: 
+                0 0 15px rgba(29, 209, 161, 0.6),
+                inset 0 2px 4px rgba(255, 255, 255, 0.3);
         }
 
         .cell.filled.color-purple {
-            background: linear-gradient(135deg, #a55eea 0%, #8854d0 100%);
-            border-color: #8854d0;
-            box-shadow: 0 0 20px rgba(165, 94, 234, 0.8);
+            background: linear-gradient(145deg, #A55EEA 0%, #8854D0 100%);
+            box-shadow: 
+                0 0 15px rgba(165, 94, 234, 0.6),
+                inset 0 2px 4px rgba(255, 255, 255, 0.3);
         }
 
         .cell.filled.color-orange {
-            background: linear-gradient(135deg, #feca57 0%, #ff9ff3 100%);
-            border-color: #ff9ff3;
-            box-shadow: 0 0 20px rgba(254, 202, 87, 0.8);
+            background: linear-gradient(145deg, #FECA57 0%, #FF9FF3 100%);
+            box-shadow: 
+                0 0 15px rgba(254, 202, 87, 0.6),
+                inset 0 2px 4px rgba(255, 255, 255, 0.3);
         }
 
-        /* ЯРКАЯ ТЕНЬ ФИГУРЫ - УПРОЩЕННАЯ */
         .cell.preview {
             background: rgba(255, 255, 255, 0.9) !important;
-            border: 2px solid rgba(255, 255, 255, 1) !important;
-            /* Убрал сложную анимацию, оставил простое свечение */
-            box-shadow: 0 0 15px rgba(255, 255, 255, 0.8) !important;
+            border: 2px solid #32CD32 !important;
+            box-shadow: 
+                0 0 15px rgba(50, 205, 50, 0.8) !important,
+                inset 0 2px 4px rgba(255, 255, 255, 0.5) !important;
             transform: scale(1.05) !important;
             z-index: 10 !important;
         }
 
         .cell.clearing {
-            animation: clearSimple 0.4s ease-out forwards; /* Ускорил анимацию */
+            animation: clearSimple 0.4s ease-out forwards;
             z-index: 10;
         }
 
@@ -674,13 +777,15 @@
             display: flex;
             justify-content: space-around;
             align-items: center;
-            background: var(--card-bg);
-            border-radius: 10px;
+            background: linear-gradient(145deg, #FFF8DC, #F5DEB3);
+            border-radius: 15px;
             padding: 15px;
             position: relative;
-            border: 1px solid var(--card-border);
-            backdrop-filter: blur(15px);
+            border: 3px solid var(--card-border);
             overflow: hidden;
+            box-shadow: 
+                0 5px 15px rgba(139, 69, 19, 0.3),
+                inset 0 2px 5px rgba(255, 255, 255, 0.5);
         }
 
         .shape-slot {
@@ -689,19 +794,20 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.03) 100%);
+            background: radial-gradient(circle, rgba(139, 69, 19, 0.1) 0%, rgba(139, 69, 19, 0.03) 100%);
             border-radius: 10px;
-            border: 1px dashed rgba(255, 255, 255, 0.3);
+            border: 2px dashed var(--card-border);
             position: relative;
-            transition: all 0.2s ease; /* Ускорил переход */
+            transition: all 0.2s ease;
             overflow: hidden;
+            box-shadow: inset 0 2px 5px rgba(139, 69, 19, 0.1);
         }
 
         .shape {
             display: grid;
             gap: 1.5px;
             cursor: grab;
-            transition: all 0.2s ease; /* Упростил transition */
+            transition: all 0.2s ease;
             position: relative;
             z-index: 100;
             padding: 3px;
@@ -712,7 +818,7 @@
         }
 
         .shape:hover {
-            transform: scale(1.1); /* Упростил эффект */
+            transform: scale(1.1);
         }
 
         .shape:active {
@@ -737,12 +843,12 @@
             width: 18px;
             height: 18px;
             border-radius: 4px;
-            box-shadow: 
-                0 3px 10px rgba(0, 0, 0, 0.4),
-                inset 0 1px 3px rgba(255, 255, 255, 0.4);
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.4);
             position: relative;
-            transition: all 0.2s ease; /* Ускорил переход */
+            transition: all 0.2s ease;
+            box-shadow: 
+                0 3px 8px rgba(139, 69, 19, 0.3),
+                inset 0 2px 4px rgba(255, 255, 255, 0.3);
         }
 
         .shape-block.empty {
@@ -752,23 +858,23 @@
         }
 
         .shape[data-color="red"] .shape-block:not(.empty) {
-            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+            background: linear-gradient(145deg, #FF6B6B 0%, #EE5A52 100%);
         }
 
         .shape[data-color="blue"] .shape-block:not(.empty) {
-            background: linear-gradient(135deg, #48dbfb 0%, #0abde3 100%);
+            background: linear-gradient(145deg, #48DBFB 0%, #0ABDE3 100%);
         }
 
         .shape[data-color="green"] .shape-block:not(.empty) {
-            background: linear-gradient(135deg, #1dd1a1 0%, #10ac84 100%);
+            background: linear-gradient(145deg, #1DD1A1 0%, #10AC84 100%);
         }
 
         .shape[data-color="purple"] .shape-block:not(.empty) {
-            background: linear-gradient(135deg, #a55eea 0%, #8854d0 100%);
+            background: linear-gradient(145deg, #A55EEA 0%, #8854D0 100%);
         }
 
         .shape[data-color="orange"] .shape-block:not(.empty) {
-            background: linear-gradient(135deg, #feca57 0%, #ff9ff3 100%);
+            background: linear-gradient(145deg, #FECA57 0%, #FF9FF3 100%);
         }
 
         /* COMBO DISPLAY */
@@ -776,7 +882,7 @@
             position: absolute;
             top: 15px;
             right: 15px;
-            background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+            background: var(--banner-bg);
             color: white;
             padding: 8px 12px;
             border-radius: 12px;
@@ -784,15 +890,14 @@
             font-weight: 900;
             opacity: 0;
             transform: scale(0.8);
-            transition: all 0.3s ease; /* Ускорил переход */
-            box-shadow: 0 8px 25px rgba(255, 107, 107, 0.4);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(220, 20, 60, 0.4);
+            border: 2px solid #8B0000;
         }
 
         .combo-display.active {
             opacity: 1;
             transform: scale(1);
-            /* Убрал comboRave анимацию */
         }
 
         /* PLAYER SCREEN */
@@ -801,25 +906,25 @@
         }
 
         .player-card {
-            background: var(--card-bg);
+            background: linear-gradient(145deg, #FFF8DC, #F5DEB3);
             border-radius: 15px;
             padding: 25px;
             margin-bottom: 20px;
-            border: 1px solid var(--card-border);
-            backdrop-filter: blur(15px);
+            border: 3px solid var(--card-border);
             text-align: center;
             position: relative;
             overflow: hidden;
+            box-shadow: 
+                0 8px 20px rgba(139, 69, 19, 0.3),
+                inset 0 2px 5px rgba(255, 255, 255, 0.5);
         }
-
-        /* Убрал cardShine анимацию */
 
         .player-avatar-large {
             width: 80px;
             height: 80px;
             border-radius: 50%;
-            border: 4px solid rgba(255, 255, 255, 0.3);
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            border: 4px solid var(--card-border);
+            background: linear-gradient(145deg, #FFE4B5, #DEB887);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -827,6 +932,9 @@
             margin: 0 auto 15px;
             position: relative;
             overflow: hidden;
+            box-shadow: 
+                0 5px 15px rgba(139, 69, 19, 0.4),
+                inset 0 2px 5px rgba(255, 255, 255, 0.3);
         }
 
         .player-avatar-large img {
@@ -840,16 +948,15 @@
             font-size: 24px;
             font-weight: 900;
             margin-bottom: 8px;
-            background: var(--accent-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            color: var(--text-primary);
+            text-shadow: 0 2px 4px rgba(255, 255, 255, 0.5);
         }
 
         .player-level-large {
             font-size: 16px;
             color: var(--text-secondary);
             margin-bottom: 20px;
+            font-weight: 600;
         }
 
         .xp-progress {
@@ -858,12 +965,14 @@
 
         .xp-bar {
             width: 100%;
-            height: 8px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 4px;
+            height: 12px;
+            background: rgba(139, 69, 19, 0.2);
+            border-radius: 6px;
             overflow: hidden;
             margin-bottom: 8px;
             position: relative;
+            border: 2px solid var(--card-border);
+            box-shadow: inset 0 2px 4px rgba(139, 69, 19, 0.2);
         }
 
         .xp-fill {
@@ -873,12 +982,14 @@
             transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             overflow: hidden;
+            box-shadow: 0 0 10px rgba(50, 205, 50, 0.5);
         }
 
         .xp-text {
             font-size: 12px;
             color: var(--text-secondary);
             text-align: center;
+            font-weight: 600;
         }
 
         .achievements-grid {
@@ -889,34 +1000,38 @@
         }
 
         .achievement-item {
-            background: var(--card-bg);
+            background: linear-gradient(145deg, #FFFACD, #F0E68C);
             border-radius: 10px;
             padding: 15px;
             text-align: center;
-            border: 1px solid var(--card-border);
-            transition: all 0.2s ease; /* Ускорил переход */
+            border: 2px solid var(--card-border);
+            transition: all 0.2s ease;
+            box-shadow: 0 3px 8px rgba(139, 69, 19, 0.3);
         }
 
         .achievement-item:hover {
             transform: translateY(-3px);
-            border-color: var(--accent-color);
-            box-shadow: 0 8px 25px rgba(254, 202, 87, 0.3);
+            box-shadow: 0 6px 15px rgba(139, 69, 19, 0.4);
         }
 
         .achievement-icon {
             font-size: 24px;
             margin-bottom: 8px;
+            filter: drop-shadow(0 2px 4px rgba(139, 69, 19, 0.3));
         }
 
         .achievement-name {
             font-size: 12px;
-            font-weight: 600;
+            font-weight: 700;
             margin-bottom: 4px;
+            color: var(--text-primary);
         }
 
         .achievement-desc {
             font-size: 10px;
-            opacity: 0.7;
+            opacity: 0.8;
+            color: var(--text-secondary);
+            font-weight: 600;
         }
 
         /* SHOP SCREEN */
@@ -929,10 +1044,8 @@
             font-weight: 900;
             margin-bottom: 15px;
             text-align: center;
-            background: var(--accent-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            color: var(--text-primary);
+            text-shadow: 0 2px 4px rgba(255, 255, 255, 0.5);
         }
 
         .shop-grid {
@@ -942,67 +1055,74 @@
         }
 
         .shop-item {
-            background: var(--card-bg);
+            background: linear-gradient(145deg, #FFF8DC, #F5DEB3);
             border-radius: 12px;
             padding: 15px;
-            border: 1px solid var(--card-border);
+            border: 3px solid var(--card-border);
             cursor: pointer;
-            transition: all 0.2s ease; /* Ускорил переход */
+            transition: all 0.2s ease;
             text-align: center;
-            backdrop-filter: blur(10px);
             position: relative;
             overflow: hidden;
+            box-shadow: 0 5px 15px rgba(139, 69, 19, 0.3);
         }
 
         .shop-item:hover {
-            border-color: var(--accent-color);
             transform: translateY(-5px) scale(1.02);
-            box-shadow: 0 15px 30px rgba(254, 202, 87, 0.3);
+            box-shadow: 0 8px 25px rgba(139, 69, 19, 0.4);
         }
 
         .shop-item-icon {
             font-size: 32px;
             margin-bottom: 10px;
-            filter: drop-shadow(0 3px 8px rgba(0, 0, 0, 0.5));
+            filter: drop-shadow(0 3px 8px rgba(139, 69, 19, 0.3));
             width: 36px;
             height: 36px;
             margin: 0 auto 10px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
         }
 
         .shop-item-name {
             font-size: 14px;
-            font-weight: 700;
+            font-weight: 800;
             margin-bottom: 6px;
+            color: var(--text-primary);
         }
 
         .shop-item-description {
             font-size: 11px;
-            opacity: 0.7;
+            opacity: 0.8;
             margin-bottom: 10px;
             line-height: 1.3;
+            color: var(--text-secondary);
+            font-weight: 600;
         }
 
         .shop-item-price {
             display: flex;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(135deg, #ffd700, #ffed4e);
-            color: #000;
+            background: var(--coin-color);
+            color: #8B4513;
             padding: 8px 12px;
             border-radius: 8px;
-            font-weight: 700;
+            font-weight: 800;
             font-size: 12px;
-            box-shadow: 0 3px 10px rgba(255, 215, 0, 0.4);
+            box-shadow: 0 3px 8px rgba(255, 215, 0, 0.4);
+            border: 2px solid #DAA520;
         }
 
         /* LEADERBOARD & FRIENDS */
         .leaderboard-tabs {
             display: flex;
-            background: var(--card-bg);
+            background: linear-gradient(145deg, #F5DEB3, #DEB887);
             border-radius: 8px;
             padding: 3px;
             margin-bottom: 20px;
-            backdrop-filter: blur(10px);
+            border: 2px solid var(--card-border);
+            box-shadow: 0 3px 8px rgba(139, 69, 19, 0.3);
         }
 
         .leaderboard-tab {
@@ -1011,18 +1131,19 @@
             text-align: center;
             border-radius: 6px;
             cursor: pointer;
-            transition: all 0.2s ease; /* Ускорил переход */
+            transition: all 0.2s ease;
             font-size: 12px;
-            font-weight: 600;
+            font-weight: 700;
             background: transparent;
             border: none;
-            color: rgba(255, 255, 255, 0.6);
+            color: var(--text-secondary);
         }
 
         .leaderboard-tab.active {
-            background: linear-gradient(135deg, #a55eea, #8854d0);
+            background: var(--accent-gradient);
             color: white;
-            box-shadow: 0 3px 10px rgba(165, 94, 234, 0.4);
+            box-shadow: 0 3px 8px rgba(50, 205, 50, 0.4);
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
         }
 
         .leaderboard-list {
@@ -1034,23 +1155,23 @@
         .leaderboard-item {
             display: flex;
             align-items: center;
-            background: var(--card-bg);
+            background: linear-gradient(145deg, #FFF8DC, #F5DEB3);
             padding: 15px;
             border-radius: 10px;
-            border: 1px solid var(--card-border);
-            backdrop-filter: blur(10px);
-            transition: all 0.2s ease; /* Ускорил переход */
+            border: 2px solid var(--card-border);
+            transition: all 0.2s ease;
+            box-shadow: 0 3px 8px rgba(139, 69, 19, 0.3);
         }
 
         .leaderboard-item:hover {
             transform: translateX(5px);
-            border-color: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 5px 12px rgba(139, 69, 19, 0.4);
         }
 
         .leaderboard-item.me {
             border-color: var(--accent-color);
-            background: rgba(254, 202, 87, 0.1);
-            box-shadow: 0 0 20px rgba(254, 202, 87, 0.3);
+            background: linear-gradient(145deg, #F0FFF0, #E0FFE0);
+            box-shadow: 0 5px 15px rgba(50, 205, 50, 0.3);
         }
 
         .leaderboard-rank {
@@ -1059,33 +1180,35 @@
             margin-right: 15px;
             min-width: 30px;
             text-align: center;
+            color: var(--text-primary);
         }
 
         .leaderboard-rank.gold { 
-            color: #ffd700; 
-            text-shadow: 0 0 10px #ffd700;
+            color: #FFD700; 
+            text-shadow: 0 0 10px #FFD700;
         }
         .leaderboard-rank.silver { 
-            color: #c0c0c0; 
-            text-shadow: 0 0 10px #c0c0c0;
+            color: #C0C0C0; 
+            text-shadow: 0 0 10px #C0C0C0;
         }
         .leaderboard-rank.bronze { 
-            color: #cd7f32; 
-            text-shadow: 0 0 10px #cd7f32;
+            color: #CD7F32; 
+            text-shadow: 0 0 10px #CD7F32;
         }
 
         .leaderboard-avatar {
             width: 40px;
             height: 40px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            background: linear-gradient(145deg, #FFE4B5, #DEB887);
             display: flex;
             align-items: center;
             justify-content: center;
             margin-right: 12px;
             font-size: 18px;
-            box-shadow: 0 3px 10px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 3px 8px rgba(139, 69, 19, 0.4);
             object-fit: cover;
+            border: 2px solid var(--card-border);
         }
 
         .leaderboard-info {
@@ -1094,20 +1217,23 @@
 
         .leaderboard-name {
             font-size: 14px;
-            font-weight: 600;
+            font-weight: 700;
             margin-bottom: 2px;
+            color: var(--text-primary);
         }
 
         .leaderboard-level {
             font-size: 11px;
-            opacity: 0.7;
+            opacity: 0.8;
+            color: var(--text-secondary);
+            font-weight: 600;
         }
 
         .leaderboard-score {
             font-size: 16px;
             font-weight: 900;
-            color: var(--accent-color);
-            text-shadow: 0 0 8px rgba(254, 202, 87, 0.5);
+            color: var(--text-primary);
+            text-shadow: 0 1px 2px rgba(255, 255, 255, 0.5);
         }
 
         /* NOTIFICATION */
@@ -1115,22 +1241,22 @@
             position: fixed;
             top: 20px;
             right: 20px;
-            background: linear-gradient(135deg, var(--success-color), #10ac84);
+            background: var(--success-color);
             color: white;
             padding: 12px 16px;
             border-radius: 8px;
-            font-weight: 700;
+            font-weight: 800;
             font-size: 12px;
-            box-shadow: 0 10px 25px rgba(29, 209, 161, 0.4);
+            box-shadow: 0 5px 15px rgba(50, 205, 50, 0.4);
             transform: translateX(100%);
             transition: transform 0.4s ease;
             z-index: 4000;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 2px solid #228B22;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
         }
 
         .notification.show {
             transform: translateX(0);
-            /* Убрал notificationPulse анимацию */
         }
 
         /* OVERLAYS */
@@ -1140,7 +1266,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0, 0, 0, 0.95);
+            background: rgba(139, 69, 19, 0.95);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -1157,14 +1283,16 @@
         }
 
         .overlay-content {
-            background: linear-gradient(135deg, #2c3e50, #34495e);
+            background: var(--card-bg);
             padding: 30px;
             border-radius: 15px;
             text-align: center;
             max-width: 320px;
             width: 90%;
-            border: 2px solid var(--card-border);
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.7);
+            border: 3px solid var(--card-border);
+            box-shadow: 
+                0 15px 40px rgba(0, 0, 0, 0.5),
+                inset 0 2px 5px rgba(255, 255, 255, 0.5);
             transform: scale(0.8);
             transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
             position: relative;
@@ -1175,34 +1303,34 @@
             transform: scale(1);
         }
 
-        /* ПРОСТЫЕ КНОПКИ ДЛЯ OVERLAY */
         .simple-button {
             padding: 12px 20px;
-            border: none;
+            border: 2px solid var(--card-border);
             border-radius: 8px;
             font-size: 14px;
-            font-weight: 700;
+            font-weight: 800;
             cursor: pointer;
             transition: all 0.2s ease;
-            font-family: 'Exo 2', sans-serif;
+            font-family: 'Nunito', sans-serif;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+            box-shadow: 0 3px 8px rgba(139, 69, 19, 0.3);
         }
 
         .restart-btn {
-            background: linear-gradient(135deg, #1dd1a1, #10ac84);
+            background: var(--accent-gradient);
             color: white;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
         }
 
         .menu-btn {
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: linear-gradient(145deg, #F5DEB3, #DEB887);
+            color: var(--text-primary);
         }
 
         .simple-button:hover {
             transform: translateY(-2px);
-            opacity: 0.9;
+            box-shadow: 0 5px 12px rgba(139, 69, 19, 0.4);
         }
 
         .simple-button:active {
@@ -1213,10 +1341,8 @@
             font-size: 24px;
             margin-bottom: 16px;
             font-weight: 900;
-            background: linear-gradient(45deg, #ff6b6b, #feca57);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            color: var(--text-primary);
+            text-shadow: 0 2px 4px rgba(255, 255, 255, 0.5);
             position: relative;
             z-index: 1;
         }
@@ -1267,7 +1393,6 @@
                 grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
             }
 
-            /* Better touch targets on mobile */
             .nav-item {
                 padding: 18px 8px;
             }
@@ -1278,7 +1403,7 @@
             }
 
             .play-button {
-                padding: 20px;
+                height: 50px;
                 font-size: 16px;
             }
         }
@@ -1599,8 +1724,8 @@
     <div class="overlay" id="gameOverOverlay">
         <div class="overlay-content">
             <h2>🎯 ИГРА ОКОНЧЕНА!</h2>
-            <div style="font-size: 18px; margin-bottom: 12px;">Очки: <span id="finalScore" style="color: #feca57; font-weight: 700;">0</span></div>
-            <div style="font-size: 14px; margin-bottom: 16px;">Получено XP: <span id="finalXP" style="color: #48dbfb; font-weight: 700;">+0</span></div>
+            <div style="font-size: 18px; margin-bottom: 12px;">Очки: <span id="finalScore" style="color: #8B4513; font-weight: 700;">0</span></div>
+            <div style="font-size: 14px; margin-bottom: 16px;">Получено XP: <span id="finalXP" style="color: #32CD32; font-weight: 700;">+0</span></div>
             <div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;">
                 <button class="simple-button restart-btn" onclick="restartGame()">🔥 СНОВА</button>
                 <button class="simple-button menu-btn" onclick="exitGame()">🏠 МЕНЮ</button>
@@ -1612,10 +1737,10 @@
         <div class="overlay-content">
             <h2>⚡ Нет Энергии!</h2>
             <div style="font-size: 14px; margin-bottom: 16px;">Подождите восстановления энергии или купите больше в магазине!</div>
-            <div style="font-size: 12px; margin-bottom: 20px;">Следующая энергия через: <span id="nextEnergyTime" style="color: #feca57; font-weight: 700;">--:--</span></div>
+            <div style="font-size: 12px; margin-bottom: 20px;">Следующая энергия через: <span id="nextEnergyTime" style="color: #32CD32; font-weight: 700;">--:--</span></div>
             <div style="display: flex; gap: 12px; justify-content: center;">
                 <button class="play-button" onclick="showTab('shop'); closeOverlay('energyDepletedOverlay')" style="margin: 0; width: auto; padding: 12px 20px;">🛒 МАГАЗИН</button>
-                <button class="play-button" onclick="closeOverlay('energyDepletedOverlay')" style="margin: 0; width: auto; padding: 12px 20px; background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));">⏰ ЖДАТЬ</button>
+                <button class="play-button" onclick="closeOverlay('energyDepletedOverlay')" style="margin: 0; width: auto; padding: 12px 20px; background: linear-gradient(145deg, #F5DEB3, #DEB887);">⏰ ЖДАТЬ</button>
             </div>
         </div>
     </div>
@@ -2458,7 +2583,6 @@
                 document.addEventListener('touchend', endDrag);
             }
 
-            // ОПТИМИЗИРОВАННАЯ ЛОГИКА ПРЕВЬЮ - ТЕНЬ ВЫШЕ КУРСОРА НА 120px
             showPlacementPreview(coords) {
                 this.clearPreview();
 
@@ -2470,7 +2594,6 @@
 
                 const pattern = this.draggedShape.pattern;
                 
-                // УВЕЛИЧЕННАЯ ТЕНЬ ВЫШЕ КУРСОРА (НА 120 ПИКСЕЛЕЙ)
                 const shadowOffset = 120;
                 const shadowY = coords.y - shadowOffset;
                 
@@ -2480,7 +2603,6 @@
                 const cursorGridCol = relativeX / cellSize;
                 const cursorGridRow = relativeY / cellSize;
 
-                // Вычисляем центр фигуры
                 let minRow = pattern.length, maxRow = -1;
                 let minCol = pattern[0].length, maxCol = -1;
                 
@@ -2498,7 +2620,6 @@
                 const shapeCenterRow = (minRow + maxRow) / 2;
                 const shapeCenterCol = (minCol + maxCol) / 2;
 
-                // УЛУЧШЕННЫЙ SNAPPING
                 let bestGridCol = Math.round(cursorGridCol - shapeCenterCol);
                 let bestGridRow = Math.round(cursorGridRow - shapeCenterRow);
                 
@@ -2537,7 +2658,6 @@
 
                 const pattern = this.draggedShape.pattern;
                 
-                // Тень выше курсора (такая же как в превью)
                 const shadowOffset = 120;
                 const shadowY = coords.y - shadowOffset;
                 
@@ -2547,7 +2667,6 @@
                 const cursorGridCol = relativeX / cellSize;
                 const cursorGridRow = relativeY / cellSize;
 
-                // Вычисляем центр фигуры
                 let minRow = pattern.length, maxRow = -1;
                 let minCol = pattern[0].length, maxCol = -1;
                 
@@ -2565,7 +2684,6 @@
                 const shapeCenterRow = (minRow + maxRow) / 2;
                 const shapeCenterCol = (minCol + maxCol) / 2;
 
-                // РАСШИРЕННЫЙ SNAPPING для размещения
                 const searchRadius = 2.0;
                 let bestDistance = Infinity;
                 let bestGridRow = -1;
@@ -2613,7 +2731,6 @@
                 return true;
             }
 
-            // ОПТИМИЗИРОВАННОЕ размещение фигуры
             placeShape(shape, startRow, startCol) {
                 const gridElement = document.getElementById('gameGrid');
                 const cells = gridElement.children;
@@ -2668,7 +2785,6 @@
                 this.renderShapes();
             }
 
-            // ОПТИМИЗИРОВАННОЕ выделение ячеек
             highlightCells(pattern, startRow, startCol, className) {
                 const gridElement = document.getElementById('gameGrid');
                 for (let row = 0; row < pattern.length; row++) {
@@ -2687,7 +2803,6 @@
                 }
             }
 
-            // ОПТИМИЗИРОВАННАЯ очистка превью
             clearPreview() {
                 const gridElement = document.getElementById('gameGrid');
                 const previewCells = gridElement.querySelectorAll('.cell.preview');
@@ -2696,7 +2811,6 @@
                 }
             }
 
-            // ОПТИМИЗИРОВАННАЯ анимация очистки линий
             clearCompletedLines() {
                 const linesToClear = [];
 
@@ -2722,7 +2836,6 @@
                 if (linesToClear.length > 0) {
                     this.animateLineClear(linesToClear);
                     
-                    // Сократил время анимации с 800 до 400
                     setTimeout(() => {
                         const gridElement = document.getElementById('gameGrid');
                         const cells = gridElement.children;
@@ -2767,7 +2880,6 @@
                 });
             }
 
-            // УЛУЧШЕННАЯ ЛОГИКА ИГРЫ для более длительных раундов
             handleLinesCleared(count) {
                 this.linesCleared += count;
                 this.stats.totalLinesCleared += count;
@@ -2777,21 +2889,19 @@
                     this.stats.maxCombo = this.combo;
                 }
 
-                // Более щедрые множители
                 let multiplier = 1;
-                if (count >= 2) multiplier = 3; // Увеличил с 2 до 3
-                if (count >= 3) multiplier = 6; // Увеличил с 4 до 6
-                if (count >= 4) multiplier = 12; // Увеличил с 8 до 12
+                if (count >= 2) multiplier = 3;
+                if (count >= 3) multiplier = 6;
+                if (count >= 4) multiplier = 12;
 
-                const comboBonus = Math.min(this.combo, 15); // Увеличил лимит с 10 до 15
-                const lineScore = count * 200 * multiplier * comboBonus; // Увеличил базу с 100 до 200
+                const comboBonus = Math.min(this.combo, 15);
+                const lineScore = count * 200 * multiplier * comboBonus;
 
                 this.addScore(lineScore);
                 updateGameUI();
 
-                // Награды уже с 2 линий
                 if (count >= 2) {
-                    this.addCoins(count * 15); // Увеличил с 10 до 15
+                    this.addCoins(count * 15);
                     showNotification(`💥 ${count} линий! +${count * 15} монет!`);
                 }
             }
@@ -2803,7 +2913,7 @@
                         if (cell) blockCount++;
                     }
                 }
-                return blockCount * 25; // Увеличил с 10 до 25
+                return blockCount * 25;
             }
 
             addScore(points) {
@@ -3127,7 +3237,7 @@
 
         document.addEventListener('DOMContentLoaded', initializeApp);
 
-        console.log('🎮 Блок Взрыв! VK Mini App v2.0.0 - Оптимизирован и готов! 🚀');
+        console.log('🎮 Блок Взрыв! VK Mini App v2.0.0 - Card Design Ready! 🚀');
     </script>
 </body>
 </html>
