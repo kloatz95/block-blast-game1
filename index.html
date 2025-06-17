@@ -34,7 +34,7 @@
             -webkit-user-select: none;
         }
 
-        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Bebas+Neue&display=swap');
 
         /* CSS Variables for card game theme */
         :root {
@@ -288,17 +288,11 @@
             padding: 8px 12px;
             border-radius: 20px;
             border: 2px solid var(--card-border);
-            box-shadow: 
-                0 3px 8px rgba(139, 69, 19, 0.3),
-                inset 0 1px 3px rgba(255, 255, 255, 0.5);
             transition: all 0.2s ease;
         }
 
         .stat-item:hover {
             transform: translateY(-2px);
-            box-shadow: 
-                0 5px 12px rgba(139, 69, 19, 0.4),
-                inset 0 1px 3px rgba(255, 255, 255, 0.5);
         }
 
         .stat-icon {
@@ -427,7 +421,7 @@
         .play-button {
             width: 100%;
             height: 60px;
-            background-image: url('assets/images/play-button.png');
+            background-image: url('./assets/images/buttons/play-button.png');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -441,14 +435,12 @@
             font-family: 'Nunito', sans-serif;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 8px 16px rgba(139, 69, 19, 0.4);
             text-transform: uppercase;
             letter-spacing: 1px;
         }
 
         .play-button:hover {
             transform: translateY(-3px) scale(1.02);
-            box-shadow: 0 12px 24px rgba(139, 69, 19, 0.5);
         }
 
         .play-button:active {
@@ -456,7 +448,7 @@
         }
 
         .play-button.continue {
-            background-image: url('assets/images/continue-button.png');
+            background-image: url('./assets/images/buttons/continue-button.png');
         }
 
         /* GAME HEADER */
@@ -612,9 +604,6 @@
             padding: 8px;
             border-radius: 10px;
             border: none;
-            box-shadow: 
-                0 4px 12px rgba(139, 69, 19, 0.3),
-                inset 0 2px 6px rgba(0, 0, 0, 0.2);
         }
 
         .grid {
@@ -647,38 +636,28 @@
         }
 
         .cell.filled.color-red {
-            background: linear-gradient(145deg, #FF6B6B 0%, #EE5A52 100%);
-            box-shadow: 
-                0 0 15px rgba(255, 107, 107, 0.6),
-                inset 0 2px 4px rgba(255, 255, 255, 0.3);
+            background: #E74C3C;
+            border: 2px solid #C0392B;
         }
 
         .cell.filled.color-blue {
-            background: linear-gradient(145deg, #48DBFB 0%, #0ABDE3 100%);
-            box-shadow: 
-                0 0 15px rgba(72, 219, 251, 0.6),
-                inset 0 2px 4px rgba(255, 255, 255, 0.3);
+            background: #3498DB;
+            border: 2px solid #2980B9;
         }
 
         .cell.filled.color-green {
-            background: linear-gradient(145deg, #1DD1A1 0%, #10AC84 100%);
-            box-shadow: 
-                0 0 15px rgba(29, 209, 161, 0.6),
-                inset 0 2px 4px rgba(255, 255, 255, 0.3);
+            background: #27AE60;
+            border: 2px solid #229954;
         }
 
         .cell.filled.color-purple {
-            background: linear-gradient(145deg, #A55EEA 0%, #8854D0 100%);
-            box-shadow: 
-                0 0 15px rgba(165, 94, 234, 0.6),
-                inset 0 2px 4px rgba(255, 255, 255, 0.3);
+            background: #9B59B6;
+            border: 2px solid #8E44AD;
         }
 
         .cell.filled.color-orange {
-            background: linear-gradient(145deg, #FECA57 0%, #FF9FF3 100%);
-            box-shadow: 
-                0 0 15px rgba(254, 202, 87, 0.6),
-                inset 0 2px 4px rgba(255, 255, 255, 0.3);
+            background: #F39C12;
+            border: 2px solid #E67E22;
         }
 
         .cell.preview {
@@ -751,7 +730,6 @@
             position: relative;
             transition: all 0.2s ease;
             overflow: hidden;
-            box-shadow: 0 4px 8px rgba(139, 69, 19, 0.3);
         }
 
         .shape {
@@ -797,9 +775,6 @@
             border: 2px solid rgba(255, 255, 255, 0.4);
             position: relative;
             transition: all 0.2s ease;
-            box-shadow: 
-                0 3px 8px rgba(139, 69, 19, 0.3),
-                inset 0 2px 4px rgba(255, 255, 255, 0.3);
         }
 
         .shape-block.empty {
@@ -809,23 +784,28 @@
         }
 
         .shape[data-color="red"] .shape-block:not(.empty) {
-            background: linear-gradient(145deg, #FF6B6B 0%, #EE5A52 100%);
+            background: #E74C3C;
+            border-color: #C0392B;
         }
 
         .shape[data-color="blue"] .shape-block:not(.empty) {
-            background: linear-gradient(145deg, #48DBFB 0%, #0ABDE3 100%);
+            background: #3498DB;
+            border-color: #2980B9;
         }
 
         .shape[data-color="green"] .shape-block:not(.empty) {
-            background: linear-gradient(145deg, #1DD1A1 0%, #10AC84 100%);
+            background: #27AE60;
+            border-color: #229954;
         }
 
         .shape[data-color="purple"] .shape-block:not(.empty) {
-            background: linear-gradient(145deg, #A55EEA 0%, #8854D0 100%);
+            background: #9B59B6;
+            border-color: #8E44AD;
         }
 
         .shape[data-color="orange"] .shape-block:not(.empty) {
-            background: linear-gradient(145deg, #FECA57 0%, #FF9FF3 100%);
+            background: #F39C12;
+            border-color: #E67E22;
         }
 
         /* COMBO DISPLAY */
@@ -865,9 +845,6 @@
             text-align: center;
             position: relative;
             overflow: hidden;
-            box-shadow: 
-                0 8px 20px rgba(139, 69, 19, 0.3),
-                inset 0 2px 5px rgba(255, 255, 255, 0.5);
         }
 
         .player-avatar-large {
@@ -883,9 +860,6 @@
             margin: 0 auto 15px;
             position: relative;
             overflow: hidden;
-            box-shadow: 
-                0 5px 15px rgba(139, 69, 19, 0.4),
-                inset 0 2px 5px rgba(255, 255, 255, 0.3);
         }
 
         .player-avatar-large img {
@@ -957,12 +931,10 @@
             text-align: center;
             border: 2px solid var(--card-border);
             transition: all 0.2s ease;
-            box-shadow: 0 3px 8px rgba(139, 69, 19, 0.3);
         }
 
         .achievement-item:hover {
             transform: translateY(-3px);
-            box-shadow: 0 6px 15px rgba(139, 69, 19, 0.4);
         }
 
         .achievement-icon {
@@ -1021,12 +993,10 @@
             text-align: center;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 5px 15px rgba(139, 69, 19, 0.3);
         }
 
         .shop-item:hover {
             transform: translateY(-5px) scale(1.02);
-            box-shadow: 0 8px 25px rgba(139, 69, 19, 0.4);
         }
 
         .shop-item-icon {
@@ -1204,7 +1174,6 @@
             border-radius: 8px;
             font-weight: 800;
             font-size: 12px;
-            box-shadow: 0 5px 15px rgba(50, 205, 50, 0.4);
             transform: translateX(100%);
             transition: transform 0.4s ease;
             z-index: 4000;
@@ -1247,9 +1216,6 @@
             max-width: 320px;
             width: 90%;
             border: 3px solid var(--card-border);
-            box-shadow: 
-                0 15px 40px rgba(0, 0, 0, 0.5),
-                inset 0 2px 5px rgba(255, 255, 255, 0.5);
             transform: scale(0.8);
             transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
             position: relative;
@@ -1271,7 +1237,6 @@
             font-family: 'Nunito', sans-serif;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            box-shadow: 0 3px 8px rgba(139, 69, 19, 0.3);
         }
 
         .restart-btn {
@@ -1287,7 +1252,6 @@
 
         .simple-button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 12px rgba(139, 69, 19, 0.4);
         }
 
         .simple-button:active {
@@ -1418,7 +1382,7 @@
 <body>
     <!-- Loading Screen -->
     <div class="loading-screen" id="loadingScreen">
-        <div class="loading-logo">⚡ БЛОК ВЗРЫВ! ⚡</div>
+        <div class="loading-logo">БлокТок</div>
         <div class="loading-spinner"></div>
         <div class="loading-text">Подключение к ВКонтакте...</div>
     </div>
@@ -1709,8 +1673,8 @@
             <div style="font-size: 14px; margin-bottom: 16px;">Подождите восстановления энергии или купите больше в магазине!</div>
             <div style="font-size: 12px; margin-bottom: 20px;">Следующая энергия через: <span id="nextEnergyTime" style="color: #32CD32; font-weight: 700;">--:--</span></div>
             <div style="display: flex; gap: 12px; justify-content: center;">
-                <button class="play-button" onclick="showTab('shop'); closeOverlay('energyDepletedOverlay')" style="margin: 0; width: auto; padding: 12px 20px;">🛒 МАГАЗИН</button>
-                <button class="play-button" onclick="closeOverlay('energyDepletedOverlay')" style="margin: 0; width: auto; padding: 12px 20px; background: linear-gradient(145deg, #F5DEB3, #DEB887);">⏰ ЖДАТЬ</button>
+                <button class="simple-button restart-btn" onclick="showTab('shop'); closeOverlay('energyDepletedOverlay')" style="margin: 0; width: auto; padding: 12px 20px;">🛒 МАГАЗИН</button>
+                <button class="simple-button menu-btn" onclick="closeOverlay('energyDepletedOverlay')" style="margin: 0; width: auto; padding: 12px 20px;">⏰ ЖДАТЬ</button>
             </div>
         </div>
     </div>
