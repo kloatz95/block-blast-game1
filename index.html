@@ -1,4 +1,34 @@
-<!DOCTYPE html>
+createRowBlastEffect(row) {
+                const gridElement = document.getElementById('gameGrid');
+                const gridRect = gridElement.getBoundingClientRect();
+                
+                for (let i = 0; i < 20; i++) {
+                    const particle = document.createElement('div');
+                    particle.className = 'particle';
+                    particle.style.background = '#FF6347';
+                    particle.style.left = (gridRect.left + Math.random() * gridRect.width) + 'px';
+                    particle.style.top = (gridRect.top + (row * gridRect.height / this.gridSize) + (gridRect.height / this.gridSize / 2)) + 'px';
+                    
+                    document.body.appendChild(particle);
+                    setTimeout(() => particle.remove(), 1000);
+                }
+            }
+
+            createColumnBlastEffect(col) {
+                const gridElement = document.getElementById('gameGrid');
+                const gridRect = gridElement.getBoundingClientRect();
+                
+                for (let i = 0; i < 20; i++) {
+                    const particle = document.createElement('div');
+                    particle.className = 'particle';
+                    particle.style.background = '#FF6347';
+                    particle.style.left = (gridRect.left + (col * gridRect.width / this.gridSize) + (gridRect.width / this.gridSize / 2)) + 'px';
+                    particle.style.top = (gridRect.top + Math.random() * gridRect.height) + 'px';
+                    
+                    document.body.appendChild(particle);
+                    setTimeout(() => particle.remove(), 1000);
+                }
+            }<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
@@ -810,6 +840,118 @@
                 transform: scale(0); 
                 opacity: 0;
                 box-shadow: 0 0 60px rgba(255, 69, 0, 1);
+            }
+        }
+
+        /* BOOSTER DRAG & DROP STYLES */
+        .game-booster.dragging-booster {
+            opacity: 0.3;
+            transform: scale(0.85);
+            pointer-events: none;
+            filter: grayscale(0.7);
+        }
+
+        .cell.booster-target {
+            background: rgba(255, 255, 255, 0.9) !important;
+            border: 3px solid #FF6347 !important;
+            box-shadow: 
+                0 0 20px rgba(255, 99, 71, 0.8) !important,
+                inset 0 2px 4px rgba(255, 255, 255, 0.5) !important;
+            transform: scale(1.1) !important;
+            z-index: 15 !important;
+            animation: boosterPulse 0.6s ease-in-out infinite alternate;
+        }
+
+        .cell.horizontal-target {
+            border-color: #FF4500 !important;
+            box-shadow: 0 0 15px rgba(255, 69, 0, 0.8) !important;
+        }
+
+        .cell.vertical-target {
+            border-color: #1E90FF !important;
+            box-shadow: 0 0 15px rgba(30, 144, 255, 0.8) !important;
+        }
+
+        .cell.area-target {
+            border-color: #FFD700 !important;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.8) !important;
+        }
+
+        @keyframes boosterPulse {
+            0% { 
+                transform: scale(1.05);
+                opacity: 0.8;
+            }
+            100% { 
+                transform: scale(1.15);
+                opacity: 1;
+            }
+        }
+
+        /* CLEAR FIELD BONUS EFFECTS */
+        .clear-field-bonus {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle, rgba(255, 215, 0, 0.1) 0%, rgba(255, 69, 0, 0.05) 100%);
+            pointer-events: none;
+            z-index: 500;
+            animation: bonusGlow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes bonusGlow {
+            0% { opacity: 0.3; }
+            100% { opacity: 0.7; }
+        }
+
+        .bonus-multiplier {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(45deg, #FFD700, #FF6347);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 900;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.4);
+            z-index: 1000;
+            animation: bonusBounce 1s ease-in-out infinite alternate;
+        }
+
+        @keyframes bonusBounce {
+            0% { transform: translateX(-50%) scale(1); }
+            100% { transform: translateX(-50%) scale(1.05); }
+        }
+
+        .enhanced-particle {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: linear-gradient(45deg, #FFD700, #FF6347);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 1500;
+            animation: enhancedParticleFloat 2s ease-out forwards;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
+        }
+
+        @keyframes enhancedParticleFloat {
+            0% {
+                transform: scale(1) rotate(0deg);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.5) rotate(180deg);
+                opacity: 0.8;
+            }
+            100% {
+                transform: scale(0) rotate(360deg) translateY(-150px);
+                opacity: 0;
             }
         }
 
@@ -1985,7 +2127,7 @@
                             <div class="shop-item" onclick="buyPack('starter')">
                                 <div class="shop-item-icon"></div>
                                 <div class="shop-item-name">Стартовый Набор</div>
-                                <div class="shop-item-description">3 Лучших Выбора + 2 Обновления</div>
+                                <div class="shop-item-description">3 Горизонтальных Удара + 2 Обновления</div>
                                 <div class="shop-item-price">
                                     <span>150</span>
                                 </div>
@@ -1993,7 +2135,7 @@
                             <div class="shop-item" onclick="buyPack('advanced')">
                                 <div class="shop-item-icon"></div>
                                 <div class="shop-item-name">Продвинутый Набор</div>
-                                <div class="shop-item-description">5 Выборов + 3 Взрыва + 2 Молнии</div>
+                                <div class="shop-item-description">5 Гориз. + 3 Верт. + 2 Области 3×3</div>
                                 <div class="shop-item-price">
                                     <span>400</span>
                                 </div>
@@ -2001,7 +2143,7 @@
                             <div class="shop-item" onclick="buyPack('premium')">
                                 <div class="shop-item-icon"></div>
                                 <div class="shop-item-name">Премиум Набор</div>
-                                <div class="shop-item-description">8 Выборов + 5 Взрывов + 4 Молнии + 2 Звезды</div>
+                                <div class="shop-item-description">8 Гориз. + 5 Верт. + 4 Области + 2 Поля</div>
                                 <div class="shop-item-price">
                                     <span>900</span>
                                 </div>
@@ -2801,7 +2943,14 @@
                 this.gameStarted = false;
                 this.draggedShape = null;
                 this.isDragging = false;
+                this.draggedBooster = null;
+                this.isDraggingBooster = false;
                 this.lastAchievementTime = null; // Для контроля частоты достижений
+                this.clearFieldBonus = {
+                    active: false,
+                    turnsLeft: 0,
+                    multiplier: 2
+                };
 
                 // Systems
                 this.energy = this.initEnergySystem();
@@ -3006,11 +3155,11 @@
                     
                     getName(type) {
                         const names = {
-                            shape_choice: 'Выбор Лучших Фигур',
-                            row_blast: 'Взрыв Ряда/Колонки',
+                            shape_choice: 'Горизонтальный Удар',
+                            row_blast: 'Вертикальный Удар', 
                             refresh: 'Обновление Фигур',
-                            lightning: 'Молния (12 блоков)',
-                            star_blast: 'Звездный Взрыв 3×3'
+                            lightning: 'Взрыв Области 3×3',
+                            star_blast: 'Уничтожение Поля'
                         };
                         return names[type] || type;
                     }
@@ -3211,6 +3360,7 @@
                 let touchIdentifier = null;
                 let dragStartPosition = null;
                 let shapeOriginalSlot = null;
+                let boosterOriginalSlot = null;
 
                 const getCoords = (e) => {
                     if (e.touches) {
@@ -3226,6 +3376,13 @@
 
                 const startDrag = (e) => {
                     if (this.isGameOver) return;
+
+                    // Проверяем, что это бустер
+                    let boosterElement = e.target.closest('.game-booster');
+                    if (boosterElement && !boosterElement.classList.contains('disabled')) {
+                        this.startBoosterDrag(e, boosterElement);
+                        return;
+                    }
 
                     // Поиск фигуры - сначала по самой фигуре, затем по слоту
                     let shapeElement = e.target.closest('.shape');
@@ -3264,16 +3421,20 @@
                 };
 
                 const handleMove = (e) => {
-                    if (!this.isDragging || !this.draggedShape) return;
+                    if (!this.isDragging && !this.isDraggingBooster) return;
 
                     const coords = getCoords(e);
                     if (!coords) return;
 
-                    this.showPlacementPreview(coords);
+                    if (this.isDraggingBooster) {
+                        this.showBoosterPreview(coords);
+                    } else {
+                        this.showPlacementPreview(coords);
+                    }
                 };
 
                 const endDrag = (e) => {
-                    if (!this.isDragging) return;
+                    if (!this.isDragging && !this.isDraggingBooster) return;
 
                     let coords;
                     if (e.changedTouches) {
@@ -3289,20 +3450,32 @@
 
                     let placed = false;
                     if (coords) {
-                        placed = this.tryPlaceShape(coords);
+                        if (this.isDraggingBooster) {
+                            placed = this.tryUseBooster(coords);
+                        } else {
+                            placed = this.tryPlaceShape(coords);
+                        }
                     }
 
-                    // Если фигура не была размещена, анимируем возврат
-                    if (!placed && this.draggedShape) {
-                        this.animateShapeReturn();
+                    // Если фигура/бустер не были размещены, анимируем возврат
+                    if (!placed) {
+                        if (this.isDraggingBooster) {
+                            this.animateBoosterReturn();
+                        } else if (this.draggedShape) {
+                            this.animateShapeReturn();
+                        }
                     }
 
                     this.clearPreview();
+                    this.clearBoosterPreview();
                     this.isDragging = false;
+                    this.isDraggingBooster = false;
                     this.draggedShape = null;
+                    this.draggedBooster = null;
                     touchIdentifier = null;
                     dragStartPosition = null;
                     shapeOriginalSlot = null;
+                    boosterOriginalSlot = null;
                 };
 
                 // Обработчики для автоматического возврата при уведомлениях
@@ -3314,11 +3487,18 @@
                         this.draggedShape = null;
                         touchIdentifier = null;
                     }
+                    if (this.isDraggingBooster && this.draggedBooster) {
+                        this.animateBoosterReturn();
+                        this.clearBoosterPreview();
+                        this.isDraggingBooster = false;
+                        this.draggedBooster = null;
+                        touchIdentifier = null;
+                    }
                 };
 
-                const shapesArea = document.getElementById('shapesArea');
-                shapesArea.addEventListener('mousedown', startDrag);
-                shapesArea.addEventListener('touchstart', startDrag, { passive: false });
+                const gameContent = document.getElementById('gameScreen');
+                gameContent.addEventListener('mousedown', startDrag);
+                gameContent.addEventListener('touchstart', startDrag, { passive: false });
                 
                 document.addEventListener('mousemove', handleMove);
                 document.addEventListener('touchmove', handleMove, { passive: false });
@@ -3330,6 +3510,418 @@
                 document.addEventListener('visibilitychange', autoReturnShape);
                 window.addEventListener('blur', autoReturnShape);
                 window.addEventListener('focus', autoReturnShape);
+            }
+
+            startBoosterDrag(e, boosterElement) {
+                const boosterType = this.getBoosterTypeFromElement(boosterElement);
+                if (!this.boosters.has(boosterType)) return;
+
+                e.preventDefault();
+                
+                let touchIdentifier = null;
+                let dragStartPosition = null;
+                let boosterOriginalSlot = null;
+
+                const getCoords = (e) => {
+                    if (e.touches) {
+                        for (let touch of e.touches) {
+                            if (touchIdentifier === null || touch.identifier === touchIdentifier) {
+                                return { x: touch.clientX, y: touch.clientY };
+                            }
+                        }
+                        return null;
+                    }
+                    return { x: e.clientX, y: e.clientY };
+                };
+                
+                if (e.touches) {
+                    touchIdentifier = e.touches[0].identifier;
+                }
+
+                const coords = getCoords(e);
+                dragStartPosition = coords;
+                boosterOriginalSlot = boosterElement;
+
+                this.isDraggingBooster = true;
+                this.draggedBooster = { type: boosterType, element: boosterElement };
+
+                boosterElement.classList.add('dragging-booster');
+
+                if (coords) {
+                    this.showBoosterPreview(coords);
+                }
+            }
+
+            getBoosterTypeFromElement(element) {
+                const onclick = element.getAttribute('onclick');
+                if (onclick.includes('shape_choice')) return 'shape_choice';
+                if (onclick.includes('row_blast')) return 'row_blast';
+                if (onclick.includes('refresh')) return 'refresh';
+                if (onclick.includes('lightning')) return 'lightning';
+                if (onclick.includes('star_blast')) return 'star_blast';
+                return null;
+            }
+
+            showBoosterPreview(coords) {
+                this.clearBoosterPreview();
+                
+                if (!this.draggedBooster) return;
+
+                const gridElement = document.getElementById('gameGrid');
+                const gridRect = gridElement.getBoundingClientRect();
+                
+                // Проверяем, находимся ли мы над игровым полем
+                if (coords.x < gridRect.left || coords.x > gridRect.right ||
+                    coords.y < gridRect.top || coords.y > gridRect.bottom) {
+                    return;
+                }
+
+                const cellSize = (gridRect.width - 16) / this.gridSize;
+                const relativeX = coords.x - gridRect.left - 8;
+                const relativeY = coords.y - gridRect.top - 8;
+                const gridCol = Math.floor(relativeX / cellSize);
+                const gridRow = Math.floor(relativeY / cellSize);
+
+                if (gridRow < 0 || gridRow >= this.gridSize || gridCol < 0 || gridCol >= this.gridSize) {
+                    return;
+                }
+
+                this.highlightBoosterTarget(this.draggedBooster.type, gridRow, gridCol);
+            }
+
+            highlightBoosterTarget(boosterType, row, col) {
+                const gridElement = document.getElementById('gameGrid');
+                
+                switch (boosterType) {
+                    case 'shape_choice': // Горизонтальная линия
+                        for (let c = 0; c < this.gridSize; c++) {
+                            const cellIndex = row * this.gridSize + c;
+                            gridElement.children[cellIndex].classList.add('booster-target', 'horizontal-target');
+                        }
+                        break;
+                        
+                    case 'row_blast': // Вертикальная линия
+                        for (let r = 0; r < this.gridSize; r++) {
+                            const cellIndex = r * this.gridSize + col;
+                            gridElement.children[cellIndex].classList.add('booster-target', 'vertical-target');
+                        }
+                        break;
+                        
+                    case 'lightning': // Область 3x3
+                        for (let r = Math.max(0, row - 1); r <= Math.min(this.gridSize - 1, row + 1); r++) {
+                            for (let c = Math.max(0, col - 1); c <= Math.min(this.gridSize - 1, col + 1); c++) {
+                                const cellIndex = r * this.gridSize + c;
+                                gridElement.children[cellIndex].classList.add('booster-target', 'area-target');
+                            }
+                        }
+                        break;
+                        
+                    case 'star_blast': // Все поле
+                        for (let i = 0; i < gridElement.children.length; i++) {
+                            gridElement.children[i].classList.add('booster-target');
+                        }
+                        break;
+                }
+            }
+
+            clearBoosterPreview() {
+                const gridElement = document.getElementById('gameGrid');
+                const targetCells = gridElement.querySelectorAll('.booster-target');
+                for (let cell of targetCells) {
+                    cell.classList.remove('booster-target', 'horizontal-target', 'vertical-target', 'area-target');
+                }
+            }
+
+            tryUseBooster(coords) {
+                if (!this.draggedBooster) return false;
+
+                const gridElement = document.getElementById('gameGrid');
+                const gridRect = gridElement.getBoundingClientRect();
+                
+                // Проверяем, находимся ли мы над игровым полем
+                if (coords.x < gridRect.left || coords.x > gridRect.right ||
+                    coords.y < gridRect.top || coords.y > gridRect.bottom) {
+                    return false;
+                }
+
+                const cellSize = (gridRect.width - 16) / this.gridSize;
+                const relativeX = coords.x - gridRect.left - 8;
+                const relativeY = coords.y - gridRect.top - 8;
+                const gridCol = Math.floor(relativeX / cellSize);
+                const gridRow = Math.floor(relativeY / cellSize);
+
+                if (gridRow < 0 || gridRow >= this.gridSize || gridCol < 0 || gridCol >= this.gridSize) {
+                    return false;
+                }
+
+                this.useBoosterAt(this.draggedBooster.type, gridRow, gridCol);
+                return true;
+            }
+
+            useBoosterAt(boosterType, row, col) {
+                if (!this.boosters.use(boosterType)) return;
+
+                switch (boosterType) {
+                    case 'shape_choice': // Горизонтальная линия
+                        this.clearHorizontalLine(row);
+                        showNotification('Горизонтальный удар! 💥');
+                        break;
+                        
+                    case 'row_blast': // Вертикальная линия
+                        this.clearVerticalLine(col);
+                        showNotification('Вертикальный удар! 💥');
+                        break;
+                        
+                    case 'refresh': // Обновление фигур (не требует координат)
+                        this.generateShapes();
+                        showNotification('Фигуры обновлены! 🔄');
+                        break;
+                        
+                    case 'lightning': // Область 3x3
+                        this.clearArea3x3(row, col);
+                        showNotification('Взрыв области! ⚡');
+                        break;
+                        
+                    case 'star_blast': // Все поле
+                        this.clearEntireField();
+                        showNotification('Уничтожение поля! ⭐');
+                        break;
+                }
+
+                updateGameUI();
+            }
+
+            animateBoosterReturn() {
+                if (!this.draggedBooster) return;
+                
+                const boosterElement = this.draggedBooster.element;
+                if (boosterElement) {
+                    boosterElement.classList.remove('dragging-booster');
+                    
+                    // Добавляем анимацию возврата
+                    boosterElement.style.transition = 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+                    boosterElement.style.transform = 'scale(0.9)';
+                    
+                    setTimeout(() => {
+                        boosterElement.style.transform = 'scale(1)';
+                        setTimeout(() => {
+                            boosterElement.style.transition = '';
+                        }, 300);
+                    }, 50);
+                    
+                    if (navigator.vibrate) {
+                        navigator.vibrate(20);
+                    }
+                }
+            }
+
+            // НОВЫЕ МЕТОДЫ БУСТЕРОВ
+            clearHorizontalLine(row) {
+                const gridElement = document.getElementById('gameGrid');
+                let blocksCleared = 0;
+                
+                for (let col = 0; col < this.gridSize; col++) {
+                    if (this.grid[row][col] !== null) {
+                        this.grid[row][col] = null;
+                        const cellIndex = row * this.gridSize + col;
+                        gridElement.children[cellIndex].className = 'cell';
+                        gridElement.children[cellIndex].classList.add('line-clearing');
+                        blocksCleared++;
+                    }
+                }
+                
+                const baseScore = blocksCleared * 75;
+                const finalScore = this.clearFieldBonus.active ? baseScore * this.clearFieldBonus.multiplier : baseScore;
+                this.addScore(finalScore);
+                
+                if (this.clearFieldBonus.active) {
+                    this.createEnhancedEffect(row, null, 'horizontal');
+                } else {
+                    this.createRowBlastEffect(row);
+                }
+            }
+
+            clearVerticalLine(col) {
+                const gridElement = document.getElementById('gameGrid');
+                let blocksCleared = 0;
+                
+                for (let row = 0; row < this.gridSize; row++) {
+                    if (this.grid[row][col] !== null) {
+                        this.grid[row][col] = null;
+                        const cellIndex = row * this.gridSize + col;
+                        gridElement.children[cellIndex].className = 'cell';
+                        gridElement.children[cellIndex].classList.add('line-clearing');
+                        blocksCleared++;
+                    }
+                }
+                
+                const baseScore = blocksCleared * 75;
+                const finalScore = this.clearFieldBonus.active ? baseScore * this.clearFieldBonus.multiplier : baseScore;
+                this.addScore(finalScore);
+                
+                if (this.clearFieldBonus.active) {
+                    this.createEnhancedEffect(null, col, 'vertical');
+                } else {
+                    this.createColumnBlastEffect(col);
+                }
+            }
+
+            clearArea3x3(centerRow, centerCol) {
+                const gridElement = document.getElementById('gameGrid');
+                let blocksCleared = 0;
+                
+                for (let row = Math.max(0, centerRow - 1); row <= Math.min(this.gridSize - 1, centerRow + 1); row++) {
+                    for (let col = Math.max(0, centerCol - 1); col <= Math.min(this.gridSize - 1, centerCol + 1); col++) {
+                        if (this.grid[row][col] !== null) {
+                            this.grid[row][col] = null;
+                            const cellIndex = row * this.gridSize + col;
+                            gridElement.children[cellIndex].className = 'cell';
+                            gridElement.children[cellIndex].classList.add('line-clearing');
+                            blocksCleared++;
+                        }
+                    }
+                }
+                
+                const baseScore = blocksCleared * 100;
+                const finalScore = this.clearFieldBonus.active ? baseScore * this.clearFieldBonus.multiplier : baseScore;
+                this.addScore(finalScore);
+                
+                if (this.clearFieldBonus.active) {
+                    this.createEnhancedEffect(centerRow, centerCol, 'area');
+                } else {
+                    this.createAreaBlastEffect(centerRow, centerCol);
+                }
+            }
+
+            clearEntireField() {
+                const gridElement = document.getElementById('gameGrid');
+                let blocksCleared = 0;
+                
+                for (let row = 0; row < this.gridSize; row++) {
+                    for (let col = 0; col < this.gridSize; col++) {
+                        if (this.grid[row][col] !== null) {
+                            this.grid[row][col] = null;
+                            const cellIndex = row * this.gridSize + col;
+                            gridElement.children[cellIndex].className = 'cell';
+                            gridElement.children[cellIndex].classList.add('line-clearing');
+                            blocksCleared++;
+                        }
+                    }
+                }
+                
+                const baseScore = blocksCleared * 150;
+                const finalScore = this.clearFieldBonus.active ? baseScore * this.clearFieldBonus.multiplier : baseScore;
+                this.addScore(finalScore);
+                
+                // Активируем бонус чистого поля
+                this.activateClearFieldBonus();
+                this.createFieldClearEffect();
+            }
+
+            // СИСТЕМА БОНУСА ЧИСТОГО ПОЛЯ
+            activateClearFieldBonus() {
+                this.clearFieldBonus.active = true;
+                this.clearFieldBonus.turnsLeft = 5; // 5 ходов бонуса
+                this.clearFieldBonus.multiplier = 2;
+                
+                this.showClearFieldBonusUI();
+                showNotification('🌟 ЧИСТОЕ ПОЛЕ! Бонус х2 на 5 ходов! 🌟');
+            }
+
+            checkForClearField() {
+                // Проверяем, пустое ли поле
+                let hasBlocks = false;
+                for (let row = 0; row < this.gridSize; row++) {
+                    for (let col = 0; col < this.gridSize; col++) {
+                        if (this.grid[row][col] !== null) {
+                            hasBlocks = true;
+                            break;
+                        }
+                    }
+                    if (hasBlocks) break;
+                }
+                
+                if (!hasBlocks && !this.clearFieldBonus.active) {
+                    this.activateClearFieldBonus();
+                }
+            }
+
+            decrementClearFieldBonus() {
+                if (this.clearFieldBonus.active) {
+                    this.clearFieldBonus.turnsLeft--;
+                    if (this.clearFieldBonus.turnsLeft <= 0) {
+                        this.clearFieldBonus.active = false;
+                        this.hideClearFieldBonusUI();
+                        showNotification('Бонус чистого поля закончился');
+                    } else {
+                        this.updateClearFieldBonusUI();
+                    }
+                }
+            }
+
+            showClearFieldBonusUI() {
+                const bonusOverlay = document.createElement('div');
+                bonusOverlay.className = 'clear-field-bonus';
+                bonusOverlay.id = 'clearFieldBonus';
+                document.body.appendChild(bonusOverlay);
+                
+                const multiplierDisplay = document.createElement('div');
+                multiplierDisplay.className = 'bonus-multiplier';
+                multiplierDisplay.id = 'bonusMultiplier';
+                multiplierDisplay.textContent = `🌟 БОНУС x${this.clearFieldBonus.multiplier} (${this.clearFieldBonus.turnsLeft} ходов) 🌟`;
+                document.body.appendChild(multiplierDisplay);
+            }
+
+            updateClearFieldBonusUI() {
+                const multiplierDisplay = document.getElementById('bonusMultiplier');
+                if (multiplierDisplay) {
+                    multiplierDisplay.textContent = `🌟 БОНУС x${this.clearFieldBonus.multiplier} (${this.clearFieldBonus.turnsLeft} ходов) 🌟`;
+                }
+            }
+
+            hideClearFieldBonusUI() {
+                const bonusOverlay = document.getElementById('clearFieldBonus');
+                const multiplierDisplay = document.getElementById('bonusMultiplier');
+                
+                if (bonusOverlay) bonusOverlay.remove();
+                if (multiplierDisplay) multiplierDisplay.remove();
+            }
+
+            // УСИЛЕННЫЕ ЭФФЕКТЫ ДЛЯ БОНУСА
+            createEnhancedEffect(row, col, type) {
+                const gridElement = document.getElementById('gameGrid');
+                const gridRect = gridElement.getBoundingClientRect();
+                
+                // Создаем больше частиц с улучшенными эффектами
+                const particleCount = type === 'area' ? 40 : 30;
+                
+                for (let i = 0; i < particleCount; i++) {
+                    const particle = document.createElement('div');
+                    particle.className = 'enhanced-particle';
+                    
+                    let x, y;
+                    if (type === 'horizontal') {
+                        x = gridRect.left + Math.random() * gridRect.width;
+                        y = gridRect.top + (row * gridRect.height / this.gridSize) + (gridRect.height / this.gridSize / 2);
+                    } else if (type === 'vertical') {
+                        x = gridRect.left + (col * gridRect.width / this.gridSize) + (gridRect.width / this.gridSize / 2);
+                        y = gridRect.top + Math.random() * gridRect.height;
+                    } else if (type === 'area') {
+                        const cellSize = gridRect.width / this.gridSize;
+                        const centerX = gridRect.left + col * cellSize + cellSize / 2;
+                        const centerY = gridRect.top + row * cellSize + cellSize / 2;
+                        const angle = (i / particleCount) * 2 * Math.PI;
+                        const distance = 50 + Math.random() * 30;
+                        x = centerX + Math.cos(angle) * distance;
+                        y = centerY + Math.sin(angle) * distance;
+                    }
+                    
+                    particle.style.left = x + 'px';
+                    particle.style.top = y + 'px';
+                    
+                    document.body.appendChild(particle);
+                    setTimeout(() => particle.remove(), 2000);
+                }
             }
 
             animateShapeReturn() {
@@ -3526,11 +4118,18 @@
                 }
 
                 shape.used = true;
-                this.addScore(this.calculateShapeScore(shape.pattern));
+                
+                // Применяем бонус чистого поля к очкам за размещение
+                const baseScore = this.calculateShapeScore(shape.pattern);
+                const finalScore = this.clearFieldBonus.active ? baseScore * this.clearFieldBonus.multiplier : baseScore;
+                this.addScore(finalScore);
 
                 if (navigator.vibrate) {
                     navigator.vibrate(30);
                 }
+
+                // Уменьшаем счетчик бонуса чистого поля после размещения фигуры
+                this.decrementClearFieldBonus();
 
                 setTimeout(() => {
                     const clearedLines = this.clearCompletedLines();
@@ -3547,6 +4146,11 @@
                         this.combo = 0;
                         updateGameUI();
                     }
+
+                    // Проверяем чистое поле после очистки линий
+                    setTimeout(() => {
+                        this.checkForClearField();
+                    }, 500);
 
                     // Проверяем гейм овер только после обработки всех эффектов
                     setTimeout(() => {
@@ -3814,25 +4418,27 @@
                 if (count >= 4) multiplier = 12;
 
                 const comboBonus = Math.min(this.combo, 15);
-                const lineScore = count * 200 * multiplier * comboBonus;
-
-                this.addScore(lineScore);
+                const baseLineScore = count * 200 * multiplier * comboBonus;
+                
+                // Применяем бонус чистого поля
+                const finalLineScore = this.clearFieldBonus.active ? baseLineScore * this.clearFieldBonus.multiplier : baseLineScore;
+                this.addScore(finalLineScore);
                 
                 // ВЫБИРАЕМ НАИБОЛЕЕ КРУТОЕ ДОСТИЖЕНИЕ
                 let bestAchievement = '';
                 
                 // Приоритет 1: Достижения за линии (наивысший приоритет)
                 if (count >= 4) {
-                    bestAchievement = 'НЕВЕРОЯТНО!';
+                    bestAchievement = this.clearFieldBonus.active ? '🌟 НЕВЕРОЯТНО! x2 🌟' : 'НЕВЕРОЯТНО!';
                 } else if (count >= 3) {
-                    bestAchievement = 'ПОТРЯСАЮЩЕ!';
+                    bestAchievement = this.clearFieldBonus.active ? '🌟 ПОТРЯСАЮЩЕ! x2 🌟' : 'ПОТРЯСАЮЩЕ!';
                 } else if (count >= 2) {
-                    bestAchievement = 'ОТЛИЧНО!';
+                    bestAchievement = this.clearFieldBonus.active ? '🌟 ОТЛИЧНО! x2 🌟' : 'ОТЛИЧНО!';
                 }
                 
                 // Приоритет 2: Достижения за размещение (если нет достижений за линии)
                 if (!bestAchievement && placementQuality && placementQuality.score > 0) {
-                    bestAchievement = placementQuality.message;
+                    bestAchievement = this.clearFieldBonus.active ? `🌟 ${placementQuality.message} x2 🌟` : placementQuality.message;
                 }
                 
                 // Показываем только лучшее достижение
@@ -3842,8 +4448,75 @@
                 
                 updateGameUI();
                 
-                // Показываем бонус за очки
-                this.showScorePopup(lineScore);
+                // Показываем бонус за очки с усиленными эффектами если активен бонус
+                if (this.clearFieldBonus.active) {
+                    this.showEnhancedScorePopup(finalLineScore);
+                } else {
+                    this.showScorePopup(finalLineScore);
+                }
+            }
+
+            showEnhancedScorePopup(score) {
+                const gridElement = document.getElementById('gameGrid');
+                const gridRect = gridElement.getBoundingClientRect();
+                
+                const popup = document.createElement('div');
+                popup.className = 'score-popup';
+                popup.textContent = `+${score}`;
+                popup.style.left = (gridRect.left + gridRect.width / 2) + 'px';
+                popup.style.top = (gridRect.top + gridRect.height / 2) + 'px';
+                popup.style.background = 'linear-gradient(45deg, #FFD700, #FF6347)';
+                popup.style.fontSize = '24px';
+                popup.style.fontWeight = '900';
+                popup.style.textShadow = '0 3px 6px rgba(0, 0, 0, 0.8)';
+                popup.style.boxShadow = '0 0 20px rgba(255, 215, 0, 0.8)';
+                
+                document.body.appendChild(popup);
+                setTimeout(() => popup.remove(), 1200);
+            }
+
+            // ДОПОЛНИТЕЛЬНЫЕ ЭФФЕКТЫ
+            createAreaBlastEffect(centerRow, centerCol) {
+                const gridElement = document.getElementById('gameGrid');
+                const gridRect = gridElement.getBoundingClientRect();
+                const cellSize = gridRect.width / this.gridSize;
+                
+                for (let i = 0; i < 25; i++) {
+                    const particle = document.createElement('div');
+                    particle.className = 'particle';
+                    particle.style.background = '#FFD700';
+                    particle.style.width = '6px';
+                    particle.style.height = '6px';
+                    
+                    const angle = (i / 25) * 2 * Math.PI;
+                    const distance = 20 + Math.random() * 30;
+                    const x = gridRect.left + centerCol * cellSize + cellSize / 2 + Math.cos(angle) * distance;
+                    const y = gridRect.top + centerRow * cellSize + cellSize / 2 + Math.sin(angle) * distance;
+                    
+                    particle.style.left = x + 'px';
+                    particle.style.top = y + 'px';
+                    
+                    document.body.appendChild(particle);
+                    setTimeout(() => particle.remove(), 1000);
+                }
+            }
+
+            createFieldClearEffect() {
+                const gridElement = document.getElementById('gameGrid');
+                const gridRect = gridElement.getBoundingClientRect();
+                
+                // Массивный эффект для очистки всего поля
+                for (let i = 0; i < 50; i++) {
+                    setTimeout(() => {
+                        const particle = document.createElement('div');
+                        particle.className = 'enhanced-particle';
+                        particle.style.left = (gridRect.left + Math.random() * gridRect.width) + 'px';
+                        particle.style.top = (gridRect.top + Math.random() * gridRect.height) + 'px';
+                        
+                        document.body.appendChild(particle);
+                        setTimeout(() => particle.remove(), 2000);
+                    }, i * 20);
+                }
             }
 
             calculateShapeScore(pattern) {
@@ -3929,10 +4602,10 @@
                 
                 const boosterNames = {
                     'refresh': 'Обновить фигуры',
-                    'row_blast': 'Взорвать ряд/колонку',
-                    'lightning': 'Молния (12 блоков)',
-                    'shape_choice': 'Лучшие фигуры',
-                    'star_blast': 'Звездный взрыв 3×3'
+                    'shape_choice': 'Горизонтальный удар',
+                    'row_blast': 'Вертикальный удар',
+                    'lightning': 'Взрыв области 3×3',
+                    'star_blast': 'Уничтожить всё поле'
                 };
                 
                 availableBoosters.forEach(boosterType => {
@@ -3958,20 +4631,21 @@
                         this.generateShapes();
                         showNotification('Фигуры обновлены! 🔄');
                         break;
-                    case 'row_blast':
+                    case 'shape_choice': // Горизонтальная линия
                         this.clearRandomRow();
-                        showNotification('Ряд очищен! 💥');
+                        showNotification('Горизонтальный удар! 💥');
                         break;
-                    case 'lightning':
-                        this.clearRandomBlocks(8);
-                        showNotification('Блоки очищены! ⚡');
+                    case 'row_blast': // Вертикальная линия
+                        const bestCol = this.findBestColumn();
+                        this.clearVerticalLine(bestCol);
+                        showNotification('Вертикальный удар! 💥');
                         break;
-                    case 'shape_choice':
-                        this.activateShapeChoice();
+                    case 'lightning': // Область 3x3
+                        this.clearArea3x3(3, 3);
+                        showNotification('Взрыв области! ⚡');
                         break;
-                    case 'star_blast':
-                        // Для звездного взрыва очищаем центральную область
-                        this.performStarBlast(3, 3);
+                    case 'star_blast': // Все поле
+                        this.clearEntireField();
                         break;
                 }
                 
@@ -3983,6 +4657,24 @@
                         this.gameOver();
                     }
                 }, 200);
+            }
+
+            findBestColumn() {
+                let bestCol = 0;
+                let maxBlocks = 0;
+                
+                for (let col = 0; col < this.gridSize; col++) {
+                    let blocks = 0;
+                    for (let row = 0; row < this.gridSize; row++) {
+                        if (this.grid[row][col] !== null) blocks++;
+                    }
+                    if (blocks > maxBlocks) {
+                        maxBlocks = blocks;
+                        bestCol = col;
+                    }
+                }
+                
+                return bestCol;
             }
 
             clearRandomRow() {
@@ -4094,6 +4786,11 @@
             }
 
             restart() {
+                // Сбрасываем бонус чистого поля
+                this.clearFieldBonus.active = false;
+                this.clearFieldBonus.turnsLeft = 0;
+                this.hideClearFieldBonusUI();
+                
                 this.startNewGame();
             }
 
@@ -4241,36 +4938,10 @@
             }
         }
 
-        // Booster Functions
+        // Booster Functions (Updated for Drag & Drop)
         function useBooster(type) {
-            if (!AppState.gameState.boosters.has(type)) {
-                showNotification(`Нет ${AppState.gameState.boosters.getName(type)}! 🚫`);
-                return;
-            }
-
-            if (AppState.gameState.boosters.use(type)) {
-                switch (type) {
-                    case 'shape_choice':
-                        AppState.gameState.activateShapeChoice();
-                        break;
-                    case 'refresh':
-                        AppState.gameState.generateShapes();
-                        showNotification('Фигуры обновлены! 🔄');
-                        break;
-                    case 'row_blast':
-                        AppState.gameState.activateRowBlast();
-                        break;
-                    case 'lightning':
-                        AppState.gameState.activateLightning();
-                        break;
-                    case 'star_blast':
-                        AppState.gameState.activateStarBlast();
-                        break;
-                    default:
-                        showNotification('Бустер пока в разработке! 🔧');
-                        break;
-                }
-            }
+            // Эта функция теперь не используется - бустеры работают через drag & drop
+            showNotification('Перетащите бустер на игровое поле! 🎯');
         }
 
         // Social Functions
