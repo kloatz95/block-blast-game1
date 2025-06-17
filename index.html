@@ -1178,11 +1178,11 @@
             background-repeat: no-repeat;
             background-position: center;
             margin: 0 auto 8px;
-            background-image: url('assets/icons/target-white.png');
+            background-image: url('assets/icons/player-nav-icon.png');
         }
 
         .achievement-item:nth-child(2) .achievement-icon {
-            background-image: url('assets/icons/trophy-white.png');
+            background-image: url('assets/icons/Medal bronze.png');
         }
 
         .achievement-item:nth-child(3) .achievement-icon {
@@ -1190,7 +1190,7 @@
         }
 
         .achievement-item:nth-child(4) .achievement-icon {
-            background-image: url('assets/icons/fire-white.png');
+            background-image: url('assets/icons/Fire pirple.png');
         }
 
         .achievement-name {
@@ -1859,19 +1859,19 @@
 
             <!-- NEW NAVIGATION -->
             <div class="new-nav">
-                <button class="nav-item active" onclick="showTab('player')">
+                <button class="nav-item active" data-tab="player" onclick="showTab('player')">
                     <div class="nav-icon"></div>
                     Игрок
                 </button>
-                <button class="nav-item" onclick="showTab('shop')">
+                <button class="nav-item" data-tab="shop" onclick="showTab('shop')">
                     <div class="nav-icon"></div>
                     Магазин
                 </button>
-                <button class="nav-item" onclick="showTab('leaderboard')">
+                <button class="nav-item" data-tab="leaderboard" onclick="showTab('leaderboard')">
                     <div class="nav-icon"></div>
                     Рейтинг
                 </button>
-                <button class="nav-item" onclick="showTab('friends')">
+                <button class="nav-item" data-tab="friends" onclick="showTab('friends')">
                     <div class="nav-icon"></div>
                     Друзья
                 </button>
@@ -1992,12 +1992,12 @@
                         
                         <div class="achievements-grid" style="margin-bottom: 20px;">
                             <div class="achievement-item">
-                                <div class="achievement-icon"></div>
+                                <div class="achievement-icon" style="background-image: url('assets/icons/target-large.png');"></div>
                                 <div class="achievement-name">Приглашения</div>
                                 <div class="achievement-desc" id="invitesSent">0</div>
                             </div>
                             <div class="achievement-item">
-                                <div class="achievement-icon"></div>
+                                <div class="achievement-icon" style="background-image: url('assets/icons/lightning-large.png');"></div>
                                 <div class="achievement-name">Присоединились</div>
                                 <div class="achievement-desc" id="friendsJoined">0</div>
                             </div>
@@ -2097,7 +2097,7 @@
             <div style="font-size: 14px; margin-bottom: 16px;">Получено XP: <span id="finalXP" style="color: #32CD32; font-weight: 700;">+0</span></div>
             <div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;">
                 <button class="simple-button restart-btn" onclick="restartGame()">СНОВА</button>
-                <button class="simple-button menu-btn" onclick="exitGame()">МЕНЮ</button>
+                <button class="simple-button menu-btn" onclick="closeOverlay('gameOverOverlay'); exitGame()">МЕНЮ</button>
                 <button class="simple-button menu-btn" onclick="shareGameResult()" style="background: #FF9800; color: white; box-shadow: 0 4px 0 #E65100;">РАССКАЗАТЬ ДРУЗЬЯМ</button>
             </div>
         </div>
@@ -2106,10 +2106,12 @@
     <div class="overlay" id="boosterOfferOverlay">
         <div class="overlay-content">
             <h2>Нет ходов!</h2>
-            <div style="font-size: 14px; margin-bottom: 16px;">Используйте бустер для продолжения игры?</div>
+            <div style="font-size: 14px; margin-bottom: 16px;">Выберите бустер для продолжения игры:</div>
+            <div id="availableBoosters" style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px;">
+                <!-- Доступные бустеры будут добавлены динамически -->
+            </div>
             <div style="display: flex; gap: 12px; justify-content: center;">
-                <button class="simple-button restart-btn" onclick="AppState.gameState.useBoosterToContinue()" style="margin: 0; width: auto; padding: 12px 20px;">ДА</button>
-                <button class="simple-button menu-btn" onclick="closeOverlay('boosterOfferOverlay'); AppState.gameState.gameOver()" style="margin: 0; width: auto; padding: 12px 20px;">НЕТ</button>
+                <button class="simple-button menu-btn" onclick="closeOverlay('boosterOfferOverlay'); AppState.gameState.gameOver()" style="margin: 0; width: auto; padding: 12px 20px;">ВЫЙТИ</button>
             </div>
         </div>
     </div>
@@ -2309,11 +2311,11 @@
 
         // Tab Management
         function showTab(tabName) {
-            // Update navigation
+            // Update navigation - используем data-атрибуты
             document.querySelectorAll('.nav-item').forEach(item => {
                 item.classList.remove('active');
             });
-            event.target.classList.add('active');
+            document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
 
             // Update content
             document.querySelectorAll('.content-screen').forEach(screen => {
@@ -2325,15 +2327,21 @@
 
             // Load specific content
             if (tabName === 'leaderboard') {
+                // Устанавливаем активную вкладку "Общий" по умолчанию
+                document.querySelectorAll('.leaderboard-tab').forEach(tab => {
+                    tab.classList.remove('active');
+                });
+                document.querySelector('[data-leaderboard="global"]').classList.add('active');
                 showLeaderboard('global');
             }
         }
 
         function showLeaderboard(type) {
+            // Убираем все активные классы и добавляем к нужному
             document.querySelectorAll('.leaderboard-tab').forEach(tab => {
                 tab.classList.remove('active');
             });
-            event.target.classList.add('active');
+            document.querySelector(`[data-leaderboard="${type}"]`).classList.add('active');
 
             // Mock leaderboard data for now
             const mockData = generateMockLeaderboard(type);
@@ -2546,6 +2554,7 @@
                 this.gameStarted = false;
                 this.draggedShape = null;
                 this.isDragging = false;
+                this.lastAchievementTime = null; // Для контроля частоты достижений
 
                 // Systems
                 this.energy = this.initEnergySystem();
@@ -3244,11 +3253,6 @@
                 shape.used = true;
                 this.addScore(this.calculateShapeScore(shape.pattern));
 
-                // Показываем достижение за качество хода
-                if (placementQuality.score > 0) {
-                    this.showPlacementAchievement(placementQuality);
-                }
-
                 if (navigator.vibrate) {
                     navigator.vibrate(30);
                 }
@@ -3256,11 +3260,15 @@
                 setTimeout(() => {
                     const clearedLines = this.clearCompletedLines();
                     if (clearedLines > 0) {
-                        this.handleLinesCleared(clearedLines);
+                        this.handleLinesCleared(clearedLines, placementQuality);
                         if (navigator.vibrate && clearedLines >= 2) {
                             navigator.vibrate([50, 25, 50]);
                         }
                     } else {
+                        // Показываем достижение за размещение только если нет очищенных линий
+                        if (placementQuality.score > 0) {
+                            this.showPlacementAchievement(placementQuality);
+                        }
                         this.combo = 0;
                         updateGameUI();
                     }
@@ -3311,14 +3319,14 @@
                     }
                 }
                 
-                // Оцениваем качество размещения - БОЛЕЕ РЕДКИЕ УСЛОВИЯ
-                if (surroundingBlocks >= 15) {
+                // Оцениваем качество размещения - ТОЧНЫЕ ПОРОГИ
+                if (surroundingBlocks >= 12) {
                     score = 3;
                     message = 'ИДЕАЛЬНО!';
-                } else if (surroundingBlocks >= 10) {
+                } else if (surroundingBlocks >= 8) {
                     score = 2;
                     message = 'ПРЕВОСХОДНО!';
-                } else if (surroundingBlocks >= 6) {
+                } else if (surroundingBlocks >= 4) {
                     score = 1;
                     message = 'ЧУДЕСНО!';
                 }
@@ -3326,23 +3334,37 @@
                 return { score, message, surroundingBlocks };
             }
 
-            showPlacementAchievement(quality) {
-                if (quality.score === 0) return;
+            showPlacementAchievement(placementQuality) {
+                if (placementQuality.score === 0) return;
+                
+                // СИСТЕМА ПРИОРИТЕТОВ - показываем только одну надпись за раз
+                if (this.lastAchievementTime && Date.now() - this.lastAchievementTime < 3000) {
+                    return; // Блокируем новые достижения на 3 секунды
+                }
+                
+                this.lastAchievementTime = Date.now();
                 
                 const popup = document.createElement('div');
                 popup.className = 'achievement-popup';
-                popup.textContent = quality.message;
+                popup.textContent = placementQuality.message;
                 document.body.appendChild(popup);
                 
                 setTimeout(() => popup.remove(), 2000);
                 
                 // Бонус к очкам за качественное размещение
-                const bonusScore = quality.score * 50;
+                const bonusScore = placementQuality.score * 50;
                 this.addScore(bonusScore);
                 this.showScorePopup(bonusScore);
             }
 
             showAchievementText(text) {
+                // СИСТЕМА ПРИОРИТЕТОВ - показываем только одну надпись за раз
+                if (this.lastAchievementTime && Date.now() - this.lastAchievementTime < 3000) {
+                    return; // Блокируем новые достижения на 3 секунды
+                }
+                
+                this.lastAchievementTime = Date.now();
+                
                 const popup = document.createElement('div');
                 popup.className = 'achievement-popup';
                 popup.textContent = text;
@@ -3493,7 +3515,7 @@
                 });
             }
 
-            handleLinesCleared(count) {
+            handleLinesCleared(count, placementQuality = null) {
                 this.linesCleared += count;
                 this.stats.totalLinesCleared += count;
                 this.combo++;
@@ -3512,13 +3534,26 @@
 
                 this.addScore(lineScore);
                 
-                // Показываем достижения за количество очищенных линий
+                // ВЫБИРАЕМ НАИБОЛЕЕ КРУТОЕ ДОСТИЖЕНИЕ
+                let bestAchievement = '';
+                
+                // Приоритет 1: Достижения за линии (наивысший приоритет)
                 if (count >= 4) {
-                    this.showAchievementText('НЕВЕРОЯТНО!');
+                    bestAchievement = 'НЕВЕРОЯТНО!';
                 } else if (count >= 3) {
-                    this.showAchievementText('ПОТРЯСАЮЩЕ!');
+                    bestAchievement = 'ПОТРЯСАЮЩЕ!';
                 } else if (count >= 2) {
-                    this.showAchievementText('ОТЛИЧНО!');
+                    bestAchievement = 'ОТЛИЧНО!';
+                }
+                
+                // Приоритет 2: Достижения за размещение (если нет достижений за линии)
+                if (!bestAchievement && placementQuality && placementQuality.score > 0) {
+                    bestAchievement = placementQuality.message;
+                }
+                
+                // Показываем только лучшее достижение
+                if (bestAchievement) {
+                    this.showAchievementText(bestAchievement);
                 }
                 
                 updateGameUI();
@@ -3600,29 +3635,59 @@
 
             showBoosterOffer() {
                 // Проверяем, есть ли у игрока бустеры для продолжения игры
-                const hasUsefulBoosters = this.boosters.has('refresh') || this.boosters.has('row_blast') || this.boosters.has('lightning');
+                const usefulBoosters = [];
+                if (this.boosters.has('refresh')) usefulBoosters.push('refresh');
+                if (this.boosters.has('row_blast')) usefulBoosters.push('row_blast');
+                if (this.boosters.has('lightning')) usefulBoosters.push('lightning');
                 
-                if (hasUsefulBoosters) {
+                if (usefulBoosters.length > 0) {
+                    this.populateBoosterOptions(usefulBoosters);
                     showOverlay('boosterOfferOverlay');
                 } else {
                     this.gameOver();
                 }
             }
 
-            useBoosterToContinue() {
-                // Приоритет бустеров: сначала refresh, потом row_blast, потом lightning
-                if (this.boosters.has('refresh')) {
-                    this.boosters.use('refresh');
-                    this.generateShapes();
-                    showNotification('Фигуры обновлены! 🔄');
-                } else if (this.boosters.has('row_blast')) {
-                    this.boosters.use('row_blast');
-                    this.clearRandomRow();
-                    showNotification('Ряд очищен! 💥');
-                } else if (this.boosters.has('lightning')) {
-                    this.boosters.use('lightning');
-                    this.clearRandomBlocks(8);
-                    showNotification('Блоки очищены! ⚡');
+            populateBoosterOptions(availableBoosters) {
+                const container = document.getElementById('availableBoosters');
+                container.innerHTML = '';
+                
+                const boosterNames = {
+                    'refresh': 'Обновить фигуры',
+                    'row_blast': 'Очистить ряд',
+                    'lightning': 'Очистить блоки'
+                };
+                
+                availableBoosters.forEach(boosterType => {
+                    const button = document.createElement('button');
+                    button.className = 'simple-button restart-btn';
+                    button.style.margin = '0';
+                    button.style.width = '100%';
+                    button.style.padding = '12px 20px';
+                    button.textContent = `${boosterNames[boosterType]} (${this.boosters.inventory[boosterType]})`;
+                    button.onclick = () => this.useSpecificBooster(boosterType);
+                    container.appendChild(button);
+                });
+            }
+
+            useSpecificBooster(boosterType) {
+                if (!this.boosters.has(boosterType)) return;
+                
+                this.boosters.use(boosterType);
+                
+                switch (boosterType) {
+                    case 'refresh':
+                        this.generateShapes();
+                        showNotification('Фигуры обновлены! 🔄');
+                        break;
+                    case 'row_blast':
+                        this.clearRandomRow();
+                        showNotification('Ряд очищен! 💥');
+                        break;
+                    case 'lightning':
+                        this.clearRandomBlocks(8);
+                        showNotification('Блоки очищены! ⚡');
+                        break;
                 }
                 
                 closeOverlay('boosterOfferOverlay');
