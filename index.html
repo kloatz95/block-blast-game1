@@ -1,34 +1,4 @@
-createRowBlastEffect(row) {
-                const gridElement = document.getElementById('gameGrid');
-                const gridRect = gridElement.getBoundingClientRect();
-                
-                for (let i = 0; i < 20; i++) {
-                    const particle = document.createElement('div');
-                    particle.className = 'particle';
-                    particle.style.background = '#FF6347';
-                    particle.style.left = (gridRect.left + Math.random() * gridRect.width) + 'px';
-                    particle.style.top = (gridRect.top + (row * gridRect.height / this.gridSize) + (gridRect.height / this.gridSize / 2)) + 'px';
-                    
-                    document.body.appendChild(particle);
-                    setTimeout(() => particle.remove(), 1000);
-                }
-            }
-
-            createColumnBlastEffect(col) {
-                const gridElement = document.getElementById('gameGrid');
-                const gridRect = gridElement.getBoundingClientRect();
-                
-                for (let i = 0; i < 20; i++) {
-                    const particle = document.createElement('div');
-                    particle.className = 'particle';
-                    particle.style.background = '#FF6347';
-                    particle.style.left = (gridRect.left + (col * gridRect.width / this.gridSize) + (gridRect.width / this.gridSize / 2)) + 'px';
-                    particle.style.top = (gridRect.top + Math.random() * gridRect.height) + 'px';
-                    
-                    document.body.appendChild(particle);
-                    setTimeout(() => particle.remove(), 1000);
-                }
-            }<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
@@ -224,6 +194,40 @@ createRowBlastEffect(row) {
 
         .game-screen.active {
             transform: translateX(-100%);
+        }
+
+        /* FIREWORKS MODE */
+        .game-screen.fireworks-mode {
+            background: linear-gradient(45deg, #8B4513, #CD853F, #DAA520, #FFD700);
+            background-size: 400% 400%;
+            animation: fireworksBackground 3s ease-in-out infinite;
+        }
+
+        @keyframes fireworksBackground {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .fireworks-indicator {
+            position: absolute;
+            top: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(45deg, #FF6347, #FFD700, #32CD32);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 900;
+            font-size: 14px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.6);
+            animation: fireworksPulse 1s ease-in-out infinite alternate;
+            z-index: 200;
+        }
+
+        @keyframes fireworksPulse {
+            0% { transform: translateX(-50%) scale(1); }
+            100% { transform: translateX(-50%) scale(1.1); }
         }
 
         /* CARD HEADER */
@@ -660,6 +664,12 @@ createRowBlastEffect(row) {
             transform: none;
         }
 
+        .game-booster.dragging {
+            opacity: 0.5;
+            transform: scale(0.9);
+            z-index: 1000;
+        }
+
         .game-booster-icon {
             font-size: 28px;
             margin-bottom: 2px;
@@ -668,23 +678,23 @@ createRowBlastEffect(row) {
             background-size: contain;
             background-repeat: no-repeat;
             background-position: center;
-            background-image: url('assets/icons/target.png');
+            background-image: url('assets/icons/arrow-right.png');
         }
 
-        .game-booster[onclick*="row_blast"] .game-booster-icon {
-            background-image: url('assets/icons/bomb.png');
+        .game-booster[data-booster="vertical_blast"] .game-booster-icon {
+            background-image: url('assets/icons/arrow-down.png');
         }
 
-        .game-booster[onclick*="refresh"] .game-booster-icon {
+        .game-booster[data-booster="refresh"] .game-booster-icon {
             background-image: url('assets/icons/refresh.png');
         }
 
-        .game-booster[onclick*="lightning"] .game-booster-icon {
-            background-image: url('assets/icons/lightning.png');
+        .game-booster[data-booster="area_blast_3x3"] .game-booster-icon {
+            background-image: url('assets/icons/target.png');
         }
 
-        .game-booster[onclick*="star_blast"] .game-booster-icon {
-            background-image: url('assets/icons/star.png');
+        .game-booster[data-booster="full_field_blast"] .game-booster-icon {
+            background-image: url('assets/icons/bomb.png');
         }
 
         .game-booster-count {
@@ -783,9 +793,42 @@ createRowBlastEffect(row) {
             z-index: 10 !important;
         }
 
+        .cell.booster-preview-horizontal {
+            background: rgba(255, 99, 71, 0.8) !important;
+            border: 2px solid #FF4500 !important;
+            box-shadow: 0 0 15px rgba(255, 69, 0, 0.9) !important;
+            z-index: 10 !important;
+        }
+
+        .cell.booster-preview-vertical {
+            background: rgba(30, 144, 255, 0.8) !important;
+            border: 2px solid #0000FF !important;
+            box-shadow: 0 0 15px rgba(0, 0, 255, 0.9) !important;
+            z-index: 10 !important;
+        }
+
+        .cell.booster-preview-area {
+            background: rgba(255, 215, 0, 0.8) !important;
+            border: 2px solid #FFD700 !important;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.9) !important;
+            z-index: 10 !important;
+        }
+
+        .cell.booster-preview-full {
+            background: rgba(255, 0, 255, 0.8) !important;
+            border: 2px solid #FF00FF !important;
+            box-shadow: 0 0 15px rgba(255, 0, 255, 0.9) !important;
+            z-index: 10 !important;
+        }
+
         .cell.clearing {
             animation: clearSimple 0.4s ease-out forwards;
             z-index: 10;
+        }
+
+        .cell.fireworks-effect {
+            animation: fireworksExplosion 0.8s ease-out forwards;
+            z-index: 15;
         }
 
         @keyframes blockPlace {
@@ -811,6 +854,34 @@ createRowBlastEffect(row) {
             100% { 
                 transform: scale(0); 
                 opacity: 0;
+            }
+        }
+
+        @keyframes fireworksExplosion {
+            0% { 
+                transform: scale(1); 
+                opacity: 1;
+                box-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
+            }
+            25% {
+                transform: scale(1.4);
+                opacity: 0.9;
+                box-shadow: 0 0 25px rgba(255, 99, 71, 1);
+            }
+            50% { 
+                transform: scale(1.2); 
+                opacity: 0.7;
+                box-shadow: 0 0 40px rgba(50, 205, 50, 0.8);
+            }
+            75% {
+                transform: scale(1.6);
+                opacity: 0.4;
+                box-shadow: 0 0 50px rgba(255, 20, 147, 0.9);
+            }
+            100% { 
+                transform: scale(0); 
+                opacity: 0;
+                box-shadow: 0 0 60px rgba(138, 43, 226, 1);
             }
         }
 
@@ -840,118 +911,6 @@ createRowBlastEffect(row) {
                 transform: scale(0); 
                 opacity: 0;
                 box-shadow: 0 0 60px rgba(255, 69, 0, 1);
-            }
-        }
-
-        /* BOOSTER DRAG & DROP STYLES */
-        .game-booster.dragging-booster {
-            opacity: 0.3;
-            transform: scale(0.85);
-            pointer-events: none;
-            filter: grayscale(0.7);
-        }
-
-        .cell.booster-target {
-            background: rgba(255, 255, 255, 0.9) !important;
-            border: 3px solid #FF6347 !important;
-            box-shadow: 
-                0 0 20px rgba(255, 99, 71, 0.8) !important,
-                inset 0 2px 4px rgba(255, 255, 255, 0.5) !important;
-            transform: scale(1.1) !important;
-            z-index: 15 !important;
-            animation: boosterPulse 0.6s ease-in-out infinite alternate;
-        }
-
-        .cell.horizontal-target {
-            border-color: #FF4500 !important;
-            box-shadow: 0 0 15px rgba(255, 69, 0, 0.8) !important;
-        }
-
-        .cell.vertical-target {
-            border-color: #1E90FF !important;
-            box-shadow: 0 0 15px rgba(30, 144, 255, 0.8) !important;
-        }
-
-        .cell.area-target {
-            border-color: #FFD700 !important;
-            box-shadow: 0 0 15px rgba(255, 215, 0, 0.8) !important;
-        }
-
-        @keyframes boosterPulse {
-            0% { 
-                transform: scale(1.05);
-                opacity: 0.8;
-            }
-            100% { 
-                transform: scale(1.15);
-                opacity: 1;
-            }
-        }
-
-        /* CLEAR FIELD BONUS EFFECTS */
-        .clear-field-bonus {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: radial-gradient(circle, rgba(255, 215, 0, 0.1) 0%, rgba(255, 69, 0, 0.05) 100%);
-            pointer-events: none;
-            z-index: 500;
-            animation: bonusGlow 2s ease-in-out infinite alternate;
-        }
-
-        @keyframes bonusGlow {
-            0% { opacity: 0.3; }
-            100% { opacity: 0.7; }
-        }
-
-        .bonus-multiplier {
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: linear-gradient(45deg, #FFD700, #FF6347);
-            color: white;
-            padding: 12px 20px;
-            border-radius: 25px;
-            font-size: 16px;
-            font-weight: 900;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.4);
-            z-index: 1000;
-            animation: bonusBounce 1s ease-in-out infinite alternate;
-        }
-
-        @keyframes bonusBounce {
-            0% { transform: translateX(-50%) scale(1); }
-            100% { transform: translateX(-50%) scale(1.05); }
-        }
-
-        .enhanced-particle {
-            position: absolute;
-            width: 8px;
-            height: 8px;
-            background: linear-gradient(45deg, #FFD700, #FF6347);
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 1500;
-            animation: enhancedParticleFloat 2s ease-out forwards;
-            box-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
-        }
-
-        @keyframes enhancedParticleFloat {
-            0% {
-                transform: scale(1) rotate(0deg);
-                opacity: 1;
-            }
-            50% {
-                transform: scale(1.5) rotate(180deg);
-                opacity: 0.8;
-            }
-            100% {
-                transform: scale(0) rotate(360deg) translateY(-150px);
-                opacity: 0;
             }
         }
 
@@ -989,6 +948,13 @@ createRowBlastEffect(row) {
             letter-spacing: 1px;
         }
 
+        .score-popup.fireworks {
+            color: #FF69B4;
+            font-size: 24px;
+            text-shadow: 0 3px 6px rgba(0, 0, 0, 0.9);
+            animation: fireworksScorePopup 1.5s ease-out forwards;
+        }
+
         @keyframes scorePopup {
             0% {
                 transform: translateY(0) scale(0.5);
@@ -1000,6 +966,21 @@ createRowBlastEffect(row) {
             }
             100% {
                 transform: translateY(-60px) scale(0.8);
+                opacity: 0;
+            }
+        }
+
+        @keyframes fireworksScorePopup {
+            0% {
+                transform: translateY(0) scale(0.5) rotate(-5deg);
+                opacity: 1;
+            }
+            50% {
+                transform: translateY(-40px) scale(1.4) rotate(5deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-80px) scale(0.9) rotate(0deg);
                 opacity: 0;
             }
         }
@@ -1018,6 +999,16 @@ createRowBlastEffect(row) {
             animation: achievementPopup 2s ease-out forwards;
             font-family: 'Nunito', sans-serif;
             letter-spacing: 2px;
+        }
+
+        .achievement-popup.fireworks {
+            font-size: 36px;
+            background: linear-gradient(45deg, #FF6347, #FFD700, #32CD32, #1E90FF, #FF69B4);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: fireworksAchievementPopup 2.5s ease-out forwards;
         }
 
         @keyframes achievementPopup {
@@ -1039,6 +1030,29 @@ createRowBlastEffect(row) {
             }
         }
 
+        @keyframes fireworksAchievementPopup {
+            0% {
+                transform: translate(-50%, -50%) scale(0.3) rotate(-10deg);
+                opacity: 0;
+                background-position: 0% 50%;
+            }
+            20% {
+                transform: translate(-50%, -50%) scale(1.5) rotate(5deg);
+                opacity: 1;
+                background-position: 50% 50%;
+            }
+            80% {
+                transform: translate(-50%, -50%) scale(1.1) rotate(-2deg);
+                opacity: 1;
+                background-position: 100% 50%;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(0.9) rotate(0deg);
+                opacity: 0;
+                background-position: 200% 50%;
+            }
+        }
+
         /* ЧАСТИЦЫ ДЛЯ ЭФФЕКТОВ */
         .particle {
             position: absolute;
@@ -1051,6 +1065,12 @@ createRowBlastEffect(row) {
             animation: particleFloat 1s ease-out forwards;
         }
 
+        .fireworks-particle {
+            width: 6px;
+            height: 6px;
+            animation: fireworksParticleFloat 1.5s ease-out forwards;
+        }
+
         @keyframes particleFloat {
             0% {
                 transform: scale(1);
@@ -1058,6 +1078,17 @@ createRowBlastEffect(row) {
             }
             100% {
                 transform: scale(0) translateY(-100px);
+                opacity: 0;
+            }
+        }
+
+        @keyframes fireworksParticleFloat {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(0) translateY(-150px) translateX(-100px);
                 opacity: 0;
             }
         }
@@ -2127,7 +2158,7 @@ createRowBlastEffect(row) {
                             <div class="shop-item" onclick="buyPack('starter')">
                                 <div class="shop-item-icon"></div>
                                 <div class="shop-item-name">Стартовый Набор</div>
-                                <div class="shop-item-description">3 Горизонтальных Удара + 2 Обновления</div>
+                                <div class="shop-item-description">3 Горизонтали + 2 Обновления</div>
                                 <div class="shop-item-price">
                                     <span>150</span>
                                 </div>
@@ -2135,7 +2166,7 @@ createRowBlastEffect(row) {
                             <div class="shop-item" onclick="buyPack('advanced')">
                                 <div class="shop-item-icon"></div>
                                 <div class="shop-item-name">Продвинутый Набор</div>
-                                <div class="shop-item-description">5 Гориз. + 3 Верт. + 2 Области 3×3</div>
+                                <div class="shop-item-description">5 Горизонталей + 3 Вертикали + 2 Области 3x3</div>
                                 <div class="shop-item-price">
                                     <span>400</span>
                                 </div>
@@ -2143,7 +2174,7 @@ createRowBlastEffect(row) {
                             <div class="shop-item" onclick="buyPack('premium')">
                                 <div class="shop-item-icon"></div>
                                 <div class="shop-item-name">Премиум Набор</div>
-                                <div class="shop-item-description">8 Гориз. + 5 Верт. + 4 Области + 2 Поля</div>
+                                <div class="shop-item-description">8 всех бустеров + 2 Полных поля</div>
                                 <div class="shop-item-price">
                                     <span>900</span>
                                 </div>
@@ -2247,6 +2278,11 @@ createRowBlastEffect(row) {
         <!-- GAME SCREEN -->
         <div class="game-screen" id="gameScreen">
             
+            <!-- FIREWORKS INDICATOR (показывается только в режиме фейерверка) -->
+            <div class="fireworks-indicator" id="fireworksIndicator" style="display: none;">
+                🎆 ФЕЙЕРВЕРК! ×<span id="fireworksMultiplier">2</span> 🎆
+            </div>
+            
             <!-- GAME HEADER -->
             <div class="game-header">
                 <button class="back-button" onclick="exitGame()">← Назад</button>
@@ -2272,25 +2308,25 @@ createRowBlastEffect(row) {
                 
                 <!-- BOOSTERS -->
                 <div class="game-boosters">
-                    <div class="game-booster" onclick="useBooster('shape_choice')" id="gameBooster_shape_choice">
+                    <div class="game-booster" data-booster="horizontal_blast" id="gameBooster_horizontal_blast">
                         <div class="game-booster-icon"></div>
-                        <div class="game-booster-count" id="gameCount_shape_choice">0</div>
+                        <div class="game-booster-count" id="gameCount_horizontal_blast">10</div>
                     </div>
-                    <div class="game-booster" onclick="useBooster('row_blast')" id="gameBooster_row_blast">
+                    <div class="game-booster" data-booster="vertical_blast" id="gameBooster_vertical_blast">
                         <div class="game-booster-icon"></div>
-                        <div class="game-booster-count" id="gameCount_row_blast">0</div>
+                        <div class="game-booster-count" id="gameCount_vertical_blast">10</div>
                     </div>
-                    <div class="game-booster" onclick="useBooster('refresh')" id="gameBooster_refresh">
+                    <div class="game-booster" data-booster="refresh" id="gameBooster_refresh">
                         <div class="game-booster-icon"></div>
-                        <div class="game-booster-count" id="gameCount_refresh">2</div>
+                        <div class="game-booster-count" id="gameCount_refresh">10</div>
                     </div>
-                    <div class="game-booster" onclick="useBooster('lightning')" id="gameBooster_lightning">
+                    <div class="game-booster" data-booster="area_blast_3x3" id="gameBooster_area_blast_3x3">
                         <div class="game-booster-icon"></div>
-                        <div class="game-booster-count" id="gameCount_lightning">0</div>
+                        <div class="game-booster-count" id="gameCount_area_blast_3x3">10</div>
                     </div>
-                    <div class="game-booster" onclick="useBooster('star_blast')" id="gameBooster_star_blast">
+                    <div class="game-booster" data-booster="full_field_blast" id="gameBooster_full_field_blast">
                         <div class="game-booster-icon"></div>
-                        <div class="game-booster-count" id="gameCount_star_blast">0</div>
+                        <div class="game-booster-count" id="gameCount_full_field_blast">10</div>
                     </div>
                 </div>
 
@@ -2943,14 +2979,14 @@ createRowBlastEffect(row) {
                 this.gameStarted = false;
                 this.draggedShape = null;
                 this.isDragging = false;
+                this.lastAchievementTime = null; // Для контроля частоты достижений
+                
+                // Новые системы для бустеров
                 this.draggedBooster = null;
                 this.isDraggingBooster = false;
-                this.lastAchievementTime = null; // Для контроля частоты достижений
-                this.clearFieldBonus = {
-                    active: false,
-                    turnsLeft: 0,
-                    multiplier: 2
-                };
+                this.fireworksMode = false;
+                this.fireworksTimer = null;
+                this.fireworksMultiplier = 2;
 
                 // Systems
                 this.energy = this.initEnergySystem();
@@ -3011,6 +3047,7 @@ createRowBlastEffect(row) {
                 this.generateShapes();
                 this.energy.startTimer();
                 this.setupDragAndDrop();
+                this.setupBoosterDragAndDrop();
                 console.log('🎮 Игра инициализирована');
             }
 
@@ -3128,11 +3165,11 @@ createRowBlastEffect(row) {
             initBoostersSystem() {
                 return {
                     inventory: {
-                        shape_choice: 0,
-                        row_blast: 0,
-                        refresh: 2,
-                        lightning: 0,
-                        star_blast: 0
+                        horizontal_blast: 10,
+                        vertical_blast: 10,
+                        refresh: 10,
+                        area_blast_3x3: 10,
+                        full_field_blast: 10
                     },
                     
                     has(type) {
@@ -3155,11 +3192,11 @@ createRowBlastEffect(row) {
                     
                     getName(type) {
                         const names = {
-                            shape_choice: 'Горизонтальный Удар',
-                            row_blast: 'Вертикальный Удар', 
+                            horizontal_blast: 'Горизонтальный Взрыв',
+                            vertical_blast: 'Вертикальный Взрыв',
                             refresh: 'Обновление Фигур',
-                            lightning: 'Взрыв Области 3×3',
-                            star_blast: 'Уничтожение Поля'
+                            area_blast_3x3: 'Взрыв 3×3',
+                            full_field_blast: 'Полный Взрыв'
                         };
                         return names[type] || type;
                     }
@@ -3213,6 +3250,56 @@ createRowBlastEffect(row) {
                 };
             }
 
+            // Система фейерверков
+            activateFireworksMode() {
+                this.fireworksMode = true;
+                this.fireworksMultiplier = 2;
+                
+                // Визуальные эффекты
+                const gameScreen = document.getElementById('gameScreen');
+                const fireworksIndicator = document.getElementById('fireworksIndicator');
+                
+                gameScreen.classList.add('fireworks-mode');
+                fireworksIndicator.style.display = 'block';
+                document.getElementById('fireworksMultiplier').textContent = this.fireworksMultiplier;
+                
+                this.showAchievementText('🎆 ФЕЙЕРВЕРК! 🎆', true);
+                
+                if (navigator.vibrate) {
+                    navigator.vibrate([100, 50, 100, 50, 100]);
+                }
+                
+                // Автоматическое отключение через 10 ходов
+                this.fireworksTimer = 10;
+                
+                console.log('🎆 Режим фейерверка активирован!');
+            }
+
+            deactivateFireworksMode() {
+                this.fireworksMode = false;
+                this.fireworksTimer = null;
+                
+                const gameScreen = document.getElementById('gameScreen');
+                const fireworksIndicator = document.getElementById('fireworksIndicator');
+                
+                gameScreen.classList.remove('fireworks-mode');
+                fireworksIndicator.style.display = 'none';
+                
+                console.log('🎆 Режим фейерверка деактивирован');
+            }
+
+            checkFieldClear() {
+                // Проверяем, пустое ли поле
+                for (let row = 0; row < this.gridSize; row++) {
+                    for (let col = 0; col < this.gridSize; col++) {
+                        if (this.grid[row][col] !== null) {
+                            return false;
+                        }
+                    }
+                }
+                return true;
+            }
+
             createGrid() {
                 this.grid = Array(this.gridSize).fill().map(() => Array(this.gridSize).fill(null));
                 const gridElement = document.getElementById('gameGrid');
@@ -3226,6 +3313,504 @@ createRowBlastEffect(row) {
                         cell.dataset.col = col;
                         gridElement.appendChild(cell);
                     }
+                }
+            }
+
+            // Новая система Drag & Drop для бустеров
+            setupBoosterDragAndDrop() {
+                let touchIdentifier = null;
+                let dragStartPosition = null;
+
+                const getCoords = (e) => {
+                    if (e.touches) {
+                        for (let touch of e.touches) {
+                            if (touchIdentifier === null || touch.identifier === touchIdentifier) {
+                                return { x: touch.clientX, y: touch.clientY };
+                            }
+                        }
+                        return null;
+                    }
+                    return { x: e.clientX, y: e.clientY };
+                };
+
+                const startBoosterDrag = (e) => {
+                    if (this.isGameOver) return;
+
+                    const boosterElement = e.target.closest('.game-booster');
+                    if (!boosterElement || boosterElement.classList.contains('disabled')) return;
+
+                    const boosterType = boosterElement.dataset.booster;
+                    if (!this.boosters.has(boosterType)) return;
+
+                    e.preventDefault();
+                    
+                    if (e.touches) {
+                        touchIdentifier = e.touches[0].identifier;
+                    }
+
+                    const coords = getCoords(e);
+                    dragStartPosition = coords;
+
+                    this.isDraggingBooster = true;
+                    this.draggedBooster = boosterType;
+
+                    boosterElement.classList.add('dragging');
+
+                    if (coords && boosterType !== 'refresh') {
+                        this.showBoosterPreview(coords, boosterType);
+                    }
+                };
+
+                const handleBoosterMove = (e) => {
+                    if (!this.isDraggingBooster || !this.draggedBooster) return;
+
+                    const coords = getCoords(e);
+                    if (!coords) return;
+
+                    if (this.draggedBooster !== 'refresh') {
+                        this.showBoosterPreview(coords, this.draggedBooster);
+                    }
+                };
+
+                const endBoosterDrag = (e) => {
+                    if (!this.isDraggingBooster) return;
+
+                    let coords;
+                    if (e.changedTouches) {
+                        for (let touch of e.changedTouches) {
+                            if (touch.identifier === touchIdentifier) {
+                                coords = { x: touch.clientX, y: touch.clientY };
+                                break;
+                            }
+                        }
+                    } else {
+                        coords = getCoords(e);
+                    }
+
+                    let activated = false;
+                    if (coords && this.draggedBooster) {
+                        activated = this.tryActivateBooster(coords, this.draggedBooster);
+                    }
+
+                    // Если бустер не был активирован, анимируем возврат
+                    if (!activated && this.draggedBooster) {
+                        this.animateBoosterReturn();
+                    }
+
+                    this.clearBoosterPreview();
+                    this.isDraggingBooster = false;
+                    this.draggedBooster = null;
+                    touchIdentifier = null;
+                    dragStartPosition = null;
+                };
+
+                // Автоматический возврат при уведомлениях
+                const autoReturnBooster = () => {
+                    if (this.isDraggingBooster && this.draggedBooster) {
+                        this.animateBoosterReturn();
+                        this.clearBoosterPreview();
+                        this.isDraggingBooster = false;
+                        this.draggedBooster = null;
+                        touchIdentifier = null;
+                    }
+                };
+
+                const boostersArea = document.querySelector('.game-boosters');
+                boostersArea.addEventListener('mousedown', startBoosterDrag);
+                boostersArea.addEventListener('touchstart', startBoosterDrag, { passive: false });
+                
+                document.addEventListener('mousemove', handleBoosterMove);
+                document.addEventListener('touchmove', handleBoosterMove, { passive: false });
+                
+                document.addEventListener('mouseup', endBoosterDrag);
+                document.addEventListener('touchend', endBoosterDrag);
+
+                // Автоматический возврат при потере фокуса
+                document.addEventListener('visibilitychange', autoReturnBooster);
+                window.addEventListener('blur', autoReturnBooster);
+            }
+
+            animateBoosterReturn() {
+                if (!this.draggedBooster) return;
+                
+                const boosterElement = document.querySelector(`[data-booster="${this.draggedBooster}"]`);
+                if (boosterElement) {
+                    boosterElement.classList.remove('dragging');
+                    
+                    // Добавляем анимацию возврата
+                    boosterElement.style.transition = 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+                    boosterElement.style.transform = 'scale(0.9)';
+                    
+                    setTimeout(() => {
+                        boosterElement.style.transform = 'scale(1)';
+                        setTimeout(() => {
+                            boosterElement.style.transition = '';
+                        }, 300);
+                    }, 50);
+                    
+                    if (navigator.vibrate) {
+                        navigator.vibrate(20);
+                    }
+                }
+            }
+
+            showBoosterPreview(coords, boosterType) {
+                this.clearBoosterPreview();
+
+                const gridElement = document.getElementById('gameGrid');
+                const gridRect = gridElement.getBoundingClientRect();
+
+                // Определяем позицию на сетке
+                const cellSize = (gridRect.width - 16) / this.gridSize;
+                const relativeX = coords.x - gridRect.left - 8;
+                const relativeY = coords.y - gridRect.top - 8;
+                
+                const gridCol = Math.floor(relativeX / cellSize);
+                const gridRow = Math.floor(relativeY / cellSize);
+
+                if (gridRow < 0 || gridRow >= this.gridSize || gridCol < 0 || gridCol >= this.gridSize) {
+                    return;
+                }
+
+                // Подсвечиваем область действия бустера
+                const cells = this.getBoosterAffectedCells(gridRow, gridCol, boosterType);
+                const previewClass = this.getBoosterPreviewClass(boosterType);
+
+                cells.forEach(({row, col}) => {
+                    if (row >= 0 && row < this.gridSize && col >= 0 && col < this.gridSize) {
+                        const cellIndex = row * this.gridSize + col;
+                        gridElement.children[cellIndex].classList.add(previewClass);
+                    }
+                });
+            }
+
+            getBoosterAffectedCells(row, col, boosterType) {
+                const cells = [];
+
+                switch (boosterType) {
+                    case 'horizontal_blast':
+                        for (let c = 0; c < this.gridSize; c++) {
+                            cells.push({row, col: c});
+                        }
+                        break;
+                    
+                    case 'vertical_blast':
+                        for (let r = 0; r < this.gridSize; r++) {
+                            cells.push({row: r, col});
+                        }
+                        break;
+                    
+                    case 'area_blast_3x3':
+                        for (let dr = -1; dr <= 1; dr++) {
+                            for (let dc = -1; dc <= 1; dc++) {
+                                cells.push({row: row + dr, col: col + dc});
+                            }
+                        }
+                        break;
+                    
+                    case 'full_field_blast':
+                        for (let r = 0; r < this.gridSize; r++) {
+                            for (let c = 0; c < this.gridSize; c++) {
+                                cells.push({row: r, col: c});
+                            }
+                        }
+                        break;
+                }
+
+                return cells;
+            }
+
+            getBoosterPreviewClass(boosterType) {
+                const classes = {
+                    horizontal_blast: 'booster-preview-horizontal',
+                    vertical_blast: 'booster-preview-vertical',
+                    area_blast_3x3: 'booster-preview-area',
+                    full_field_blast: 'booster-preview-full'
+                };
+                return classes[boosterType] || 'booster-preview-area';
+            }
+
+            clearBoosterPreview() {
+                const gridElement = document.getElementById('gameGrid');
+                const previewClasses = [
+                    'booster-preview-horizontal',
+                    'booster-preview-vertical', 
+                    'booster-preview-area',
+                    'booster-preview-full'
+                ];
+                
+                previewClasses.forEach(className => {
+                    const previewCells = gridElement.querySelectorAll(`.cell.${className}`);
+                    previewCells.forEach(cell => {
+                        cell.classList.remove(className);
+                    });
+                });
+            }
+
+            tryActivateBooster(coords, boosterType) {
+                const gridElement = document.getElementById('gameGrid');
+                const gridRect = gridElement.getBoundingClientRect();
+
+                // Для refresh бустера проверяем, попал ли в область фигур
+                if (boosterType === 'refresh') {
+                    const shapesArea = document.getElementById('shapesArea');
+                    const shapesRect = shapesArea.getBoundingClientRect();
+                    
+                    if (coords.x >= shapesRect.left && coords.x <= shapesRect.right &&
+                        coords.y >= shapesRect.top && coords.y <= shapesRect.bottom) {
+                        return this.activateBooster(boosterType, 0, 0);
+                    }
+                    return false;
+                }
+
+                // Для остальных бустеров проверяем попадание в сетку
+                if (coords.x < gridRect.left || coords.x > gridRect.right ||
+                    coords.y < gridRect.top || coords.y > gridRect.bottom) {
+                    return false;
+                }
+
+                const cellSize = (gridRect.width - 16) / this.gridSize;
+                const relativeX = coords.x - gridRect.left - 8;
+                const relativeY = coords.y - gridRect.top - 8;
+                
+                const gridCol = Math.floor(relativeX / cellSize);
+                const gridRow = Math.floor(relativeY / cellSize);
+
+                if (gridRow < 0 || gridRow >= this.gridSize || gridCol < 0 || gridCol >= this.gridSize) {
+                    return false;
+                }
+
+                return this.activateBooster(boosterType, gridRow, gridCol);
+            }
+
+            activateBooster(boosterType, row, col) {
+                if (!this.boosters.use(boosterType)) {
+                    return false;
+                }
+
+                let cellsCleared = 0;
+                const gridElement = document.getElementById('gameGrid');
+
+                switch (boosterType) {
+                    case 'horizontal_blast':
+                        cellsCleared = this.clearHorizontalLine(row);
+                        showNotification('Горизонтальная линия очищена! ➡️');
+                        break;
+                    
+                    case 'vertical_blast':
+                        cellsCleared = this.clearVerticalLine(col);
+                        showNotification('Вертикальная линия очищена! ⬇️');
+                        break;
+                    
+                    case 'refresh':
+                        this.generateShapes();
+                        showNotification('Фигуры обновлены! 🔄');
+                        break;
+                    
+                    case 'area_blast_3x3':
+                        cellsCleared = this.clearArea3x3(row, col);
+                        showNotification('Область 3×3 очищена! 🎯');
+                        break;
+                    
+                    case 'full_field_blast':
+                        cellsCleared = this.clearFullField();
+                        showNotification('Все поле очищено! 💥');
+                        this.activateFireworksMode();
+                        break;
+                }
+
+                // Начисляем очки за использование бустера
+                if (cellsCleared > 0) {
+                    const score = cellsCleared * 50;
+                    this.addScore(this.fireworksMode ? score * this.fireworksMultiplier : score);
+                    this.showScorePopup(score);
+                }
+
+                // Уменьшаем счетчик фейерверка
+                if (this.fireworksMode && this.fireworksTimer !== null) {
+                    this.fireworksTimer--;
+                    if (this.fireworksTimer <= 0) {
+                        this.deactivateFireworksMode();
+                    }
+                }
+
+                updateGameUI();
+                
+                // Проверяем гейм овер после небольшой задержки
+                setTimeout(() => {
+                    if (this.gameStarted && this.checkGameOver()) {
+                        this.showBoosterOffer();
+                    }
+                }, 200);
+
+                return true;
+            }
+
+            clearHorizontalLine(row) {
+                let cleared = 0;
+                const gridElement = document.getElementById('gameGrid');
+                
+                for (let col = 0; col < this.gridSize; col++) {
+                    if (this.grid[row][col] !== null) {
+                        cleared++;
+                        this.grid[row][col] = null;
+                        
+                        const cellIndex = row * this.gridSize + col;
+                        const cell = gridElement.children[cellIndex];
+                        cell.classList.add(this.fireworksMode ? 'fireworks-effect' : 'clearing');
+                        
+                        setTimeout(() => {
+                            cell.className = 'cell';
+                        }, this.fireworksMode ? 800 : 400);
+                    }
+                }
+                
+                if (this.fireworksMode && cleared > 0) {
+                    this.createFireworksParticles(row, -1, 'horizontal');
+                }
+                
+                return cleared;
+            }
+
+            clearVerticalLine(col) {
+                let cleared = 0;
+                const gridElement = document.getElementById('gameGrid');
+                
+                for (let row = 0; row < this.gridSize; row++) {
+                    if (this.grid[row][col] !== null) {
+                        cleared++;
+                        this.grid[row][col] = null;
+                        
+                        const cellIndex = row * this.gridSize + col;
+                        const cell = gridElement.children[cellIndex];
+                        cell.classList.add(this.fireworksMode ? 'fireworks-effect' : 'clearing');
+                        
+                        setTimeout(() => {
+                            cell.className = 'cell';
+                        }, this.fireworksMode ? 800 : 400);
+                    }
+                }
+                
+                if (this.fireworksMode && cleared > 0) {
+                    this.createFireworksParticles(-1, col, 'vertical');
+                }
+                
+                return cleared;
+            }
+
+            clearArea3x3(centerRow, centerCol) {
+                let cleared = 0;
+                const gridElement = document.getElementById('gameGrid');
+                
+                for (let dr = -1; dr <= 1; dr++) {
+                    for (let dc = -1; dc <= 1; dc++) {
+                        const row = centerRow + dr;
+                        const col = centerCol + dc;
+                        
+                        if (row >= 0 && row < this.gridSize && col >= 0 && col < this.gridSize) {
+                            if (this.grid[row][col] !== null) {
+                                cleared++;
+                                this.grid[row][col] = null;
+                                
+                                const cellIndex = row * this.gridSize + col;
+                                const cell = gridElement.children[cellIndex];
+                                cell.classList.add(this.fireworksMode ? 'fireworks-effect' : 'clearing');
+                                
+                                setTimeout(() => {
+                                    cell.className = 'cell';
+                                }, this.fireworksMode ? 800 : 400);
+                            }
+                        }
+                    }
+                }
+                
+                if (this.fireworksMode && cleared > 0) {
+                    this.createFireworksParticles(centerRow, centerCol, 'area');
+                }
+                
+                return cleared;
+            }
+
+            clearFullField() {
+                let cleared = 0;
+                const gridElement = document.getElementById('gameGrid');
+                
+                for (let row = 0; row < this.gridSize; row++) {
+                    for (let col = 0; col < this.gridSize; col++) {
+                        if (this.grid[row][col] !== null) {
+                            cleared++;
+                            this.grid[row][col] = null;
+                            
+                            const cellIndex = row * this.gridSize + col;
+                            const cell = gridElement.children[cellIndex];
+                            cell.classList.add('fireworks-effect');
+                            
+                            setTimeout(() => {
+                                cell.className = 'cell';
+                            }, 800);
+                        }
+                    }
+                }
+                
+                // Массовые фейерверки по всему полю
+                this.createMassiveFireworks();
+                
+                return cleared;
+            }
+
+            createFireworksParticles(row, col, type) {
+                const gridElement = document.getElementById('gameGrid');
+                const gridRect = gridElement.getBoundingClientRect();
+                
+                const particleCount = type === 'area' ? 15 : 20;
+                
+                for (let i = 0; i < particleCount; i++) {
+                    const particle = document.createElement('div');
+                    particle.className = 'particle fireworks-particle';
+                    
+                    let x, y;
+                    if (type === 'horizontal') {
+                        x = gridRect.left + Math.random() * gridRect.width;
+                        y = gridRect.top + (row * gridRect.height / this.gridSize) + (gridRect.height / this.gridSize / 2);
+                    } else if (type === 'vertical') {
+                        x = gridRect.left + (col * gridRect.width / this.gridSize) + (gridRect.width / this.gridSize / 2);
+                        y = gridRect.top + Math.random() * gridRect.height;
+                    } else { // area
+                        x = gridRect.left + (col * gridRect.width / this.gridSize) + Math.random() * (gridRect.width / this.gridSize);
+                        y = gridRect.top + (row * gridRect.height / this.gridSize) + Math.random() * (gridRect.height / this.gridSize);
+                    }
+                    
+                    particle.style.left = x + 'px';
+                    particle.style.top = y + 'px';
+                    particle.style.background = ['#FF69B4', '#FFD700', '#32CD32', '#1E90FF', '#FF6347'][Math.floor(Math.random() * 5)];
+                    
+                    document.body.appendChild(particle);
+                    
+                    setTimeout(() => particle.remove(), 1500);
+                }
+            }
+
+            createMassiveFireworks() {
+                const gridElement = document.getElementById('gameGrid');
+                const gridRect = gridElement.getBoundingClientRect();
+                
+                // Создаем много частиц по всему полю
+                for (let i = 0; i < 50; i++) {
+                    const particle = document.createElement('div');
+                    particle.className = 'particle fireworks-particle';
+                    
+                    const x = gridRect.left + Math.random() * gridRect.width;
+                    const y = gridRect.top + Math.random() * gridRect.height;
+                    
+                    particle.style.left = x + 'px';
+                    particle.style.top = y + 'px';
+                    particle.style.background = ['#FF69B4', '#FFD700', '#32CD32', '#1E90FF', '#FF6347', '#9370DB'][Math.floor(Math.random() * 6)];
+                    particle.style.width = (4 + Math.random() * 4) + 'px';
+                    particle.style.height = particle.style.width;
+                    
+                    document.body.appendChild(particle);
+                    
+                    setTimeout(() => particle.remove(), 1500);
                 }
             }
 
@@ -3348,6 +3933,8 @@ createRowBlastEffect(row) {
                 this.isGameOver = false;
                 this.gameStarted = true;
                 this.stats.gamesPlayed++;
+                this.fireworksMode = false;
+                this.fireworksTimer = null;
 
                 this.createGrid();
                 this.generateShapes();
@@ -3360,7 +3947,6 @@ createRowBlastEffect(row) {
                 let touchIdentifier = null;
                 let dragStartPosition = null;
                 let shapeOriginalSlot = null;
-                let boosterOriginalSlot = null;
 
                 const getCoords = (e) => {
                     if (e.touches) {
@@ -3376,13 +3962,6 @@ createRowBlastEffect(row) {
 
                 const startDrag = (e) => {
                     if (this.isGameOver) return;
-
-                    // Проверяем, что это бустер
-                    let boosterElement = e.target.closest('.game-booster');
-                    if (boosterElement && !boosterElement.classList.contains('disabled')) {
-                        this.startBoosterDrag(e, boosterElement);
-                        return;
-                    }
 
                     // Поиск фигуры - сначала по самой фигуре, затем по слоту
                     let shapeElement = e.target.closest('.shape');
@@ -3421,20 +4000,16 @@ createRowBlastEffect(row) {
                 };
 
                 const handleMove = (e) => {
-                    if (!this.isDragging && !this.isDraggingBooster) return;
+                    if (!this.isDragging || !this.draggedShape) return;
 
                     const coords = getCoords(e);
                     if (!coords) return;
 
-                    if (this.isDraggingBooster) {
-                        this.showBoosterPreview(coords);
-                    } else {
-                        this.showPlacementPreview(coords);
-                    }
+                    this.showPlacementPreview(coords);
                 };
 
                 const endDrag = (e) => {
-                    if (!this.isDragging && !this.isDraggingBooster) return;
+                    if (!this.isDragging) return;
 
                     let coords;
                     if (e.changedTouches) {
@@ -3450,32 +4025,20 @@ createRowBlastEffect(row) {
 
                     let placed = false;
                     if (coords) {
-                        if (this.isDraggingBooster) {
-                            placed = this.tryUseBooster(coords);
-                        } else {
-                            placed = this.tryPlaceShape(coords);
-                        }
+                        placed = this.tryPlaceShape(coords);
                     }
 
-                    // Если фигура/бустер не были размещены, анимируем возврат
-                    if (!placed) {
-                        if (this.isDraggingBooster) {
-                            this.animateBoosterReturn();
-                        } else if (this.draggedShape) {
-                            this.animateShapeReturn();
-                        }
+                    // Если фигура не была размещена, анимируем возврат
+                    if (!placed && this.draggedShape) {
+                        this.animateShapeReturn();
                     }
 
                     this.clearPreview();
-                    this.clearBoosterPreview();
                     this.isDragging = false;
-                    this.isDraggingBooster = false;
                     this.draggedShape = null;
-                    this.draggedBooster = null;
                     touchIdentifier = null;
                     dragStartPosition = null;
                     shapeOriginalSlot = null;
-                    boosterOriginalSlot = null;
                 };
 
                 // Обработчики для автоматического возврата при уведомлениях
@@ -3487,18 +4050,11 @@ createRowBlastEffect(row) {
                         this.draggedShape = null;
                         touchIdentifier = null;
                     }
-                    if (this.isDraggingBooster && this.draggedBooster) {
-                        this.animateBoosterReturn();
-                        this.clearBoosterPreview();
-                        this.isDraggingBooster = false;
-                        this.draggedBooster = null;
-                        touchIdentifier = null;
-                    }
                 };
 
-                const gameContent = document.getElementById('gameScreen');
-                gameContent.addEventListener('mousedown', startDrag);
-                gameContent.addEventListener('touchstart', startDrag, { passive: false });
+                const shapesArea = document.getElementById('shapesArea');
+                shapesArea.addEventListener('mousedown', startDrag);
+                shapesArea.addEventListener('touchstart', startDrag, { passive: false });
                 
                 document.addEventListener('mousemove', handleMove);
                 document.addEventListener('touchmove', handleMove, { passive: false });
@@ -3510,418 +4066,6 @@ createRowBlastEffect(row) {
                 document.addEventListener('visibilitychange', autoReturnShape);
                 window.addEventListener('blur', autoReturnShape);
                 window.addEventListener('focus', autoReturnShape);
-            }
-
-            startBoosterDrag(e, boosterElement) {
-                const boosterType = this.getBoosterTypeFromElement(boosterElement);
-                if (!this.boosters.has(boosterType)) return;
-
-                e.preventDefault();
-                
-                let touchIdentifier = null;
-                let dragStartPosition = null;
-                let boosterOriginalSlot = null;
-
-                const getCoords = (e) => {
-                    if (e.touches) {
-                        for (let touch of e.touches) {
-                            if (touchIdentifier === null || touch.identifier === touchIdentifier) {
-                                return { x: touch.clientX, y: touch.clientY };
-                            }
-                        }
-                        return null;
-                    }
-                    return { x: e.clientX, y: e.clientY };
-                };
-                
-                if (e.touches) {
-                    touchIdentifier = e.touches[0].identifier;
-                }
-
-                const coords = getCoords(e);
-                dragStartPosition = coords;
-                boosterOriginalSlot = boosterElement;
-
-                this.isDraggingBooster = true;
-                this.draggedBooster = { type: boosterType, element: boosterElement };
-
-                boosterElement.classList.add('dragging-booster');
-
-                if (coords) {
-                    this.showBoosterPreview(coords);
-                }
-            }
-
-            getBoosterTypeFromElement(element) {
-                const onclick = element.getAttribute('onclick');
-                if (onclick.includes('shape_choice')) return 'shape_choice';
-                if (onclick.includes('row_blast')) return 'row_blast';
-                if (onclick.includes('refresh')) return 'refresh';
-                if (onclick.includes('lightning')) return 'lightning';
-                if (onclick.includes('star_blast')) return 'star_blast';
-                return null;
-            }
-
-            showBoosterPreview(coords) {
-                this.clearBoosterPreview();
-                
-                if (!this.draggedBooster) return;
-
-                const gridElement = document.getElementById('gameGrid');
-                const gridRect = gridElement.getBoundingClientRect();
-                
-                // Проверяем, находимся ли мы над игровым полем
-                if (coords.x < gridRect.left || coords.x > gridRect.right ||
-                    coords.y < gridRect.top || coords.y > gridRect.bottom) {
-                    return;
-                }
-
-                const cellSize = (gridRect.width - 16) / this.gridSize;
-                const relativeX = coords.x - gridRect.left - 8;
-                const relativeY = coords.y - gridRect.top - 8;
-                const gridCol = Math.floor(relativeX / cellSize);
-                const gridRow = Math.floor(relativeY / cellSize);
-
-                if (gridRow < 0 || gridRow >= this.gridSize || gridCol < 0 || gridCol >= this.gridSize) {
-                    return;
-                }
-
-                this.highlightBoosterTarget(this.draggedBooster.type, gridRow, gridCol);
-            }
-
-            highlightBoosterTarget(boosterType, row, col) {
-                const gridElement = document.getElementById('gameGrid');
-                
-                switch (boosterType) {
-                    case 'shape_choice': // Горизонтальная линия
-                        for (let c = 0; c < this.gridSize; c++) {
-                            const cellIndex = row * this.gridSize + c;
-                            gridElement.children[cellIndex].classList.add('booster-target', 'horizontal-target');
-                        }
-                        break;
-                        
-                    case 'row_blast': // Вертикальная линия
-                        for (let r = 0; r < this.gridSize; r++) {
-                            const cellIndex = r * this.gridSize + col;
-                            gridElement.children[cellIndex].classList.add('booster-target', 'vertical-target');
-                        }
-                        break;
-                        
-                    case 'lightning': // Область 3x3
-                        for (let r = Math.max(0, row - 1); r <= Math.min(this.gridSize - 1, row + 1); r++) {
-                            for (let c = Math.max(0, col - 1); c <= Math.min(this.gridSize - 1, col + 1); c++) {
-                                const cellIndex = r * this.gridSize + c;
-                                gridElement.children[cellIndex].classList.add('booster-target', 'area-target');
-                            }
-                        }
-                        break;
-                        
-                    case 'star_blast': // Все поле
-                        for (let i = 0; i < gridElement.children.length; i++) {
-                            gridElement.children[i].classList.add('booster-target');
-                        }
-                        break;
-                }
-            }
-
-            clearBoosterPreview() {
-                const gridElement = document.getElementById('gameGrid');
-                const targetCells = gridElement.querySelectorAll('.booster-target');
-                for (let cell of targetCells) {
-                    cell.classList.remove('booster-target', 'horizontal-target', 'vertical-target', 'area-target');
-                }
-            }
-
-            tryUseBooster(coords) {
-                if (!this.draggedBooster) return false;
-
-                const gridElement = document.getElementById('gameGrid');
-                const gridRect = gridElement.getBoundingClientRect();
-                
-                // Проверяем, находимся ли мы над игровым полем
-                if (coords.x < gridRect.left || coords.x > gridRect.right ||
-                    coords.y < gridRect.top || coords.y > gridRect.bottom) {
-                    return false;
-                }
-
-                const cellSize = (gridRect.width - 16) / this.gridSize;
-                const relativeX = coords.x - gridRect.left - 8;
-                const relativeY = coords.y - gridRect.top - 8;
-                const gridCol = Math.floor(relativeX / cellSize);
-                const gridRow = Math.floor(relativeY / cellSize);
-
-                if (gridRow < 0 || gridRow >= this.gridSize || gridCol < 0 || gridCol >= this.gridSize) {
-                    return false;
-                }
-
-                this.useBoosterAt(this.draggedBooster.type, gridRow, gridCol);
-                return true;
-            }
-
-            useBoosterAt(boosterType, row, col) {
-                if (!this.boosters.use(boosterType)) return;
-
-                switch (boosterType) {
-                    case 'shape_choice': // Горизонтальная линия
-                        this.clearHorizontalLine(row);
-                        showNotification('Горизонтальный удар! 💥');
-                        break;
-                        
-                    case 'row_blast': // Вертикальная линия
-                        this.clearVerticalLine(col);
-                        showNotification('Вертикальный удар! 💥');
-                        break;
-                        
-                    case 'refresh': // Обновление фигур (не требует координат)
-                        this.generateShapes();
-                        showNotification('Фигуры обновлены! 🔄');
-                        break;
-                        
-                    case 'lightning': // Область 3x3
-                        this.clearArea3x3(row, col);
-                        showNotification('Взрыв области! ⚡');
-                        break;
-                        
-                    case 'star_blast': // Все поле
-                        this.clearEntireField();
-                        showNotification('Уничтожение поля! ⭐');
-                        break;
-                }
-
-                updateGameUI();
-            }
-
-            animateBoosterReturn() {
-                if (!this.draggedBooster) return;
-                
-                const boosterElement = this.draggedBooster.element;
-                if (boosterElement) {
-                    boosterElement.classList.remove('dragging-booster');
-                    
-                    // Добавляем анимацию возврата
-                    boosterElement.style.transition = 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
-                    boosterElement.style.transform = 'scale(0.9)';
-                    
-                    setTimeout(() => {
-                        boosterElement.style.transform = 'scale(1)';
-                        setTimeout(() => {
-                            boosterElement.style.transition = '';
-                        }, 300);
-                    }, 50);
-                    
-                    if (navigator.vibrate) {
-                        navigator.vibrate(20);
-                    }
-                }
-            }
-
-            // НОВЫЕ МЕТОДЫ БУСТЕРОВ
-            clearHorizontalLine(row) {
-                const gridElement = document.getElementById('gameGrid');
-                let blocksCleared = 0;
-                
-                for (let col = 0; col < this.gridSize; col++) {
-                    if (this.grid[row][col] !== null) {
-                        this.grid[row][col] = null;
-                        const cellIndex = row * this.gridSize + col;
-                        gridElement.children[cellIndex].className = 'cell';
-                        gridElement.children[cellIndex].classList.add('line-clearing');
-                        blocksCleared++;
-                    }
-                }
-                
-                const baseScore = blocksCleared * 75;
-                const finalScore = this.clearFieldBonus.active ? baseScore * this.clearFieldBonus.multiplier : baseScore;
-                this.addScore(finalScore);
-                
-                if (this.clearFieldBonus.active) {
-                    this.createEnhancedEffect(row, null, 'horizontal');
-                } else {
-                    this.createRowBlastEffect(row);
-                }
-            }
-
-            clearVerticalLine(col) {
-                const gridElement = document.getElementById('gameGrid');
-                let blocksCleared = 0;
-                
-                for (let row = 0; row < this.gridSize; row++) {
-                    if (this.grid[row][col] !== null) {
-                        this.grid[row][col] = null;
-                        const cellIndex = row * this.gridSize + col;
-                        gridElement.children[cellIndex].className = 'cell';
-                        gridElement.children[cellIndex].classList.add('line-clearing');
-                        blocksCleared++;
-                    }
-                }
-                
-                const baseScore = blocksCleared * 75;
-                const finalScore = this.clearFieldBonus.active ? baseScore * this.clearFieldBonus.multiplier : baseScore;
-                this.addScore(finalScore);
-                
-                if (this.clearFieldBonus.active) {
-                    this.createEnhancedEffect(null, col, 'vertical');
-                } else {
-                    this.createColumnBlastEffect(col);
-                }
-            }
-
-            clearArea3x3(centerRow, centerCol) {
-                const gridElement = document.getElementById('gameGrid');
-                let blocksCleared = 0;
-                
-                for (let row = Math.max(0, centerRow - 1); row <= Math.min(this.gridSize - 1, centerRow + 1); row++) {
-                    for (let col = Math.max(0, centerCol - 1); col <= Math.min(this.gridSize - 1, centerCol + 1); col++) {
-                        if (this.grid[row][col] !== null) {
-                            this.grid[row][col] = null;
-                            const cellIndex = row * this.gridSize + col;
-                            gridElement.children[cellIndex].className = 'cell';
-                            gridElement.children[cellIndex].classList.add('line-clearing');
-                            blocksCleared++;
-                        }
-                    }
-                }
-                
-                const baseScore = blocksCleared * 100;
-                const finalScore = this.clearFieldBonus.active ? baseScore * this.clearFieldBonus.multiplier : baseScore;
-                this.addScore(finalScore);
-                
-                if (this.clearFieldBonus.active) {
-                    this.createEnhancedEffect(centerRow, centerCol, 'area');
-                } else {
-                    this.createAreaBlastEffect(centerRow, centerCol);
-                }
-            }
-
-            clearEntireField() {
-                const gridElement = document.getElementById('gameGrid');
-                let blocksCleared = 0;
-                
-                for (let row = 0; row < this.gridSize; row++) {
-                    for (let col = 0; col < this.gridSize; col++) {
-                        if (this.grid[row][col] !== null) {
-                            this.grid[row][col] = null;
-                            const cellIndex = row * this.gridSize + col;
-                            gridElement.children[cellIndex].className = 'cell';
-                            gridElement.children[cellIndex].classList.add('line-clearing');
-                            blocksCleared++;
-                        }
-                    }
-                }
-                
-                const baseScore = blocksCleared * 150;
-                const finalScore = this.clearFieldBonus.active ? baseScore * this.clearFieldBonus.multiplier : baseScore;
-                this.addScore(finalScore);
-                
-                // Активируем бонус чистого поля
-                this.activateClearFieldBonus();
-                this.createFieldClearEffect();
-            }
-
-            // СИСТЕМА БОНУСА ЧИСТОГО ПОЛЯ
-            activateClearFieldBonus() {
-                this.clearFieldBonus.active = true;
-                this.clearFieldBonus.turnsLeft = 5; // 5 ходов бонуса
-                this.clearFieldBonus.multiplier = 2;
-                
-                this.showClearFieldBonusUI();
-                showNotification('🌟 ЧИСТОЕ ПОЛЕ! Бонус х2 на 5 ходов! 🌟');
-            }
-
-            checkForClearField() {
-                // Проверяем, пустое ли поле
-                let hasBlocks = false;
-                for (let row = 0; row < this.gridSize; row++) {
-                    for (let col = 0; col < this.gridSize; col++) {
-                        if (this.grid[row][col] !== null) {
-                            hasBlocks = true;
-                            break;
-                        }
-                    }
-                    if (hasBlocks) break;
-                }
-                
-                if (!hasBlocks && !this.clearFieldBonus.active) {
-                    this.activateClearFieldBonus();
-                }
-            }
-
-            decrementClearFieldBonus() {
-                if (this.clearFieldBonus.active) {
-                    this.clearFieldBonus.turnsLeft--;
-                    if (this.clearFieldBonus.turnsLeft <= 0) {
-                        this.clearFieldBonus.active = false;
-                        this.hideClearFieldBonusUI();
-                        showNotification('Бонус чистого поля закончился');
-                    } else {
-                        this.updateClearFieldBonusUI();
-                    }
-                }
-            }
-
-            showClearFieldBonusUI() {
-                const bonusOverlay = document.createElement('div');
-                bonusOverlay.className = 'clear-field-bonus';
-                bonusOverlay.id = 'clearFieldBonus';
-                document.body.appendChild(bonusOverlay);
-                
-                const multiplierDisplay = document.createElement('div');
-                multiplierDisplay.className = 'bonus-multiplier';
-                multiplierDisplay.id = 'bonusMultiplier';
-                multiplierDisplay.textContent = `🌟 БОНУС x${this.clearFieldBonus.multiplier} (${this.clearFieldBonus.turnsLeft} ходов) 🌟`;
-                document.body.appendChild(multiplierDisplay);
-            }
-
-            updateClearFieldBonusUI() {
-                const multiplierDisplay = document.getElementById('bonusMultiplier');
-                if (multiplierDisplay) {
-                    multiplierDisplay.textContent = `🌟 БОНУС x${this.clearFieldBonus.multiplier} (${this.clearFieldBonus.turnsLeft} ходов) 🌟`;
-                }
-            }
-
-            hideClearFieldBonusUI() {
-                const bonusOverlay = document.getElementById('clearFieldBonus');
-                const multiplierDisplay = document.getElementById('bonusMultiplier');
-                
-                if (bonusOverlay) bonusOverlay.remove();
-                if (multiplierDisplay) multiplierDisplay.remove();
-            }
-
-            // УСИЛЕННЫЕ ЭФФЕКТЫ ДЛЯ БОНУСА
-            createEnhancedEffect(row, col, type) {
-                const gridElement = document.getElementById('gameGrid');
-                const gridRect = gridElement.getBoundingClientRect();
-                
-                // Создаем больше частиц с улучшенными эффектами
-                const particleCount = type === 'area' ? 40 : 30;
-                
-                for (let i = 0; i < particleCount; i++) {
-                    const particle = document.createElement('div');
-                    particle.className = 'enhanced-particle';
-                    
-                    let x, y;
-                    if (type === 'horizontal') {
-                        x = gridRect.left + Math.random() * gridRect.width;
-                        y = gridRect.top + (row * gridRect.height / this.gridSize) + (gridRect.height / this.gridSize / 2);
-                    } else if (type === 'vertical') {
-                        x = gridRect.left + (col * gridRect.width / this.gridSize) + (gridRect.width / this.gridSize / 2);
-                        y = gridRect.top + Math.random() * gridRect.height;
-                    } else if (type === 'area') {
-                        const cellSize = gridRect.width / this.gridSize;
-                        const centerX = gridRect.left + col * cellSize + cellSize / 2;
-                        const centerY = gridRect.top + row * cellSize + cellSize / 2;
-                        const angle = (i / particleCount) * 2 * Math.PI;
-                        const distance = 50 + Math.random() * 30;
-                        x = centerX + Math.cos(angle) * distance;
-                        y = centerY + Math.sin(angle) * distance;
-                    }
-                    
-                    particle.style.left = x + 'px';
-                    particle.style.top = y + 'px';
-                    
-                    document.body.appendChild(particle);
-                    setTimeout(() => particle.remove(), 2000);
-                }
             }
 
             animateShapeReturn() {
@@ -4118,18 +4262,26 @@ createRowBlastEffect(row) {
                 }
 
                 shape.used = true;
+                let shapeScore = this.calculateShapeScore(shape.pattern);
                 
-                // Применяем бонус чистого поля к очкам за размещение
-                const baseScore = this.calculateShapeScore(shape.pattern);
-                const finalScore = this.clearFieldBonus.active ? baseScore * this.clearFieldBonus.multiplier : baseScore;
-                this.addScore(finalScore);
+                // Применяем множитель фейерверка
+                if (this.fireworksMode) {
+                    shapeScore *= this.fireworksMultiplier;
+                    
+                    // Уменьшаем счетчик фейерверка
+                    if (this.fireworksTimer !== null) {
+                        this.fireworksTimer--;
+                        if (this.fireworksTimer <= 0) {
+                            this.deactivateFireworksMode();
+                        }
+                    }
+                }
+                
+                this.addScore(shapeScore);
 
                 if (navigator.vibrate) {
                     navigator.vibrate(30);
                 }
-
-                // Уменьшаем счетчик бонуса чистого поля после размещения фигуры
-                this.decrementClearFieldBonus();
 
                 setTimeout(() => {
                     const clearedLines = this.clearCompletedLines();
@@ -4147,10 +4299,10 @@ createRowBlastEffect(row) {
                         updateGameUI();
                     }
 
-                    // Проверяем чистое поле после очистки линий
-                    setTimeout(() => {
-                        this.checkForClearField();
-                    }, 500);
+                    // Проверяем, очистилось ли поле после размещения
+                    if (this.checkFieldClear()) {
+                        this.activateFireworksMode();
+                    }
 
                     // Проверяем гейм овер только после обработки всех эффектов
                     setTimeout(() => {
@@ -4233,7 +4385,7 @@ createRowBlastEffect(row) {
                 this.lastAchievementTime = Date.now();
                 
                 const popup = document.createElement('div');
-                popup.className = 'achievement-popup';
+                popup.className = this.fireworksMode ? 'achievement-popup fireworks' : 'achievement-popup';
                 popup.textContent = placementQuality.message;
                 document.body.appendChild(popup);
                 
@@ -4241,11 +4393,16 @@ createRowBlastEffect(row) {
                 
                 // Бонус к очкам за качественное размещение
                 const bonusScore = placementQuality.score * 50;
-                this.addScore(bonusScore);
-                this.showScorePopup(bonusScore);
+                let finalScore = bonusScore;
+                if (this.fireworksMode) {
+                    finalScore *= this.fireworksMultiplier;
+                }
+                
+                this.addScore(finalScore);
+                this.showScorePopup(finalScore);
             }
 
-            showAchievementText(text) {
+            showAchievementText(text, isFireworks = false) {
                 // СИСТЕМА ПРИОРИТЕТОВ - показываем только одну надпись за раз
                 if (this.lastAchievementTime && Date.now() - this.lastAchievementTime < 3000) {
                     return; // Блокируем новые достижения на 3 секунды
@@ -4254,7 +4411,7 @@ createRowBlastEffect(row) {
                 this.lastAchievementTime = Date.now();
                 
                 const popup = document.createElement('div');
-                popup.className = 'achievement-popup';
+                popup.className = isFireworks ? 'achievement-popup fireworks' : 'achievement-popup';
                 popup.textContent = text;
                 document.body.appendChild(popup);
                 
@@ -4266,13 +4423,13 @@ createRowBlastEffect(row) {
                 const gridRect = gridElement.getBoundingClientRect();
                 
                 const popup = document.createElement('div');
-                popup.className = 'score-popup';
+                popup.className = this.fireworksMode ? 'score-popup fireworks' : 'score-popup';
                 popup.textContent = `+${score}`;
                 popup.style.left = (gridRect.left + gridRect.width / 2) + 'px';
                 popup.style.top = (gridRect.top + gridRect.height / 2) + 'px';
                 
                 document.body.appendChild(popup);
-                setTimeout(() => popup.remove(), 1200);
+                setTimeout(() => popup.remove(), this.fireworksMode ? 1500 : 1200);
             }
 
             highlightCells(pattern, startRow, startCol, className) {
@@ -4360,7 +4517,7 @@ createRowBlastEffect(row) {
                 cellsToRemove.forEach(cellKey => {
                     const [row, col] = cellKey.split('-').map(Number);
                     const cellIndex = row * this.gridSize + col;
-                    cells[cellIndex].classList.add('line-clearing');
+                    cells[cellIndex].classList.add(this.fireworksMode ? 'fireworks-effect' : 'line-clearing');
                 });
 
                 // Создаем частицы для эффекта
@@ -4368,9 +4525,9 @@ createRowBlastEffect(row) {
                 
                 // Показываем достижение за комбо-ряды
                 if (lines.length >= 2) {
-                    this.showAchievementText('КОМБО!');
+                    this.showAchievementText('КОМБО!', this.fireworksMode);
                 } else if (lines.some(line => line.type === 'row') && lines.some(line => line.type === 'col')) {
-                    this.showAchievementText('КРЕСТ!');
+                    this.showAchievementText('КРЕСТ!', this.fireworksMode);
                 }
             }
 
@@ -4379,9 +4536,10 @@ createRowBlastEffect(row) {
                 const gridRect = gridElement.getBoundingClientRect();
                 
                 lines.forEach(line => {
-                    for (let i = 0; i < 12; i++) {
+                    const particleCount = this.fireworksMode ? 20 : 12;
+                    for (let i = 0; i < particleCount; i++) {
                         const particle = document.createElement('div');
-                        particle.className = 'particle';
+                        particle.className = this.fireworksMode ? 'particle fireworks-particle' : 'particle';
                         
                         let x, y;
                         if (line.type === 'row') {
@@ -4394,11 +4552,16 @@ createRowBlastEffect(row) {
                         
                         particle.style.left = x + 'px';
                         particle.style.top = y + 'px';
-                        particle.style.background = ['#FFD700', '#FF6347', '#32CD32', '#FF69B4'][Math.floor(Math.random() * 4)];
+                        
+                        if (this.fireworksMode) {
+                            particle.style.background = ['#FF69B4', '#FFD700', '#32CD32', '#1E90FF', '#FF6347'][Math.floor(Math.random() * 5)];
+                        } else {
+                            particle.style.background = ['#FFD700', '#FF6347', '#32CD32', '#FF69B4'][Math.floor(Math.random() * 4)];
+                        }
                         
                         document.body.appendChild(particle);
                         
-                        setTimeout(() => particle.remove(), 1000);
+                        setTimeout(() => particle.remove(), this.fireworksMode ? 1500 : 1000);
                     }
                 });
             }
@@ -4418,105 +4581,49 @@ createRowBlastEffect(row) {
                 if (count >= 4) multiplier = 12;
 
                 const comboBonus = Math.min(this.combo, 15);
-                const baseLineScore = count * 200 * multiplier * comboBonus;
+                let lineScore = count * 200 * multiplier * comboBonus;
                 
-                // Применяем бонус чистого поля
-                const finalLineScore = this.clearFieldBonus.active ? baseLineScore * this.clearFieldBonus.multiplier : baseLineScore;
-                this.addScore(finalLineScore);
+                // Применяем множитель фейерверка
+                if (this.fireworksMode) {
+                    lineScore *= this.fireworksMultiplier;
+                    
+                    // Уменьшаем счетчик фейерверка
+                    if (this.fireworksTimer !== null) {
+                        this.fireworksTimer--;
+                        if (this.fireworksTimer <= 0) {
+                            this.deactivateFireworksMode();
+                        }
+                    }
+                }
+
+                this.addScore(lineScore);
                 
                 // ВЫБИРАЕМ НАИБОЛЕЕ КРУТОЕ ДОСТИЖЕНИЕ
                 let bestAchievement = '';
                 
                 // Приоритет 1: Достижения за линии (наивысший приоритет)
                 if (count >= 4) {
-                    bestAchievement = this.clearFieldBonus.active ? '🌟 НЕВЕРОЯТНО! x2 🌟' : 'НЕВЕРОЯТНО!';
+                    bestAchievement = 'НЕВЕРОЯТНО!';
                 } else if (count >= 3) {
-                    bestAchievement = this.clearFieldBonus.active ? '🌟 ПОТРЯСАЮЩЕ! x2 🌟' : 'ПОТРЯСАЮЩЕ!';
+                    bestAchievement = 'ПОТРЯСАЮЩЕ!';
                 } else if (count >= 2) {
-                    bestAchievement = this.clearFieldBonus.active ? '🌟 ОТЛИЧНО! x2 🌟' : 'ОТЛИЧНО!';
+                    bestAchievement = 'ОТЛИЧНО!';
                 }
                 
                 // Приоритет 2: Достижения за размещение (если нет достижений за линии)
                 if (!bestAchievement && placementQuality && placementQuality.score > 0) {
-                    bestAchievement = this.clearFieldBonus.active ? `🌟 ${placementQuality.message} x2 🌟` : placementQuality.message;
+                    bestAchievement = placementQuality.message;
                 }
                 
                 // Показываем только лучшее достижение
                 if (bestAchievement) {
-                    this.showAchievementText(bestAchievement);
+                    this.showAchievementText(bestAchievement, this.fireworksMode);
                 }
                 
                 updateGameUI();
                 
-                // Показываем бонус за очки с усиленными эффектами если активен бонус
-                if (this.clearFieldBonus.active) {
-                    this.showEnhancedScorePopup(finalLineScore);
-                } else {
-                    this.showScorePopup(finalLineScore);
-                }
-            }
-
-            showEnhancedScorePopup(score) {
-                const gridElement = document.getElementById('gameGrid');
-                const gridRect = gridElement.getBoundingClientRect();
-                
-                const popup = document.createElement('div');
-                popup.className = 'score-popup';
-                popup.textContent = `+${score}`;
-                popup.style.left = (gridRect.left + gridRect.width / 2) + 'px';
-                popup.style.top = (gridRect.top + gridRect.height / 2) + 'px';
-                popup.style.background = 'linear-gradient(45deg, #FFD700, #FF6347)';
-                popup.style.fontSize = '24px';
-                popup.style.fontWeight = '900';
-                popup.style.textShadow = '0 3px 6px rgba(0, 0, 0, 0.8)';
-                popup.style.boxShadow = '0 0 20px rgba(255, 215, 0, 0.8)';
-                
-                document.body.appendChild(popup);
-                setTimeout(() => popup.remove(), 1200);
-            }
-
-            // ДОПОЛНИТЕЛЬНЫЕ ЭФФЕКТЫ
-            createAreaBlastEffect(centerRow, centerCol) {
-                const gridElement = document.getElementById('gameGrid');
-                const gridRect = gridElement.getBoundingClientRect();
-                const cellSize = gridRect.width / this.gridSize;
-                
-                for (let i = 0; i < 25; i++) {
-                    const particle = document.createElement('div');
-                    particle.className = 'particle';
-                    particle.style.background = '#FFD700';
-                    particle.style.width = '6px';
-                    particle.style.height = '6px';
-                    
-                    const angle = (i / 25) * 2 * Math.PI;
-                    const distance = 20 + Math.random() * 30;
-                    const x = gridRect.left + centerCol * cellSize + cellSize / 2 + Math.cos(angle) * distance;
-                    const y = gridRect.top + centerRow * cellSize + cellSize / 2 + Math.sin(angle) * distance;
-                    
-                    particle.style.left = x + 'px';
-                    particle.style.top = y + 'px';
-                    
-                    document.body.appendChild(particle);
-                    setTimeout(() => particle.remove(), 1000);
-                }
-            }
-
-            createFieldClearEffect() {
-                const gridElement = document.getElementById('gameGrid');
-                const gridRect = gridElement.getBoundingClientRect();
-                
-                // Массивный эффект для очистки всего поля
-                for (let i = 0; i < 50; i++) {
-                    setTimeout(() => {
-                        const particle = document.createElement('div');
-                        particle.className = 'enhanced-particle';
-                        particle.style.left = (gridRect.left + Math.random() * gridRect.width) + 'px';
-                        particle.style.top = (gridRect.top + Math.random() * gridRect.height) + 'px';
-                        
-                        document.body.appendChild(particle);
-                        setTimeout(() => particle.remove(), 2000);
-                    }, i * 20);
-                }
+                // Показываем бонус за очки
+                this.showScorePopup(lineScore);
             }
 
             calculateShapeScore(pattern) {
@@ -4583,10 +4690,10 @@ createRowBlastEffect(row) {
                 // Проверяем, есть ли у игрока бустеры для продолжения игры
                 const usefulBoosters = [];
                 if (this.boosters.has('refresh')) usefulBoosters.push('refresh');
-                if (this.boosters.has('row_blast')) usefulBoosters.push('row_blast');
-                if (this.boosters.has('lightning')) usefulBoosters.push('lightning');
-                if (this.boosters.has('shape_choice')) usefulBoosters.push('shape_choice');
-                if (this.boosters.has('star_blast')) usefulBoosters.push('star_blast');
+                if (this.boosters.has('horizontal_blast')) usefulBoosters.push('horizontal_blast');
+                if (this.boosters.has('vertical_blast')) usefulBoosters.push('vertical_blast');
+                if (this.boosters.has('area_blast_3x3')) usefulBoosters.push('area_blast_3x3');
+                if (this.boosters.has('full_field_blast')) usefulBoosters.push('full_field_blast');
                 
                 if (usefulBoosters.length > 0) {
                     this.populateBoosterOptions(usefulBoosters);
@@ -4602,10 +4709,10 @@ createRowBlastEffect(row) {
                 
                 const boosterNames = {
                     'refresh': 'Обновить фигуры',
-                    'shape_choice': 'Горизонтальный удар',
-                    'row_blast': 'Вертикальный удар',
-                    'lightning': 'Взрыв области 3×3',
-                    'star_blast': 'Уничтожить всё поле'
+                    'horizontal_blast': 'Горизонтальный взрыв',
+                    'vertical_blast': 'Вертикальный взрыв',
+                    'area_blast_3x3': 'Взрыв области 3×3',
+                    'full_field_blast': 'Полный взрыв поля'
                 };
                 
                 availableBoosters.forEach(boosterType => {
@@ -4624,29 +4731,46 @@ createRowBlastEffect(row) {
                 if (!this.boosters.has(boosterType)) return;
                 
                 closeOverlay('boosterOfferOverlay');
-                this.boosters.use(boosterType);
                 
-                switch (boosterType) {
-                    case 'refresh':
-                        this.generateShapes();
-                        showNotification('Фигуры обновлены! 🔄');
-                        break;
-                    case 'shape_choice': // Горизонтальная линия
-                        this.clearRandomRow();
-                        showNotification('Горизонтальный удар! 💥');
-                        break;
-                    case 'row_blast': // Вертикальная линия
-                        const bestCol = this.findBestColumn();
-                        this.clearVerticalLine(bestCol);
-                        showNotification('Вертикальный удар! 💥');
-                        break;
-                    case 'lightning': // Область 3x3
-                        this.clearArea3x3(3, 3);
-                        showNotification('Взрыв области! ⚡');
-                        break;
-                    case 'star_blast': // Все поле
-                        this.clearEntireField();
-                        break;
+                if (boosterType === 'refresh') {
+                    this.boosters.use(boosterType);
+                    this.generateShapes();
+                    showNotification('Фигуры обновлены! 🔄');
+                } else {
+                    // Для других бустеров активируем их автоматически
+                    let row = Math.floor(this.gridSize / 2);
+                    let col = Math.floor(this.gridSize / 2);
+                    
+                    // Ищем лучшую позицию для использования бустера
+                    if (boosterType === 'horizontal_blast') {
+                        // Ищем ряд с наибольшим количеством блоков
+                        let maxBlocks = 0;
+                        for (let r = 0; r < this.gridSize; r++) {
+                            let blocks = 0;
+                            for (let c = 0; c < this.gridSize; c++) {
+                                if (this.grid[r][c] !== null) blocks++;
+                            }
+                            if (blocks > maxBlocks) {
+                                maxBlocks = blocks;
+                                row = r;
+                            }
+                        }
+                    } else if (boosterType === 'vertical_blast') {
+                        // Ищем колонку с наибольшим количеством блоков
+                        let maxBlocks = 0;
+                        for (let c = 0; c < this.gridSize; c++) {
+                            let blocks = 0;
+                            for (let r = 0; r < this.gridSize; r++) {
+                                if (this.grid[r][c] !== null) blocks++;
+                            }
+                            if (blocks > maxBlocks) {
+                                maxBlocks = blocks;
+                                col = c;
+                            }
+                        }
+                    }
+                    
+                    this.activateBooster(boosterType, row, col);
                 }
                 
                 updateGameUI();
@@ -4659,88 +4783,14 @@ createRowBlastEffect(row) {
                 }, 200);
             }
 
-            findBestColumn() {
-                let bestCol = 0;
-                let maxBlocks = 0;
-                
-                for (let col = 0; col < this.gridSize; col++) {
-                    let blocks = 0;
-                    for (let row = 0; row < this.gridSize; row++) {
-                        if (this.grid[row][col] !== null) blocks++;
-                    }
-                    if (blocks > maxBlocks) {
-                        maxBlocks = blocks;
-                        bestCol = col;
-                    }
-                }
-                
-                return bestCol;
-            }
-
-            clearRandomRow() {
-                // Ищем ряд с наибольшим количеством блоков
-                let bestRow = 0;
-                let maxBlocks = 0;
-                
-                for (let row = 0; row < this.gridSize; row++) {
-                    let blocks = 0;
-                    for (let col = 0; col < this.gridSize; col++) {
-                        if (this.grid[row][col] !== null) blocks++;
-                    }
-                    if (blocks > maxBlocks) {
-                        maxBlocks = blocks;
-                        bestRow = row;
-                    }
-                }
-                
-                // Очищаем выбранный ряд
-                const gridElement = document.getElementById('gameGrid');
-                for (let col = 0; col < this.gridSize; col++) {
-                    this.grid[bestRow][col] = null;
-                    const cellIndex = bestRow * this.gridSize + col;
-                    gridElement.children[cellIndex].className = 'cell';
-                }
-            }
-
-            clearRandomBlocks(count) {
-                const filledCells = [];
-                for (let row = 0; row < this.gridSize; row++) {
-                    for (let col = 0; col < this.gridSize; col++) {
-                        if (this.grid[row][col] !== null) {
-                            filledCells.push({row, col});
-                        }
-                    }
-                }
-                
-                // Выбираем случайные блоки для удаления
-                const toRemove = Math.min(count, filledCells.length);
-                const gridElement = document.getElementById('gameGrid');
-                
-                for (let i = 0; i < toRemove; i++) {
-                    const randomIndex = Math.floor(Math.random() * filledCells.length);
-                    const cell = filledCells.splice(randomIndex, 1)[0];
-                    
-                    this.grid[cell.row][cell.col] = null;
-                    const cellIndex = cell.row * this.gridSize + cell.col;
-                    gridElement.children[cellIndex].className = 'cell';
-                }
-            }
-
-            canPlaceShapeAnywhere(pattern) {
-                // Проверяем все возможные позиции более тщательно
-                for (let row = 0; row <= this.gridSize - 1; row++) {
-                    for (let col = 0; col <= this.gridSize - 1; col++) {
-                        if (this.canPlaceShape(pattern, row, col)) {
-                            return true;
-                        }
-                    }
-                }
-                return false;
-            }
-
             async gameOver() {
                 this.isGameOver = true;
                 AppState.hasUnfinishedGame = false;
+                
+                // Деактивируем режим фейерверка
+                if (this.fireworksMode) {
+                    this.deactivateFireworksMode();
+                }
                 
                 const finalXpGained = Math.floor(this.score * 0.05);
                 this.level.addXP(finalXpGained);
@@ -4767,13 +4817,14 @@ createRowBlastEffect(row) {
                 
                 // Дополнительные награды каждые 5 уровней
                 if (newLevel % 5 === 0) {
-                    this.boosters.add('shape_choice', 1);
+                    this.boosters.add('horizontal_blast', 1);
                     this.coins += 50;
                 }
                 
                 // Крупные награды каждые 10 уровней
                 if (newLevel % 10 === 0) {
-                    this.boosters.add('row_blast', 1);
+                    this.boosters.add('vertical_blast', 1);
+                    this.boosters.add('area_blast_3x3', 1);
                     this.energy.max += 1;
                     this.coins += 100;
                 }
@@ -4786,11 +4837,6 @@ createRowBlastEffect(row) {
             }
 
             restart() {
-                // Сбрасываем бонус чистого поля
-                this.clearFieldBonus.active = false;
-                this.clearFieldBonus.turnsLeft = 0;
-                this.hideClearFieldBonusUI();
-                
                 this.startNewGame();
             }
 
@@ -4801,7 +4847,9 @@ createRowBlastEffect(row) {
                     linesCleared: this.linesCleared,
                     combo: this.combo,
                     currentShapes: JSON.parse(JSON.stringify(this.currentShapes)),
-                    gameStarted: this.gameStarted
+                    gameStarted: this.gameStarted,
+                    fireworksMode: this.fireworksMode,
+                    fireworksTimer: this.fireworksTimer
                 };
             }
 
@@ -4812,10 +4860,21 @@ createRowBlastEffect(row) {
                 this.combo = snapshot.combo;
                 this.currentShapes = snapshot.currentShapes;
                 this.gameStarted = snapshot.gameStarted;
+                this.fireworksMode = snapshot.fireworksMode || false;
+                this.fireworksTimer = snapshot.fireworksTimer || null;
                 
                 this.createGrid();
                 this.restoreGridState();
                 this.renderShapes();
+                
+                // Восстанавливаем режим фейерверка если он был активен
+                if (this.fireworksMode) {
+                    const gameScreen = document.getElementById('gameScreen');
+                    const fireworksIndicator = document.getElementById('fireworksIndicator');
+                    gameScreen.classList.add('fireworks-mode');
+                    fireworksIndicator.style.display = 'block';
+                    document.getElementById('fireworksMultiplier').textContent = this.fireworksMultiplier;
+                }
             }
 
             restoreGridState() {
@@ -4835,7 +4894,7 @@ createRowBlastEffect(row) {
             }
         }
 
-        // Shop Functions
+        // Shop Functions (обновленные для новых бустеров)
         async function buyCoins(pack) {
             const packs = {
                 small: { price: 1, coins: 500, name: 'Горстка монет' },
@@ -4879,19 +4938,19 @@ createRowBlastEffect(row) {
             const packs = {
                 starter: { 
                     price: 150, 
-                    items: { shape_choice: 3, refresh: 2 } 
+                    items: { horizontal_blast: 3, refresh: 2 } 
                 },
                 advanced: { 
                     price: 400, 
-                    items: { shape_choice: 5, row_blast: 3, lightning: 2 } 
+                    items: { horizontal_blast: 5, vertical_blast: 3, area_blast_3x3: 2 } 
                 },
                 premium: { 
                     price: 900, 
-                    items: { shape_choice: 8, row_blast: 5, lightning: 4, star_blast: 2 } 
+                    items: { horizontal_blast: 8, vertical_blast: 5, area_blast_3x3: 4, full_field_blast: 2 } 
                 },
                 ultimate: { 
                     price: 2400, 
-                    items: { shape_choice: 15, row_blast: 15, refresh: 15, lightning: 15, star_blast: 15 },
+                    items: { horizontal_blast: 15, vertical_blast: 15, refresh: 15, area_blast_3x3: 15, full_field_blast: 15 },
                     bonusEnergy: 10
                 }
             };
@@ -4936,12 +4995,6 @@ createRowBlastEffect(row) {
             } else {
                 showNotification(`Недостаточно монет! Нужно ${price} 🪙`);
             }
-        }
-
-        // Booster Functions (Updated for Drag & Drop)
-        function useBooster(type) {
-            // Эта функция теперь не используется - бустеры работают через drag & drop
-            showNotification('Перетащите бустер на игровое поле! 🎯');
         }
 
         // Social Functions
@@ -5082,7 +5135,7 @@ createRowBlastEffect(row) {
 
         document.addEventListener('DOMContentLoaded', initializeApp);
 
-        console.log('🎮 Блок Взрыв! VK Mini App v2.0.0 - Полная версия с экономикой! 🚀');
+        console.log('🎮 Блок Взрыв! VK Mini App v2.0.0 - Обновленная система бустеров! 🚀');
     </script>
 </body>
 </html>
