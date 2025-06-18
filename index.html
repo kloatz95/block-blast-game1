@@ -859,10 +859,30 @@
         }
 
         .cell.line-preview {
-            background: none !important;
             border: 2px solid #FFD700 !important;
             animation: linePulse 1.2s ease-in-out infinite !important;
             z-index: 15 !important;
+        }
+
+        /* Сохраняем оригинальные цвета существующих фигур при line-preview */
+        .cell.line-preview.filled.color-red {
+            background: #E74C3C !important;
+        }
+
+        .cell.line-preview.filled.color-blue {
+            background: #3498DB !important;
+        }
+
+        .cell.line-preview.filled.color-green {
+            background: #27AE60 !important;
+        }
+
+        .cell.line-preview.filled.color-purple {
+            background: #9B59B6 !important;
+        }
+
+        .cell.line-preview.filled.color-orange {
+            background: #F39C12 !important;
         }
 
         @keyframes linePulse {
