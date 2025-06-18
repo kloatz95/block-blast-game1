@@ -2944,7 +2944,7 @@
 
         // Game Management
         function startGame() {
-            if (!AppState.gameState.energy.canPlay()) {
+            if (!AppState.gameState || !AppState.gameState.energy.canPlay()) {
                 showOverlay('energyDepletedOverlay');
                 return;
             }
@@ -2962,17 +2962,24 @@
             }
             
             // Switch to game screen
-            document.getElementById('gameScreen').classList.add('active');
-            document.getElementById('mainScreen').classList.add('slide-left');
+            const gameScreen = document.getElementById('gameScreen');
+            const mainScreen = document.getElementById('mainScreen');
+            
+            if (gameScreen) gameScreen.classList.add('active');
+            if (mainScreen) mainScreen.classList.add('slide-left');
             
             // Update UI
-            updateGameUI();
+            if (typeof updateGameUI === 'function') {
+                updateGameUI();
+            }
             updatePlayButton();
             
             console.log('🎮 Игра запущена');
         }
 
         function exitGame() {
+            if (!AppState.gameState) return;
+            
             AppState.currentScreen = 'main';
             AppState.isGameActive = false;
             
@@ -2984,17 +2991,24 @@
                 }
                 // Сохраняем только если есть доступные ходы
                 AppState.hasUnfinishedGame = true;
-                saveGameData();
+                if (typeof saveGameData === 'function') {
+                    saveGameData();
+                }
             } else {
                 AppState.hasUnfinishedGame = false;
             }
             
             // Switch back to main screen
-            document.getElementById('gameScreen').classList.remove('active');
-            document.getElementById('mainScreen').classList.remove('slide-left');
+            const gameScreen = document.getElementById('gameScreen');
+            const mainScreen = document.getElementById('mainScreen');
+            
+            if (gameScreen) gameScreen.classList.remove('active');
+            if (mainScreen) mainScreen.classList.remove('slide-left');
             
             // Update UI
-            updateAllUI();
+            if (typeof updateAllUI === 'function') {
+                updateAllUI();
+            }
             updatePlayButton();
             
             console.log('🏠 Возврат в меню');
@@ -3003,7 +3017,7 @@
         function restartGame() {
             closeOverlay('gameOverOverlay');
             
-            if (!AppState.gameState.energy.canPlay()) {
+            if (!AppState.gameState || !AppState.gameState.energy.canPlay()) {
                 showOverlay('energyDepletedOverlay');
                 return;
             }
@@ -3012,14 +3026,17 @@
             AppState.gameState.restart();
             AppState.hasUnfinishedGame = true;
             
-            updateGameUI();
+            if (typeof updateGameUI === 'function') {
+                updateGameUI();
+            }
             console.log('🔄 Игра перезапущена');
         }
 
         function updatePlayButton() {
             const playButton = document.getElementById('playButton');
+            if (!playButton) return;
             
-            if (AppState.hasUnfinishedGame && !AppState.gameState.isGameOver) {
+            if (AppState.hasUnfinishedGame && !AppState.gameState?.isGameOver) {
                 playButton.textContent = 'ПРОДОЛЖИТЬ';
                 playButton.classList.add('continue');
             } else {
@@ -3045,25 +3062,41 @@
             const gs = AppState.gameState;
             
             // Header stats
-            document.getElementById('headerEnergy').textContent = `${gs.energy.current}/${gs.energy.max}`;
-            document.getElementById('headerCoins').textContent = gs.coins.toLocaleString();
-            document.getElementById('profileLevel').textContent = gs.level.current;
-            document.getElementById('playerLevelLarge').textContent = gs.level.current;
+            const headerEnergy = document.getElementById('headerEnergy');
+            const headerCoins = document.getElementById('headerCoins');
+            const profileLevel = document.getElementById('profileLevel');
+            const playerLevelLarge = document.getElementById('playerLevelLarge');
+            
+            if (headerEnergy) headerEnergy.textContent = `${gs.energy.current}/${gs.energy.max}`;
+            if (headerCoins) headerCoins.textContent = gs.coins.toLocaleString();
+            if (profileLevel) profileLevel.textContent = gs.level.current;
+            if (playerLevelLarge) playerLevelLarge.textContent = gs.level.current;
             
             // Player screen
-            document.getElementById('playerXpFill').style.width = gs.level.getProgress() + '%';
-            document.getElementById('playerXpText').textContent = 
-                `${gs.level.currentXP} / ${gs.level.getXPRequired(gs.level.current)} XP`;
-            document.getElementById('playerBestScore').textContent = gs.bestScore.toLocaleString();
-            document.getElementById('playerGamesPlayed').textContent = gs.stats.gamesPlayed;
-            document.getElementById('playerTotalLines').textContent = gs.stats.totalLinesCleared;
-            document.getElementById('playerMaxCombo').textContent = gs.stats.maxCombo;
+            const playerXpFill = document.getElementById('playerXpFill');
+            const playerXpText = document.getElementById('playerXpText');
+            const playerBestScore = document.getElementById('playerBestScore');
+            const playerGamesPlayed = document.getElementById('playerGamesPlayed');
+            const playerTotalLines = document.getElementById('playerTotalLines');
+            const playerMaxCombo = document.getElementById('playerMaxCombo');
+            
+            if (playerXpFill) playerXpFill.style.width = gs.level.getProgress() + '%';
+            if (playerXpText) playerXpText.textContent = `${gs.level.currentXP} / ${gs.level.getXPRequired(gs.level.current)} XP`;
+            if (playerBestScore) playerBestScore.textContent = gs.bestScore.toLocaleString();
+            if (playerGamesPlayed) playerGamesPlayed.textContent = gs.stats.gamesPlayed;
+            if (playerTotalLines) playerTotalLines.textContent = gs.stats.totalLinesCleared;
+            if (playerMaxCombo) playerMaxCombo.textContent = gs.stats.maxCombo;
             
             // Friends screen
-            document.getElementById('invitesSent').textContent = gs.referrals.invitesSent;
-            document.getElementById('friendsJoined').textContent = gs.referrals.friendsJoined;
-            document.getElementById('coinsFromInvites').textContent = gs.referrals.coinsFromInvites;
-            document.getElementById('energyFromInvites').textContent = gs.referrals.energyFromInvites;
+            const invitesSent = document.getElementById('invitesSent');
+            const friendsJoined = document.getElementById('friendsJoined');
+            const coinsFromInvites = document.getElementById('coinsFromInvites');
+            const energyFromInvites = document.getElementById('energyFromInvites');
+            
+            if (invitesSent) invitesSent.textContent = gs.referrals.invitesSent;
+            if (friendsJoined) friendsJoined.textContent = gs.referrals.friendsJoined;
+            if (coinsFromInvites) coinsFromInvites.textContent = gs.referrals.coinsFromInvites;
+            if (energyFromInvites) energyFromInvites.textContent = gs.referrals.energyFromInvites;
             
             updatePlayButton();
         }
@@ -3074,8 +3107,11 @@
             const gs = AppState.gameState;
             
             // Game stats
-            document.getElementById('gameScore').textContent = gs.score.toLocaleString();
-            document.getElementById('gameLines').textContent = gs.linesCleared;
+            const gameScore = document.getElementById('gameScore');
+            const gameLines = document.getElementById('gameLines');
+            
+            if (gameScore) gameScore.textContent = gs.score.toLocaleString();
+            if (gameLines) gameLines.textContent = gs.linesCleared;
             
             // Boosters
             Object.keys(gs.boosters.inventory).forEach(type => {
@@ -3083,20 +3119,27 @@
                 const boosterElement = document.getElementById(`gameBooster_${type}`);
                 if (countElement) {
                     countElement.textContent = gs.boosters.inventory[type];
-                    if (gs.boosters.inventory[type] === 0) {
-                        boosterElement.classList.add('disabled');
-                    } else {
-                        boosterElement.classList.remove('disabled');
+                    if (boosterElement) {
+                        if (gs.boosters.inventory[type] === 0) {
+                            boosterElement.classList.add('disabled');
+                        } else {
+                            boosterElement.classList.remove('disabled');
+                        }
                     }
                 }
             });
             
             // Combo
-            if (gs.combo > 1) {
-                document.getElementById('comboDisplay').classList.add('active');
-                document.getElementById('comboValue').textContent = Math.min(gs.combo, 10);
-            } else {
-                document.getElementById('comboDisplay').classList.remove('active');
+            const comboDisplay = document.getElementById('comboDisplay');
+            const comboValue = document.getElementById('comboValue');
+            
+            if (comboDisplay && comboValue) {
+                if (gs.combo > 1) {
+                    comboDisplay.classList.add('active');
+                    comboValue.textContent = Math.min(gs.combo, 10);
+                } else {
+                    comboDisplay.classList.remove('active');
+                }
             }
         }
 
@@ -3244,7 +3287,9 @@
                             this.current = this.max;
                             this.lastDailyReset = today;
                             this.lastUpdate = Date.now();
-                            showNotification('Энергия восстановлена! 🌅');
+                            if (typeof showNotification === 'function') {
+                                showNotification('Энергия восстановлена! 🌅');
+                            }
                         }
                     },
                     
@@ -3254,7 +3299,9 @@
                         
                         this.timer = setInterval(() => {
                             this.updateEnergy();
-                            updateAllUI();
+                            if (typeof updateAllUI === 'function') {
+                                updateAllUI();
+                            }
                             
                             if (this.current >= this.max) {
                                 clearInterval(this.timer);
@@ -3324,7 +3371,9 @@
                     use(type) {
                         if (this.has(type)) {
                             this.inventory[type]--;
-                            updateGameUI();
+                            if (typeof updateGameUI === 'function') {
+                                updateGameUI();
+                            }
                             return true;
                         }
                         return false;
@@ -3332,7 +3381,9 @@
                     
                     add(type, amount) {
                         this.inventory[type] += amount;
-                        showNotification(`+${amount} ${this.getName(type)}! 🎁`);
+                        if (typeof showNotification === 'function') {
+                            showNotification(`+${amount} ${this.getName(type)}! 🎁`);
+                        }
                     },
                     
                     getName(type) {
@@ -3365,14 +3416,18 @@
                         }
                         
                         if (this.dailyInvites >= 10) {
-                            showNotification('Лимит приглашений на день достигнут! 📱');
+                            if (typeof showNotification === 'function') {
+                                showNotification('Лимит приглашений на день достигнут! 📱');
+                            }
                             return false;
                         }
                         
                         this.invitesSent++;
                         this.dailyInvites++;
                         
-                        updateAllUI();
+                        if (typeof updateAllUI === 'function') {
+                            updateAllUI();
+                        }
                         return true;
                     },
                     
@@ -3383,14 +3438,20 @@
                         const coinsReward = 100;
                         const energyReward = 5;
                         
-                        AppState.gameState.coins += coinsReward;
-                        AppState.gameState.energy.add(energyReward);
+                        if (AppState.gameState) {
+                            AppState.gameState.coins += coinsReward;
+                            AppState.gameState.energy.add(energyReward);
+                        }
                         
                         this.coinsFromInvites += coinsReward;
                         this.energyFromInvites += energyReward;
                         
-                        showNotification(`Друг присоединился! +${coinsReward} монет, +${energyReward} энергии! 🎉`);
-                        updateAllUI();
+                        if (typeof showNotification === 'function') {
+                            showNotification(`Друг присоединился! +${coinsReward} монет, +${energyReward} энергии! 🎉`);
+                        }
+                        if (typeof updateAllUI === 'function') {
+                            updateAllUI();
+                        }
                     }
                 };
             }
@@ -3739,27 +3800,37 @@
                 switch (boosterType) {
                     case 'horizontal_blast':
                         cellsCleared = this.clearHorizontalLine(row);
-                        showNotification('Горизонтальная линия очищена! ➡️');
+                        if (typeof showNotification === 'function') {
+                            showNotification('Горизонтальная линия очищена! ➡️');
+                        }
                         break;
                     
                     case 'vertical_blast':
                         cellsCleared = this.clearVerticalLine(col);
-                        showNotification('Вертикальная линия очищена! ⬇️');
+                        if (typeof showNotification === 'function') {
+                            showNotification('Вертикальная линия очищена! ⬇️');
+                        }
                         break;
                     
                     case 'refresh':
                         this.generateShapes();
-                        showNotification('Фигуры обновлены! 🔄');
+                        if (typeof showNotification === 'function') {
+                            showNotification('Фигуры обновлены! 🔄');
+                        }
                         break;
                     
                     case 'area_blast_3x3':
                         cellsCleared = this.clearArea3x3(row, col);
-                        showNotification('Область 3×3 очищена! 🎯');
+                        if (typeof showNotification === 'function') {
+                            showNotification('Область 3×3 очищена! 🎯');
+                        }
                         break;
                     
                     case 'full_field_blast':
                         cellsCleared = this.clearFullField();
-                        showNotification('Все поле очищено! 💥');
+                        if (typeof showNotification === 'function') {
+                            showNotification('Все поле очищено! 💥');
+                        }
                         this.activateFireworksMode();
                         break;
                 }
@@ -3779,7 +3850,9 @@
                     }
                 }
 
-                updateGameUI();
+                if (typeof updateGameUI === 'function') {
+                    updateGameUI();
+                }
                 
                 // Проверяем гейм овер после небольшой задержки
                 setTimeout(() => {
@@ -4057,7 +4130,9 @@
 
                 this.createGrid();
                 this.generateShapes();
-                updateGameUI();
+                if (typeof updateGameUI === 'function') {
+                    updateGameUI();
+                }
 
                 console.log('🎮 Новая игра начата');
             }
@@ -4499,7 +4574,9 @@
                             this.showPlacementAchievement(placementQuality);
                         }
                         this.combo = 0;
-                        updateGameUI();
+                        if (typeof updateGameUI === 'function') {
+                            updateGameUI();
+                        }
                     }
 
                     // Проверяем, очистилось ли поле после размещения
@@ -4530,7 +4607,9 @@
                     }, clearedLines > 0 ? 800 : 100); // Больше времени если были очищены линии
                 }, 350); // Увеличили задержку для анимации размещения
 
-                updateGameUI();
+                if (typeof updateGameUI === 'function') {
+                    updateGameUI();
+                }
                 this.renderShapes();
             }
 
@@ -4617,12 +4696,12 @@
                 
                 this.lastAchievementTime = Date.now();
                 
-                const popup = document.createElement('div');
-                popup.className = this.fireworksMode ? 'achievement-popup fireworks' : 'achievement-popup';
-                popup.textContent = placementQuality.message;
-                document.body.appendChild(popup);
+                const placementPopup = document.createElement('div');
+                placementPopup.className = this.fireworksMode ? 'achievement-popup fireworks' : 'achievement-popup';
+                placementPopup.textContent = placementQuality.message;
+                document.body.appendChild(placementPopup);
                 
-                setTimeout(() => popup.remove(), 2000);
+                setTimeout(() => placementPopup.remove(), 2000);
                 
                 // Бонус к очкам за качественное размещение
                 const bonusScore = placementQuality.score * 50;
@@ -4644,7 +4723,6 @@
                 this.lastAchievementTime = Date.now();
                 
                 const popup = document.createElement('div');
-                const popup = document.createElement('div');
                 popup.className = isFireworks ? 'achievement-popup fireworks' : 'achievement-popup';
                 popup.textContent = text;
                 document.body.appendChild(popup);
@@ -4656,14 +4734,14 @@
                 const gridElement = document.getElementById('gameGrid');
                 const gridRect = gridElement.getBoundingClientRect();
                 
-                const popup = document.createElement('div');
-                popup.className = this.fireworksMode ? 'score-popup fireworks' : 'score-popup';
-                popup.textContent = `+${score}`;
-                popup.style.left = (gridRect.left + gridRect.width / 2) + 'px';
-                popup.style.top = (gridRect.top + gridRect.height / 2) + 'px';
+                const scorePopup = document.createElement('div');
+                scorePopup.className = this.fireworksMode ? 'score-popup fireworks' : 'score-popup';
+                scorePopup.textContent = `+${score}`;
+                scorePopup.style.left = (gridRect.left + gridRect.width / 2) + 'px';
+                scorePopup.style.top = (gridRect.top + gridRect.height / 2) + 'px';
                 
-                document.body.appendChild(popup);
-                setTimeout(() => popup.remove(), this.fireworksMode ? 1500 : 1200);
+                document.body.appendChild(scorePopup);
+                setTimeout(() => scorePopup.remove(), this.fireworksMode ? 1500 : 1200);
             }
 
             highlightCells(pattern, startRow, startCol, className) {
@@ -4897,7 +4975,9 @@
                     this.showAchievementText(bestAchievement, this.fireworksMode);
                 }
                 
-                updateGameUI();
+                if (typeof updateGameUI === 'function') {
+                    updateGameUI();
+                }
                 
                 // Показываем бонус за очки
                 this.showScorePopup(lineScore);
@@ -4924,8 +5004,12 @@
                 const leveledUp = this.level.addXP(xpGained);
                 
                 // Обновляем UI
-                updateGameUI();
-                updateAllUI();
+                if (typeof updateGameUI === 'function') {
+                    updateGameUI();
+                }
+                if (typeof updateAllUI === 'function') {
+                    updateAllUI();
+                }
                 
                 // Если был level up, НЕ проверяем game over сразу
                 if (leveledUp) {
@@ -5013,7 +5097,9 @@
                 if (boosterType === 'refresh') {
                     this.boosters.use(boosterType);
                     this.generateShapes();
-                    showNotification('Фигуры обновлены! 🔄');
+                    if (typeof showNotification === 'function') {
+                        showNotification('Фигуры обновлены! 🔄');
+                    }
                 } else {
                     // Для других бустеров активируем их автоматически
                     let row = Math.floor(this.gridSize / 2);
@@ -5051,7 +5137,9 @@
                     this.activateBooster(boosterType, row, col);
                 }
                 
-                updateGameUI();
+                if (typeof updateGameUI === 'function') {
+                    updateGameUI();
+                }
                 
                 // Проверяем снова через небольшую задержку
                 setTimeout(() => {
@@ -5077,14 +5165,19 @@
                     await saveGameData();
                 }
                 
-                document.getElementById('finalScore').textContent = this.score.toLocaleString();
-                document.getElementById('finalXP').textContent = `+${finalXpGained}`;
+                const finalScore = document.getElementById('finalScore');
+                const finalXP = document.getElementById('finalXP');
+                
+                if (finalScore) finalScore.textContent = this.score.toLocaleString();
+                if (finalXP) finalXP.textContent = `+${finalXpGained}`;
                 
                 setTimeout(() => {
                     showOverlay('gameOverOverlay');
                 }, 500);
                 
-                updateAllUI();
+                if (typeof updateAllUI === 'function') {
+                    updateAllUI();
+                }
                 console.log('💀 Игра окончена! Финальный счет:', this.score);
             }
 
@@ -5107,11 +5200,17 @@
                     this.coins += 100;
                 }
                 
-                showNotification(`🎉 Уровень ${newLevel}! +${coinsReward} монет!`);
+                if (typeof showNotification === 'function') {
+                    showNotification(`🎉 Уровень ${newLevel}! +${coinsReward} монет!`);
+                }
                 
                 // Обновляем интерфейс сразу после повышения уровня
-                updateAllUI();
-                updateGameUI();
+                if (typeof updateAllUI === 'function') {
+                    updateAllUI();
+                }
+                if (typeof updateGameUI === 'function') {
+                    updateGameUI();
+                }
             }
 
             restart() {
@@ -5357,12 +5456,16 @@
 
         function showOverlay(overlayId) {
             const overlay = document.getElementById(overlayId);
-            overlay.classList.add('active');
+            if (overlay) {
+                overlay.classList.add('active');
+            }
         }
 
         function closeOverlay(overlayId) {
             const overlay = document.getElementById(overlayId);
-            overlay.classList.remove('active');
+            if (overlay) {
+                overlay.classList.remove('active');
+            }
         }
 
         function startAutoSave() {
