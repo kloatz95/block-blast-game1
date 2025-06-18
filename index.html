@@ -2005,7 +2005,40 @@
             color: #4CAF50 !important;
         }
 
-        /* RESPONSIVE DESIGN */
+        /* AUDIO CONTROLS */
+        .audio-controls {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            gap: 8px;
+            z-index: 1000;
+        }
+
+        .audio-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid var(--card-border);
+            background: var(--card-bg);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 5px rgba(139, 69, 19, 0.3);
+        }
+
+        .audio-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 8px rgba(139, 69, 19, 0.4);
+        }
+
+        .audio-btn.muted {
+            opacity: 0.5;
+            background: #ccc;
+        }
         @media (max-width: 480px) {
             .header-content {
                 gap: 10px;
@@ -2122,6 +2155,12 @@
         <div class="loading-logo">БлокТок</div>
         <div class="loading-spinner"></div>
         <div class="loading-text">Подключение к ВКонтакте...</div>
+    </div>
+
+    <!-- AUDIO CONTROLS -->
+    <div class="audio-controls">
+        <button class="audio-btn" id="musicToggle" onclick="toggleMusic()" title="Музыка">🎵</button>
+        <button class="audio-btn" id="soundToggle" onclick="toggleSound()" title="Звуки">🔊</button>
     </div>
 
     <!-- APP CONTAINER -->
@@ -2501,6 +2540,243 @@
     </div>
 
     <script>
+        // Audio Manager System
+        class AudioManager {
+            constructor() {
+                this.musicEnabled = true;
+                this.soundEnabled = true;
+                this.currentMusic = null;
+                this.musicVolume = 0.3;
+                this.soundVolume = 0.7;
+                
+                // Инициализируем аудио элементы
+                this.initAudio();
+                
+                // Загружаем настройки из localStorage
+                this.loadSettings();
+            }
+
+            initAudio() {
+                // ФОНОВАЯ МУЗЫКА
+                this.music = {
+                    menu: new Audio('assets/audio/music/menu_music.mp3'),
+                    game: new Audio('assets/audio/music/game_music.mp3'),
+                    gameover: new Audio('assets/audio/music/gameover_music.mp3')
+                };
+
+                // ЗВУКОВЫЕ ЭФФЕКТЫ
+                this.sounds = {
+                    // Интерфейс
+                    button_click: new Audio('assets/audio/sfx/button_click.mp3'),
+                    button_hover: new Audio('assets/audio/sfx/button_hover.mp3'),
+                    tab_switch: new Audio('assets/audio/sfx/tab_switch.mp3'),
+                    overlay_open: new Audio('assets/audio/sfx/overlay_open.mp3'),
+                    overlay_close: new Audio('assets/audio/sfx/overlay_close.mp3'),
+                    
+                    // Игровые действия
+                    shape_pickup: new Audio('assets/audio/sfx/shape_pickup.mp3'),
+                    shape_place: new Audio('assets/audio/sfx/shape_place.mp3'),
+                    shape_invalid: new Audio('assets/audio/sfx/shape_invalid.mp3'),
+                    
+                    // Очистка линий
+                    line_clear_single: new Audio('assets/audio/sfx/line_clear_single.mp3'),
+                    line_clear_double: new Audio('assets/audio/sfx/line_clear_double.mp3'),
+                    line_clear_triple: new Audio('assets/audio/sfx/line_clear_triple.mp3'),
+                    line_clear_quad: new Audio('assets/audio/sfx/line_clear_quad.mp3'),
+                    
+                    // Бустеры
+                    booster_pickup: new Audio('assets/audio/sfx/booster_pickup.mp3'),
+                    booster_use: new Audio('assets/audio/sfx/booster_use.mp3'),
+                    booster_horizontal: new Audio('assets/audio/sfx/booster_horizontal.mp3'),
+                    booster_vertical: new Audio('assets/audio/sfx/booster_vertical.mp3'),
+                    booster_area: new Audio('assets/audio/sfx/booster_area.mp3'),
+                    booster_refresh: new Audio('assets/audio/sfx/booster_refresh.mp3'),
+                    booster_nuke: new Audio('assets/audio/sfx/booster_nuke.mp3'),
+                    
+                    // Достижения и бонусы
+                    achievement: new Audio('assets/audio/sfx/achievement.mp3'),
+                    level_up: new Audio('assets/audio/sfx/level_up.mp3'),
+                    score_bonus: new Audio('assets/audio/sfx/score_bonus.mp3'),
+                    combo: new Audio('assets/audio/sfx/combo.mp3'),
+                    perfect_placement: new Audio('assets/audio/sfx/perfect_placement.mp3'),
+                    
+                    // Особые события
+                    fireworks_mode: new Audio('assets/audio/sfx/fireworks_mode.mp3'),
+                    field_clear: new Audio('assets/audio/sfx/field_clear.mp3'),
+                    game_start: new Audio('assets/audio/sfx/game_start.mp3'),
+                    game_over: new Audio('assets/audio/sfx/game_over.mp3'),
+                    
+                    // Магазин и награды
+                    coin_spend: new Audio('assets/audio/sfx/coin_spend.mp3'),
+                    coin_gain: new Audio('assets/audio/sfx/coin_gain.mp3'),
+                    purchase_success: new Audio('assets/audio/sfx/purchase_success.mp3'),
+                    energy_restore: new Audio('assets/audio/sfx/energy_restore.mp3'),
+                    
+                    // Социальные функции
+                    friend_invite: new Audio('assets/audio/sfx/friend_invite.mp3'),
+                    friend_joined: new Audio('assets/audio/sfx/friend_joined.mp3'),
+                    share_result: new Audio('assets/audio/sfx/share_result.mp3')
+                };
+
+                // Настройка музыки
+                Object.values(this.music).forEach(audio => {
+                    audio.loop = true;
+                    audio.volume = this.musicVolume;
+                    audio.preload = 'auto';
+                });
+
+                // Настройка звуков
+                Object.values(this.sounds).forEach(audio => {
+                    audio.volume = this.soundVolume;
+                    audio.preload = 'auto';
+                });
+
+                console.log('🎵 Аудио система инициализирована');
+            }
+
+            // МУЗЫКА
+            playMusic(track) {
+                if (!this.musicEnabled) return;
+                
+                // Останавливаем текущую музыку
+                if (this.currentMusic) {
+                    this.currentMusic.pause();
+                    this.currentMusic.currentTime = 0;
+                }
+                
+                if (this.music[track]) {
+                    this.currentMusic = this.music[track];
+                    this.currentMusic.play().catch(e => console.log('Музыка не может быть воспроизведена:', e));
+                }
+            }
+
+            stopMusic() {
+                if (this.currentMusic) {
+                    this.currentMusic.pause();
+                    this.currentMusic.currentTime = 0;
+                    this.currentMusic = null;
+                }
+            }
+
+            // ЗВУКОВЫЕ ЭФФЕКТЫ
+            playSound(soundName, volume = 1.0) {
+                if (!this.soundEnabled) return;
+                
+                if (this.sounds[soundName]) {
+                    const sound = this.sounds[soundName].cloneNode();
+                    sound.volume = this.soundVolume * volume;
+                    sound.play().catch(e => console.log(`Звук ${soundName} не может быть воспроизведен:`, e));
+                }
+            }
+
+            // НАСТРОЙКИ
+            toggleMusic() {
+                this.musicEnabled = !this.musicEnabled;
+                
+                if (!this.musicEnabled) {
+                    this.stopMusic();
+                } else {
+                    // Восстанавливаем музыку в зависимости от текущего экрана
+                    if (AppState.currentScreen === 'game') {
+                        this.playMusic('game');
+                    } else {
+                        this.playMusic('menu');
+                    }
+                }
+                
+                this.saveSettings();
+                this.updateUI();
+                return this.musicEnabled;
+            }
+
+            toggleSound() {
+                this.soundEnabled = !this.soundEnabled;
+                this.saveSettings();
+                this.updateUI();
+                return this.soundEnabled;
+            }
+
+            setMusicVolume(volume) {
+                this.musicVolume = Math.max(0, Math.min(1, volume));
+                Object.values(this.music).forEach(audio => {
+                    audio.volume = this.musicVolume;
+                });
+                this.saveSettings();
+            }
+
+            setSoundVolume(volume) {
+                this.soundVolume = Math.max(0, Math.min(1, volume));
+                Object.values(this.sounds).forEach(audio => {
+                    audio.volume = this.soundVolume;
+                });
+                this.saveSettings();
+            }
+
+            // СОХРАНЕНИЕ/ЗАГРУЗКА НАСТРОЕК
+            saveSettings() {
+                const settings = {
+                    musicEnabled: this.musicEnabled,
+                    soundEnabled: this.soundEnabled,
+                    musicVolume: this.musicVolume,
+                    soundVolume: this.soundVolume
+                };
+                localStorage.setItem('blockBlastAudioSettings', JSON.stringify(settings));
+            }
+
+            loadSettings() {
+                try {
+                    const saved = localStorage.getItem('blockBlastAudioSettings');
+                    if (saved) {
+                        const settings = JSON.parse(saved);
+                        this.musicEnabled = settings.musicEnabled !== false;
+                        this.soundEnabled = settings.soundEnabled !== false;
+                        this.musicVolume = settings.musicVolume || 0.3;
+                        this.soundVolume = settings.soundVolume || 0.7;
+                        
+                        // Применяем загруженные настройки
+                        this.setMusicVolume(this.musicVolume);
+                        this.setSoundVolume(this.soundVolume);
+                    }
+                } catch (e) {
+                    console.log('Ошибка загрузки аудио настроек:', e);
+                }
+                this.updateUI();
+            }
+
+            updateUI() {
+                const musicBtn = document.getElementById('musicToggle');
+                const soundBtn = document.getElementById('soundToggle');
+                
+                if (musicBtn) {
+                    musicBtn.textContent = this.musicEnabled ? '🎵' : '🔇';
+                    musicBtn.classList.toggle('muted', !this.musicEnabled);
+                }
+                
+                if (soundBtn) {
+                    soundBtn.textContent = this.soundEnabled ? '🔊' : '🔇';
+                    soundBtn.classList.toggle('muted', !this.soundEnabled);
+                }
+            }
+        }
+
+        // Глобальный аудио менеджер
+        let AudioPlayer;
+
+        // Функции управления звуком
+        function toggleMusic() {
+            if (AudioPlayer) {
+                const enabled = AudioPlayer.toggleMusic();
+                showNotification(enabled ? 'Музыка включена 🎵' : 'Музыка выключена 🔇');
+            }
+        }
+
+        function toggleSound() {
+            if (AudioPlayer) {
+                const enabled = AudioPlayer.toggleSound();
+                showNotification(enabled ? 'Звуки включены 🔊' : 'Звуки выключены 🔇');
+            }
+        }
+
         // App State Management
         const AppState = {
             currentScreen: 'main', // 'main' or 'game'
@@ -2754,6 +3030,9 @@
 
             AppState.currentTab = tabName;
 
+            // Звук переключения вкладки
+            if (AudioPlayer) AudioPlayer.playSound('tab_switch');
+
             // Load specific content
             if (tabName === 'leaderboard') {
                 // Устанавливаем активную вкладку "Общий" по умолчанию
@@ -2933,6 +3212,7 @@
         function startGame() {
             if (!AppState.gameState || !AppState.gameState.energy.canPlay()) {
                 showOverlay('energyDepletedOverlay');
+                if (AudioPlayer) AudioPlayer.playSound('button_click');
                 return;
             }
 
@@ -2954,6 +3234,12 @@
             
             if (gameScreen) gameScreen.classList.add('active');
             if (mainScreen) mainScreen.classList.add('slide-left');
+            
+            // Переключаем музыку на игровую
+            if (AudioPlayer) {
+                AudioPlayer.playMusic('game');
+                AudioPlayer.playSound('game_start');
+            }
             
             // Update UI
             if (typeof updateGameUI === 'function') {
@@ -2979,6 +3265,12 @@
                 
                 if (gameScreen) gameScreen.classList.remove('active');
                 if (mainScreen) mainScreen.classList.remove('slide-left');
+                
+                // Переключаем музыку обратно на меню
+                if (AudioPlayer) {
+                    AudioPlayer.playMusic('menu');
+                    AudioPlayer.playSound('button_click');
+                }
                 
                 if (typeof updateAllUI === 'function') {
                     updateAllUI();
@@ -3015,6 +3307,12 @@
             if (gameScreen) gameScreen.classList.remove('active');
             if (mainScreen) mainScreen.classList.remove('slide-left');
             
+            // Переключаем музыку обратно на меню
+            if (AudioPlayer) {
+                AudioPlayer.playMusic('menu');
+                AudioPlayer.playSound('button_click');
+            }
+            
             // Update UI
             if (typeof updateAllUI === 'function') {
                 updateAllUI();
@@ -3035,6 +3333,12 @@
             AppState.gameState.energy.consume(1);
             AppState.gameState.restart();
             AppState.hasUnfinishedGame = true;
+            
+            // Звук рестарта и переключение музыки
+            if (AudioPlayer) {
+                AudioPlayer.playSound('button_click');
+                AudioPlayer.playMusic('game');
+            }
             
             if (typeof updateGameUI === 'function') {
                 updateGameUI();
@@ -3459,6 +3763,10 @@
                         if (typeof showNotification === 'function') {
                             showNotification(`Друг присоединился! +${coinsReward} монет, +${energyReward} энергии! 🎉`);
                         }
+                        
+                        // Звук присоединения друга
+                        if (AudioPlayer) AudioPlayer.playSound('friend_joined');
+                        
                         if (typeof updateAllUI === 'function') {
                             updateAllUI();
                         }
@@ -3480,6 +3788,9 @@
                 document.getElementById('fireworksMultiplier').textContent = this.fireworksMultiplier;
                 
                 this.showAchievementText('🎆 ФЕЙЕРВЕРК! 🎆', true);
+                
+                // Звук фейерверка
+                if (AudioPlayer) AudioPlayer.playSound('fireworks_mode');
                 
                 if (navigator.vibrate) {
                     navigator.vibrate([100, 50, 100, 50, 100]);
@@ -3813,6 +4124,7 @@
                         if (typeof showNotification === 'function') {
                             showNotification('Горизонтальная линия очищена! ➡️');
                         }
+                        if (AudioPlayer) AudioPlayer.playSound('booster_horizontal');
                         break;
                     
                     case 'vertical_blast':
@@ -3820,6 +4132,7 @@
                         if (typeof showNotification === 'function') {
                             showNotification('Вертикальная линия очищена! ⬇️');
                         }
+                        if (AudioPlayer) AudioPlayer.playSound('booster_vertical');
                         break;
                     
                     case 'refresh':
@@ -3827,6 +4140,7 @@
                         if (typeof showNotification === 'function') {
                             showNotification('Фигуры обновлены! 🔄');
                         }
+                        if (AudioPlayer) AudioPlayer.playSound('booster_refresh');
                         break;
                     
                     case 'area_blast_3x3':
@@ -3834,6 +4148,7 @@
                         if (typeof showNotification === 'function') {
                             showNotification('Область 3×3 очищена! 🎯');
                         }
+                        if (AudioPlayer) AudioPlayer.playSound('booster_area');
                         break;
                     
                     case 'full_field_blast':
@@ -3841,6 +4156,7 @@
                         if (typeof showNotification === 'function') {
                             showNotification('Все поле очищено! 💥');
                         }
+                        if (AudioPlayer) AudioPlayer.playSound('booster_nuke');
                         this.activateFireworksMode();
                         break;
                 }
@@ -4197,6 +4513,9 @@
                     this.draggedShape = shape;
 
                     shapeElement.classList.add('dragging');
+                    
+                    // Звук взятия фигуры
+                    if (AudioPlayer) AudioPlayer.playSound('shape_pickup', 0.5);
 
                     if (coords) {
                         this.showPlacementPreview(coords);
@@ -4235,6 +4554,8 @@
                     // Если фигура не была размещена, анимируем возврат
                     if (!placed && this.draggedShape) {
                         this.animateShapeReturn();
+                        // Звук неудачного размещения
+                        if (AudioPlayer) AudioPlayer.playSound('shape_invalid', 0.6);
                     }
 
                     this.clearPreview();
@@ -4567,6 +4888,9 @@
                 
                 this.addScore(shapeScore);
 
+                // Звук размещения фигуры
+                if (AudioPlayer) AudioPlayer.playSound('shape_place');
+
                 if (navigator.vibrate) {
                     navigator.vibrate(30);
                 }
@@ -4591,6 +4915,8 @@
 
                     // Проверяем, очистилось ли поле после размещения
                     if (this.checkFieldClear()) {
+                        // Звук полной очистки поля
+                        if (AudioPlayer) AudioPlayer.playSound('field_clear');
                         this.activateFireworksMode();
                     }
 
@@ -4963,6 +5289,17 @@
 
                 this.addScore(lineScore);
                 
+                // Звуки очистки линий
+                if (AudioPlayer) {
+                    if (count === 1) AudioPlayer.playSound('line_clear_single');
+                    else if (count === 2) AudioPlayer.playSound('line_clear_double');
+                    else if (count === 3) AudioPlayer.playSound('line_clear_triple');
+                    else if (count >= 4) AudioPlayer.playSound('line_clear_quad');
+                    
+                    // Дополнительные звуки для комбо
+                    if (this.combo >= 3) AudioPlayer.playSound('combo', 0.7);
+                }
+                
                 // ВЫБИРАЕМ НАИБОЛЕЕ КРУТОЕ ДОСТИЖЕНИЕ
                 let bestAchievement = '';
                 
@@ -4983,6 +5320,15 @@
                 // Показываем только лучшее достижение
                 if (bestAchievement) {
                     this.showAchievementText(bestAchievement, this.fireworksMode);
+                    
+                    // Звук достижения
+                    if (AudioPlayer && bestAchievement !== '') {
+                        if (count >= 3) {
+                            AudioPlayer.playSound('achievement');
+                        } else if (placementQuality && placementQuality.score >= 3) {
+                            AudioPlayer.playSound('perfect_placement');
+                        }
+                    }
                 }
                 
                 if (typeof updateGameUI === 'function') {
@@ -5072,6 +5418,15 @@
                     this.deactivateFireworksMode();
                 }
                 
+                // Звук гейм овера
+                if (AudioPlayer) {
+                    AudioPlayer.playSound('game_over');
+                    // Переключаем музыку на гейм овер
+                    setTimeout(() => {
+                        AudioPlayer.playMusic('gameover');
+                    }, 1000);
+                }
+                
                 const finalXpGained = Math.floor(this.score * 0.05);
                 this.level.addXP(finalXpGained);
                 
@@ -5117,6 +5472,9 @@
                 if (typeof showNotification === 'function') {
                     showNotification(`🎉 Уровень ${newLevel}! +${coinsReward} монет!`);
                 }
+                
+                // Звук повышения уровня
+                if (AudioPlayer) AudioPlayer.playSound('level_up');
                 
                 // Обновляем интерфейс сразу после повышения уровня
                 if (typeof updateAllUI === 'function') {
@@ -5209,6 +5567,9 @@
                         updateAllUI();
                         showNotification(`${selectedPack.name} куплен! +${selectedPack.coins} монет! 🪙`);
                         
+                        // Звук успешной покупки
+                        if (AudioPlayer) AudioPlayer.playSound('purchase_success');
+                        
                         if (isVKReady) {
                             saveGameData();
                         }
@@ -5222,6 +5583,9 @@
                 AppState.gameState.coins += selectedPack.coins;
                 updateAllUI();
                 showNotification(`${selectedPack.name} куплен! +${selectedPack.coins} монет! 🪙`);
+                
+                // Звук успешной покупки
+                if (AudioPlayer) AudioPlayer.playSound('purchase_success');
             }
         }
 
@@ -5250,6 +5614,9 @@
             
             if (AppState.gameState.coins >= pack.price) {
                 AppState.gameState.coins -= pack.price;
+                
+                // Звук трат монет
+                if (AudioPlayer) AudioPlayer.playSound('coin_spend');
                 
                 Object.entries(pack.items).forEach(([type, amount]) => {
                     AppState.gameState.boosters.add(type, amount);
@@ -5280,6 +5647,9 @@
                 updateAllUI();
                 showNotification(`+${amount} Энергия куплена! ⚡`);
                 
+                // Звук покупки энергии
+                if (AudioPlayer) AudioPlayer.playSound('energy_restore');
+                
                 if (isVKReady) {
                     saveGameData();
                 }
@@ -5296,6 +5666,9 @@
                     
                     if (success) {
                         showNotification('Приглашение отправлено! 📱');
+                        
+                        // Звук отправки приглашения
+                        if (AudioPlayer) AudioPlayer.playSound('friend_invite');
                         
                         // Симуляция присоединения друга (для демо)
                         setTimeout(() => {
@@ -5346,6 +5719,9 @@
                         text: shareText
                     });
                     showNotification('Результат опубликован! 🎉');
+                    
+                    // Звук sharing
+                    if (AudioPlayer) AudioPlayer.playSound('share_result');
                 } catch (error) {
                     console.log('Ошибка публикации:', error);
                     showNotification('Ошибка публикации 😞');
@@ -5372,6 +5748,7 @@
             const overlay = document.getElementById(overlayId);
             if (overlay) {
                 overlay.classList.add('active');
+                if (AudioPlayer) AudioPlayer.playSound('overlay_open');
             }
         }
 
@@ -5379,6 +5756,7 @@
             const overlay = document.getElementById(overlayId);
             if (overlay) {
                 overlay.classList.remove('active');
+                if (AudioPlayer) AudioPlayer.playSound('overlay_close');
             }
         }
 
@@ -5394,11 +5772,19 @@
             try {
                 document.getElementById('loadingScreen').style.display = 'flex';
                 
+                // Инициализируем аудио систему
+                AudioPlayer = new AudioManager();
+                
                 await initVK();
                 
                 AppState.gameState = new BlockBlastGame();
                 
                 startAutoSave();
+                
+                // Запускаем музыку меню
+                setTimeout(() => {
+                    if (AudioPlayer) AudioPlayer.playMusic('menu');
+                }, 1000);
                 
                 setTimeout(() => {
                     document.getElementById('loadingScreen').classList.add('hidden');
@@ -5411,7 +5797,15 @@
                 console.error('❌ Ошибка инициализации приложения:', error);
                 document.getElementById('loadingScreen').classList.add('hidden');
                 document.getElementById('appContainer').classList.add('loaded');
+                
+                // Инициализируем аудио даже при ошибке
+                AudioPlayer = new AudioManager();
                 AppState.gameState = new BlockBlastGame();
+                
+                // Запускаем музыку меню
+                setTimeout(() => {
+                    if (AudioPlayer) AudioPlayer.playMusic('menu');
+                }, 1000);
             }
         }
 
