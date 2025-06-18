@@ -784,20 +784,40 @@
         }
 
         .cell.preview {
-            background: transparent !important;
-            border: 2px solid #32CD32 !important;
+            border: 2px solid #8B4513 !important;
             animation: previewPulse 1.0s ease-in-out infinite !important;
             z-index: 10 !important;
+        }
+
+        /* Предпросмотр для разных цветов фигур */
+        .cell.preview.preview-red {
+            background: rgba(231, 76, 60, 0.4) !important;
+        }
+
+        .cell.preview.preview-blue {
+            background: rgba(52, 152, 219, 0.4) !important;
+        }
+
+        .cell.preview.preview-green {
+            background: rgba(39, 174, 96, 0.4) !important;
+        }
+
+        .cell.preview.preview-purple {
+            background: rgba(155, 89, 182, 0.4) !important;
+        }
+
+        .cell.preview.preview-orange {
+            background: rgba(243, 156, 18, 0.4) !important;
         }
 
         @keyframes previewPulse {
             0%, 100% { 
                 opacity: 1;
-                box-shadow: 0 0 8px rgba(50, 205, 50, 0.5);
+                box-shadow: 0 0 8px rgba(139, 69, 19, 0.5);
             }
             50% { 
                 opacity: 0.8;
-                box-shadow: 0 0 12px rgba(50, 205, 50, 0.7);
+                box-shadow: 0 0 12px rgba(139, 69, 19, 0.7);
             }
         }
 
@@ -805,7 +825,9 @@
             background: transparent !important;
             border: 2px solid #FFD700 !important;
             animation: linePulse 1.2s ease-in-out infinite !important;
-            z-index: 5 !important;
+            z-index: 15 !important;
+            transform: none !important;
+            box-shadow: none !important;
         }
 
         @keyframes linePulse {
@@ -4726,7 +4748,7 @@
                 }
 
                 if (foundValidPosition) {
-                    this.highlightCells(pattern, bestGridRow, bestGridCol, 'preview');
+                    this.highlightCells(pattern, bestGridRow, bestGridCol, 'preview', this.draggedShape.color);
                     
                     // НОВАЯ ФУНКЦИЯ: Подсвечиваем линии, которые будут очищены
                     this.highlightLinesToBeClearedPreview(pattern, bestGridRow, bestGridCol);
@@ -5127,7 +5149,7 @@
                 setTimeout(() => scorePopup.remove(), this.fireworksMode ? 1500 : 1200);
             }
 
-            highlightCells(pattern, startRow, startCol, className) {
+            highlightCells(pattern, startRow, startCol, className, color = null) {
                 const gridElement = document.getElementById('gameGrid');
                 for (let row = 0; row < pattern.length; row++) {
                     for (let col = 0; col < pattern[row].length; col++) {
@@ -5138,7 +5160,13 @@
                             if (newRow >= 0 && newRow < this.gridSize &&
                                 newCol >= 0 && newCol < this.gridSize) {
                                 const cellIndex = newRow * this.gridSize + newCol;
-                                gridElement.children[cellIndex].classList.add(className);
+                                const cell = gridElement.children[cellIndex];
+                                cell.classList.add(className);
+                                
+                                // Добавляем цветовой класс для предпросмотра фигур
+                                if (className === 'preview' && color) {
+                                    cell.classList.add(`preview-${color}`);
+                                }
                             }
                         }
                     }
@@ -5148,10 +5176,11 @@
             clearPreview() {
                 const gridElement = document.getElementById('gameGrid');
                 
-                // Убираем preview для фигур
+                // Убираем preview для фигур и их цветовые классы
                 const previewCells = gridElement.querySelectorAll('.cell.preview');
                 for (let i = 0; i < previewCells.length; i++) {
                     previewCells[i].classList.remove('preview');
+                    previewCells[i].classList.remove('preview-red', 'preview-blue', 'preview-green', 'preview-purple', 'preview-orange');
                 }
                 
                 // Убираем preview для линий
