@@ -2967,11 +2967,33 @@
         function exitGame() {
             if (!AppState.gameState) return;
             
+            // Если игра уже окончена (показался гейм овер), просто выходим
+            if (AppState.gameState.isGameOver) {
+                AppState.currentScreen = 'main';
+                AppState.isGameActive = false;
+                AppState.hasUnfinishedGame = false; // Убеждаемся что игра не считается незаконченной
+                
+                // Switch back to main screen
+                const gameScreen = document.getElementById('gameScreen');
+                const mainScreen = document.getElementById('mainScreen');
+                
+                if (gameScreen) gameScreen.classList.remove('active');
+                if (mainScreen) mainScreen.classList.remove('slide-left');
+                
+                if (typeof updateAllUI === 'function') {
+                    updateAllUI();
+                }
+                updatePlayButton();
+                
+                console.log('🏠 Возврат в меню после гейм овер');
+                return;
+            }
+            
             AppState.currentScreen = 'main';
             AppState.isGameActive = false;
             
-            // При выходе из игры проверяем гейм овер
-            if (!AppState.gameState.isGameOver && AppState.gameState.gameStarted) {
+            // При выходе из активной игры проверяем гейм овер
+            if (AppState.gameState.gameStarted) {
                 if (AppState.gameState.checkGameOver()) {
                     // Если нет ходов - показываем гейм овер
                     AppState.gameState.gameOver();
@@ -5042,7 +5064,8 @@
 
             async gameOver() {
                 this.isGameOver = true;
-                AppState.hasUnfinishedGame = false;
+                this.gameStarted = false; // Добавляем сброс состояния игры
+                AppState.hasUnfinishedGame = false; // Игра окончена, больше не незаконченная
                 
                 // Деактивируем режим фейерверка
                 if (this.fireworksMode) {
