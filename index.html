@@ -36,7 +36,7 @@
 
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Bebas+Neue&display=swap');
 
-        /* CSS Variables for updated card game theme */
+        /* CSS Variables for game colors and common values */
         :root {
             --primary-bg: linear-gradient(145deg, #FDF4DB 0%, #EAD4B4 100%);
             --header-bg: linear-gradient(180deg, #F8EBD3 0%, #EED6B2 50%, #E0B885 100%);
@@ -61,6 +61,37 @@
             --card-drop-shadow: #FFFFFF;
             --header-inner-shadow: #FFFFFF;
             --nav-active-bg: #CE7F42;
+            
+            /* Game piece colors */
+            --color-red: #E74C3C;
+            --color-red-border: #C0392B;
+            --color-blue: #3498DB;
+            --color-blue-border: #2980B9;
+            --color-green: #27AE60;
+            --color-green-border: #229954;
+            --color-purple: #9B59B6;
+            --color-purple-border: #8E44AD;
+            --color-orange: #F39C12;
+            --color-orange-border: #E67E22;
+            
+            /* Preview colors (brighter) */
+            --preview-red: #FF6B6B;
+            --preview-blue: #4ECDC4;
+            --preview-green: #45B7D1;
+            --preview-purple: #A78BFA;
+            --preview-orange: #FFA726;
+            
+            /* Preview colors with lines (even brighter) */
+            --preview-lines-red: #FF4757;
+            --preview-lines-blue: #3742FA;
+            --preview-lines-green: #2ED573;
+            --preview-lines-purple: #8B5CF6;
+            --preview-lines-orange: #FF9500;
+            
+            /* Common borders and effects */
+            --preview-border: #8B4513;
+            --preview-lines-border: #FFD700;
+            --line-preview-border: #FFD700;
         }
 
         body {
@@ -759,82 +790,54 @@
         }
 
         .cell.filled.color-red {
-            background: #E74C3C;
-            border: 2px solid #C0392B;
+            background: var(--color-red);
+            border: 2px solid var(--color-red-border);
         }
 
         .cell.filled.color-blue {
-            background: #3498DB;
-            border: 2px solid #2980B9;
+            background: var(--color-blue);
+            border: 2px solid var(--color-blue-border);
         }
 
         .cell.filled.color-green {
-            background: #27AE60;
-            border: 2px solid #229954;
+            background: var(--color-green);
+            border: 2px solid var(--color-green-border);
         }
 
         .cell.filled.color-purple {
-            background: #9B59B6;
-            border: 2px solid #8E44AD;
+            background: var(--color-purple);
+            border: 2px solid var(--color-purple-border);
         }
 
         .cell.filled.color-orange {
-            background: #F39C12;
-            border: 2px solid #E67E22;
+            background: var(--color-orange);
+            border: 2px solid var(--color-orange-border);
         }
 
         .cell.preview {
-            border: 3px solid #8B4513 !important;
+            border: 3px solid var(--preview-border) !important;
             animation: previewPulse 1.0s ease-in-out infinite !important;
             z-index: 10 !important;
         }
 
-        /* Предпросмотр для разных цветов фигур - ОБЫЧНЫЙ РЕЖИМ (яркие без прозрачности) */
-        .cell.preview.preview-red {
-            background: #FF6B6B !important;
-        }
+        /* Предпросмотр для разных цветов фигур - ОБЫЧНЫЙ РЕЖИМ */
+        .cell.preview.preview-red { background: var(--preview-red) !important; }
+        .cell.preview.preview-blue { background: var(--preview-blue) !important; }
+        .cell.preview.preview-green { background: var(--preview-green) !important; }
+        .cell.preview.preview-purple { background: var(--preview-purple) !important; }
+        .cell.preview.preview-orange { background: var(--preview-orange) !important; }
 
-        .cell.preview.preview-blue {
-            background: #4ECDC4 !important;
-        }
-
-        .cell.preview.preview-green {
-            background: #45B7D1 !important;
-        }
-
-        .cell.preview.preview-purple {
-            background: #A78BFA !important;
-        }
-
-        .cell.preview.preview-orange {
-            background: #FFA726 !important;
-        }
-
-        /* Предпросмотр фигур когда есть линии для разрушения - ЗОЛОТАЯ ОБВОДКА + ЕЩЕ БОЛЕЕ ЯРКИЕ ЦВЕТА */
+        /* Предпросмотр фигур когда есть линии для разрушения */
         .cell.preview.preview-with-lines {
-            border: 3px solid #FFD700 !important;
+            border: 3px solid var(--preview-lines-border) !important;
             animation: previewWithLinesPulse 1.0s ease-in-out infinite !important;
         }
 
-        .cell.preview.preview-with-lines.preview-red {
-            background: #FF4757 !important;
-        }
-
-        .cell.preview.preview-with-lines.preview-blue {
-            background: #3742FA !important;
-        }
-
-        .cell.preview.preview-with-lines.preview-green {
-            background: #2ED573 !important;
-        }
-
-        .cell.preview.preview-with-lines.preview-purple {
-            background: #8B5CF6 !important;
-        }
-
-        .cell.preview.preview-with-lines.preview-orange {
-            background: #FF9500 !important;
-        }
+        .cell.preview.preview-with-lines.preview-red { background: var(--preview-lines-red) !important; }
+        .cell.preview.preview-with-lines.preview-blue { background: var(--preview-lines-blue) !important; }
+        .cell.preview.preview-with-lines.preview-green { background: var(--preview-lines-green) !important; }
+        .cell.preview.preview-with-lines.preview-purple { background: var(--preview-lines-purple) !important; }
+        .cell.preview.preview-with-lines.preview-orange { background: var(--preview-lines-orange) !important; }
 
         @keyframes previewPulse {
             0%, 100% { 
@@ -859,31 +862,17 @@
         }
 
         .cell.line-preview {
-            border: 2px solid #FFD700 !important;
+            border: 2px solid var(--line-preview-border) !important;
             animation: linePulse 1.2s ease-in-out infinite !important;
             z-index: 15 !important;
         }
 
         /* Сохраняем оригинальные цвета существующих фигур при line-preview */
-        .cell.line-preview.filled.color-red {
-            background: #E74C3C !important;
-        }
-
-        .cell.line-preview.filled.color-blue {
-            background: #3498DB !important;
-        }
-
-        .cell.line-preview.filled.color-green {
-            background: #27AE60 !important;
-        }
-
-        .cell.line-preview.filled.color-purple {
-            background: #9B59B6 !important;
-        }
-
-        .cell.line-preview.filled.color-orange {
-            background: #F39C12 !important;
-        }
+        .cell.line-preview.filled.color-red { background: var(--color-red) !important; }
+        .cell.line-preview.filled.color-blue { background: var(--color-blue) !important; }
+        .cell.line-preview.filled.color-green { background: var(--color-green) !important; }
+        .cell.line-preview.filled.color-purple { background: var(--color-purple) !important; }
+        .cell.line-preview.filled.color-orange { background: var(--color-orange) !important; }
 
         @keyframes linePulse {
             0%, 100% { 
@@ -1413,28 +1402,28 @@
         }
 
         .shape[data-color="red"] .shape-block:not(.empty) {
-            background: #E74C3C;
-            border-color: #C0392B;
+            background: var(--color-red);
+            border-color: var(--color-red-border);
         }
 
         .shape[data-color="blue"] .shape-block:not(.empty) {
-            background: #3498DB;
-            border-color: #2980B9;
+            background: var(--color-blue);
+            border-color: var(--color-blue-border);
         }
 
         .shape[data-color="green"] .shape-block:not(.empty) {
-            background: #27AE60;
-            border-color: #229954;
+            background: var(--color-green);
+            border-color: var(--color-green-border);
         }
 
         .shape[data-color="purple"] .shape-block:not(.empty) {
-            background: #9B59B6;
-            border-color: #8E44AD;
+            background: var(--color-purple);
+            border-color: var(--color-purple-border);
         }
 
         .shape[data-color="orange"] .shape-block:not(.empty) {
-            background: #F39C12;
-            border-color: #E67E22;
+            background: var(--color-orange);
+            border-color: var(--color-orange-border);
         }
 
         /* COMBO DISPLAY */
@@ -2661,6 +2650,55 @@
     </div>
 
     <script>
+        // Utility functions to reduce code duplication
+        const Utils = {
+            // Безопасный вызов функций
+            safeCall: (fn, ...args) => {
+                if (typeof fn === 'function') {
+                    return fn(...args);
+                }
+            },
+            
+            // Безопасная работа с DOM элементами
+            safeElement: (id, callback) => {
+                const element = document.getElementById(id);
+                if (element && callback) {
+                    return callback(element);
+                }
+                return element;
+            },
+            
+            // Безопасный вызов аудио
+            playAudio: (soundName, volume = 1.0) => {
+                if (AudioPlayer) {
+                    AudioPlayer.playSound(soundName, volume);
+                }
+            },
+            
+            // Безопасное обновление UI
+            updateUI: () => {
+                Utils.safeCall(updateGameUI);
+                Utils.safeCall(updateAllUI);
+            },
+            
+            // Проверка игрового состояния
+            hasGameState: () => AppState.gameState !== null && AppState.gameState !== undefined,
+            
+            // Кэш для DOM элементов
+            _elementCache: {},
+            getCachedElement: (id) => {
+                if (!Utils._elementCache[id]) {
+                    Utils._elementCache[id] = document.getElementById(id);
+                }
+                return Utils._elementCache[id];
+            },
+            
+            // Очистка кэша (для случаев когда DOM изменяется)
+            clearElementCache: () => {
+                Utils._elementCache = {};
+            }
+        };
+
         // Audio Manager System
         class AudioManager {
             constructor() {
@@ -3150,12 +3188,12 @@
             document.querySelectorAll('.content-screen').forEach(screen => {
                 screen.classList.remove('active');
             });
-            document.getElementById(tabName + 'Screen').classList.add('active');
+            Utils.safeElement(tabName + 'Screen', el => el.classList.add('active'));
 
             AppState.currentTab = tabName;
 
             // Звук переключения вкладки
-            if (AudioPlayer) AudioPlayer.playSound('tab_switch');
+            Utils.playAudio('tab_switch');
 
             // Load specific content
             if (tabName === 'leaderboard') {
