@@ -784,77 +784,77 @@
         }
 
         .cell.preview {
-            border: 2px solid #8B4513 !important;
+            border: 3px solid #8B4513 !important;
             animation: previewPulse 1.0s ease-in-out infinite !important;
             z-index: 10 !important;
         }
 
-        /* Предпросмотр для разных цветов фигур - ОБЫЧНЫЙ РЕЖИМ */
+        /* Предпросмотр для разных цветов фигур - ОБЫЧНЫЙ РЕЖИМ (яркие без прозрачности) */
         .cell.preview.preview-red {
-            background: rgba(231, 76, 60, 0.4) !important;
+            background: #FF6B6B !important;
         }
 
         .cell.preview.preview-blue {
-            background: rgba(52, 152, 219, 0.4) !important;
+            background: #4ECDC4 !important;
         }
 
         .cell.preview.preview-green {
-            background: rgba(39, 174, 96, 0.4) !important;
+            background: #45B7D1 !important;
         }
 
         .cell.preview.preview-purple {
-            background: rgba(155, 89, 182, 0.4) !important;
+            background: #A78BFA !important;
         }
 
         .cell.preview.preview-orange {
-            background: rgba(243, 156, 18, 0.4) !important;
+            background: #FFA726 !important;
         }
 
-        /* Предпросмотр фигур когда есть линии для разрушения - ЗОЛОТАЯ ОБВОДКА + ЯРКИЕ ЦВЕТА */
+        /* Предпросмотр фигур когда есть линии для разрушения - ЗОЛОТАЯ ОБВОДКА + ЕЩЕ БОЛЕЕ ЯРКИЕ ЦВЕТА */
         .cell.preview.preview-with-lines {
-            border: 2px solid #FFD700 !important;
+            border: 3px solid #FFD700 !important;
             animation: previewWithLinesPulse 1.0s ease-in-out infinite !important;
         }
 
         .cell.preview.preview-with-lines.preview-red {
-            background: rgba(231, 76, 60, 0.8) !important;
+            background: #FF4757 !important;
         }
 
         .cell.preview.preview-with-lines.preview-blue {
-            background: rgba(52, 152, 219, 0.8) !important;
+            background: #3742FA !important;
         }
 
         .cell.preview.preview-with-lines.preview-green {
-            background: rgba(39, 174, 96, 0.8) !important;
+            background: #2ED573 !important;
         }
 
         .cell.preview.preview-with-lines.preview-purple {
-            background: rgba(155, 89, 182, 0.8) !important;
+            background: #8B5CF6 !important;
         }
 
         .cell.preview.preview-with-lines.preview-orange {
-            background: rgba(243, 156, 18, 0.8) !important;
+            background: #FF9500 !important;
         }
 
         @keyframes previewPulse {
             0%, 100% { 
                 opacity: 1;
-                box-shadow: 0 0 8px rgba(139, 69, 19, 0.5);
+                box-shadow: 0 0 10px rgba(139, 69, 19, 0.7);
             }
             50% { 
                 opacity: 0.8;
-                box-shadow: 0 0 12px rgba(139, 69, 19, 0.7);
+                box-shadow: 0 0 15px rgba(139, 69, 19, 0.9);
             }
         }
 
         @keyframes previewWithLinesPulse {
             0%, 100% { 
                 opacity: 1;
-                box-shadow: 0 0 8px rgba(255, 215, 0, 0.5);
+                box-shadow: 0 0 10px rgba(255, 215, 0, 0.7);
             }
             50% { 
                 opacity: 0.8;
-                box-shadow: 0 0 12px rgba(255, 215, 0, 0.7);
+                box-shadow: 0 0 15px rgba(255, 215, 0, 0.9);
             }
         }
 
@@ -863,16 +863,6 @@
             border: 2px solid #FFD700 !important;
             animation: linePulse 1.2s ease-in-out infinite !important;
             z-index: 15 !important;
-        }
-
-        /* ПРИНУДИТЕЛЬНО убираем ВСЕ фоны у line-preview */
-        .cell.line-preview.filled,
-        .cell.line-preview.color-red,
-        .cell.line-preview.color-blue,
-        .cell.line-preview.color-green,
-        .cell.line-preview.color-purple,
-        .cell.line-preview.color-orange {
-            background: none !important;
         }
 
         @keyframes linePulse {
@@ -4793,11 +4783,65 @@
                 }
 
                 if (foundValidPosition) {
-                    this.highlightCells(pattern, bestGridRow, bestGridCol, 'preview', this.draggedShape.color);
+                    // Сначала проверяем, будут ли очищены линии
+                    const hasLinesToClear = this.checkLinesToBeClearedPreview(pattern, bestGridRow, bestGridCol);
                     
-                    // НОВАЯ ФУНКЦИЯ: Подсвечиваем линии, которые будут очищены
-                    this.highlightLinesToBeClearedPreview(pattern, bestGridRow, bestGridCol);
+                    this.highlightCells(pattern, bestGridRow, bestGridCol, 'preview', this.draggedShape.color, hasLinesToClear);
+                    
+                    // Подсвечиваем линии, которые будут очищены
+                    if (hasLinesToClear) {
+                        this.highlightLinesToBeClearedPreview(pattern, bestGridRow, bestGridCol);
+                    }
                 }
+            }
+
+            // НОВАЯ ФУНКЦИЯ: Проверяет будут ли очищены линии (без подсветки)
+            checkLinesToBeClearedPreview(pattern, startRow, startCol) {
+                // Создаем временную копию сетки с размещенной фигурой
+                const tempGrid = this.grid.map(row => [...row]);
+                
+                // Размещаем фигуру на временной сетке
+                for (let row = 0; row < pattern.length; row++) {
+                    for (let col = 0; col < pattern[row].length; col++) {
+                        if (pattern[row][col]) {
+                            const newRow = startRow + row;
+                            const newCol = startCol + col;
+                            if (newRow >= 0 && newRow < this.gridSize && newCol >= 0 && newCol < this.gridSize) {
+                                tempGrid[newRow][newCol] = this.draggedShape.color;
+                            }
+                        }
+                    }
+                }
+                
+                // Проверяем будут ли очищены линии
+                let hasLinesToClear = false;
+                
+                // Проверяем горизонтальные ряды
+                for (let row = 0; row < this.gridSize; row++) {
+                    if (tempGrid[row].every(cell => cell !== null)) {
+                        hasLinesToClear = true;
+                        break;
+                    }
+                }
+                
+                // Проверяем вертикальные ряды
+                if (!hasLinesToClear) {
+                    for (let col = 0; col < this.gridSize; col++) {
+                        let complete = true;
+                        for (let row = 0; row < this.gridSize; row++) {
+                            if (tempGrid[row][col] === null) {
+                                complete = false;
+                                break;
+                            }
+                        }
+                        if (complete) {
+                            hasLinesToClear = true;
+                            break;
+                        }
+                    }
+                }
+                
+                return hasLinesToClear;
             }
 
             // НОВАЯ ФУНКЦИЯ: Предварительный показ линий, которые будут очищены
@@ -5194,7 +5238,7 @@
                 setTimeout(() => scorePopup.remove(), this.fireworksMode ? 1500 : 1200);
             }
 
-            highlightCells(pattern, startRow, startCol, className, color = null) {
+            highlightCells(pattern, startRow, startCol, className, color = null, hasLinesToClear = false) {
                 const gridElement = document.getElementById('gameGrid');
                 for (let row = 0; row < pattern.length; row++) {
                     for (let col = 0; col < pattern[row].length; col++) {
@@ -5211,6 +5255,11 @@
                                 // Добавляем цветовой класс для предпросмотра фигур
                                 if (className === 'preview' && color) {
                                     cell.classList.add(`preview-${color}`);
+                                    
+                                    // Если есть линии для разрушения - добавляем специальный класс
+                                    if (hasLinesToClear) {
+                                        cell.classList.add('preview-with-lines');
+                                    }
                                 }
                             }
                         }
@@ -5226,6 +5275,7 @@
                 for (let i = 0; i < previewCells.length; i++) {
                     previewCells[i].classList.remove('preview');
                     previewCells[i].classList.remove('preview-red', 'preview-blue', 'preview-green', 'preview-purple', 'preview-orange');
+                    previewCells[i].classList.remove('preview-with-lines');
                 }
                 
                 // Убираем preview для линий
@@ -5965,7 +6015,7 @@
                 setTimeout(() => {
                     document.getElementById('loadingScreen').classList.add('hidden');
                     document.getElementById('appContainer').classList.add('loaded');
-                }, 1500);https://github.com/kloatz95/block-blast-game1/blob/main/index.html
+                }, 1500);
                 
                 console.log('🎮 Приложение успешно инициализировано');
                 
