@@ -2624,6 +2624,9 @@
                     audio.volume = this.musicVolume;
                     audio.preload = 'auto';
                 });
+                
+                // Музыка gameover не должна зацикливаться
+                this.music.gameover.loop = false;
 
                 // Настройка звуков
                 Object.values(this.sounds).forEach(audio => {
@@ -5749,6 +5752,11 @@
             if (overlay) {
                 overlay.classList.add('active');
                 if (AudioPlayer) AudioPlayer.playSound('overlay_open');
+                
+                // Запускаем таймер для энергии если это overlay энергии
+                if (overlayId === 'energyDepletedOverlay') {
+                    startEnergyTimer();
+                }
             }
         }
 
@@ -5757,6 +5765,56 @@
             if (overlay) {
                 overlay.classList.remove('active');
                 if (AudioPlayer) AudioPlayer.playSound('overlay_close');
+                
+                // Останавливаем таймер энергии
+                if (overlayId === 'energyDepletedOverlay') {
+                    stopEnergyTimer();
+                }
+            }
+        }
+
+        // Таймер энергии
+        let energyTimerInterval = null;
+
+        function startEnergyTimer() {
+            // Сразу обновляем время
+            updateEnergyTimer();
+            
+            // Обновляем каждую секунду
+            energyTimerInterval = setInterval(updateEnergyTimer, 1000);
+        }
+
+        function stopEnergyTimer() {
+            if (energyTimerInterval) {
+                clearInterval(energyTimerInterval);
+                energyTimerInterval = null;
+            }
+        }
+
+        function updateEnergyTimer() {
+            const nextEnergyTimeElement = document.getElementById('nextEnergyTime');
+            if (!nextEnergyTimeElement || !AppState.gameState) return;
+            
+            const timeToNext = AppState.gameState.energy.getTimeToNext();
+            
+            if (timeToNext <= 0) {
+                nextEnergyTimeElement.textContent = 'Готово!';
+                nextEnergyTimeElement.style.color = '#32CD32';
+                stopEnergyTimer();
+                
+                // Обновляем энергию
+                AppState.gameState.energy.updateEnergy();
+                updateAllUI();
+                
+                // Закрываем overlay если энергия восстановилась
+                if (AppState.gameState.energy.current > 0) {
+                    closeOverlay('energyDepletedOverlay');
+                }
+            } else {
+                const minutes = Math.floor(timeToNext / 60000);
+                const seconds = Math.floor((timeToNext % 60000) / 1000);
+                nextEnergyTimeElement.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+                nextEnergyTimeElement.style.color = '#FF6347';
             }
         }
 
