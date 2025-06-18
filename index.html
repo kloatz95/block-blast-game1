@@ -789,30 +789,51 @@
             z-index: 10 !important;
         }
 
-        /* Предпросмотр для разных цветов фигур - делаем ЯРЧЕ */
+        /* Предпросмотр для разных цветов фигур - ОБЫЧНЫЙ РЕЖИМ */
         .cell.preview.preview-red {
-            background: rgba(231, 76, 60, 0.7) !important;
-            border: 2px solid #C0392B !important;
+            background: rgba(231, 76, 60, 0.4) !important;
         }
 
         .cell.preview.preview-blue {
-            background: rgba(52, 152, 219, 0.7) !important;
-            border: 2px solid #2980B9 !important;
+            background: rgba(52, 152, 219, 0.4) !important;
         }
 
         .cell.preview.preview-green {
-            background: rgba(39, 174, 96, 0.7) !important;
-            border: 2px solid #229954 !important;
+            background: rgba(39, 174, 96, 0.4) !important;
         }
 
         .cell.preview.preview-purple {
-            background: rgba(155, 89, 182, 0.7) !important;
-            border: 2px solid #8E44AD !important;
+            background: rgba(155, 89, 182, 0.4) !important;
         }
 
         .cell.preview.preview-orange {
-            background: rgba(243, 156, 18, 0.7) !important;
-            border: 2px solid #E67E22 !important;
+            background: rgba(243, 156, 18, 0.4) !important;
+        }
+
+        /* Предпросмотр фигур когда есть линии для разрушения - ЗОЛОТАЯ ОБВОДКА + ЯРКИЕ ЦВЕТА */
+        .cell.preview.preview-with-lines {
+            border: 2px solid #FFD700 !important;
+            animation: previewWithLinesPulse 1.0s ease-in-out infinite !important;
+        }
+
+        .cell.preview.preview-with-lines.preview-red {
+            background: rgba(231, 76, 60, 0.8) !important;
+        }
+
+        .cell.preview.preview-with-lines.preview-blue {
+            background: rgba(52, 152, 219, 0.8) !important;
+        }
+
+        .cell.preview.preview-with-lines.preview-green {
+            background: rgba(39, 174, 96, 0.8) !important;
+        }
+
+        .cell.preview.preview-with-lines.preview-purple {
+            background: rgba(155, 89, 182, 0.8) !important;
+        }
+
+        .cell.preview.preview-with-lines.preview-orange {
+            background: rgba(243, 156, 18, 0.8) !important;
         }
 
         @keyframes previewPulse {
@@ -826,20 +847,26 @@
             }
         }
 
+        @keyframes previewWithLinesPulse {
+            0%, 100% { 
+                opacity: 1;
+                box-shadow: 0 0 8px rgba(255, 215, 0, 0.5);
+            }
+            50% { 
+                opacity: 0.8;
+                box-shadow: 0 0 12px rgba(255, 215, 0, 0.7);
+            }
+        }
+
         .cell.line-preview {
             background: none !important;
             border: 2px solid #FFD700 !important;
             animation: linePulse 1.2s ease-in-out infinite !important;
             z-index: 15 !important;
-            transform: none !important;
-            box-shadow: none !important;
         }
 
         /* ПРИНУДИТЕЛЬНО убираем ВСЕ фоны у line-preview */
-        .cell.line-preview.filled {
-            background: none !important;
-        }
-
+        .cell.line-preview.filled,
         .cell.line-preview.color-red,
         .cell.line-preview.color-blue,
         .cell.line-preview.color-green,
@@ -5938,7 +5965,7 @@
                 setTimeout(() => {
                     document.getElementById('loadingScreen').classList.add('hidden');
                     document.getElementById('appContainer').classList.add('loaded');
-                }, 1500);
+                }, 1500);https://github.com/kloatz95/block-blast-game1/blob/main/index.html
                 
                 console.log('🎮 Приложение успешно инициализировано');
                 
