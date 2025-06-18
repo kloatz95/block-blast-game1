@@ -2488,19 +2488,6 @@
         </div>
     </div>
 
-    <div class="overlay" id="boosterSelectionOverlay">
-        <div class="overlay-content">
-            <h2>Выберите бустер</h2>
-            <div style="font-size: 14px; margin-bottom: 16px;">Выберите бустер для продолжения игры:</div>
-            <div id="availableBoosters" style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px;">
-                <!-- Доступные бустеры будут добавлены динамически -->
-            </div>
-            <div style="display: flex; gap: 12px; justify-content: center;">
-                <button class="simple-button menu-btn" onclick="closeOverlay('boosterSelectionOverlay'); showOverlay('boosterOfferOverlay')" style="margin: 0; width: auto; padding: 12px 20px;">НАЗАД</button>
-            </div>
-        </div>
-    </div>
-
     <div class="overlay" id="energyDepletedOverlay">
         <div class="overlay-content">
             <h2>Нет Энергии!</h2>
@@ -2983,13 +2970,14 @@
             AppState.currentScreen = 'main';
             AppState.isGameActive = false;
             
-            // Если игра не окончена, но нет доступных ходов - показываем гейм овер
+            // При выходе из игры проверяем гейм овер
             if (!AppState.gameState.isGameOver && AppState.gameState.gameStarted) {
                 if (AppState.gameState.checkGameOver()) {
+                    // Если нет ходов - показываем гейм овер
                     AppState.gameState.gameOver();
                     return; // Остаёмся в игре для показа гейм овер
                 }
-                // Сохраняем только если есть доступные ходы
+                // Если есть ходы - сохраняем игру
                 AppState.hasUnfinishedGame = true;
                 if (typeof saveGameData === 'function') {
                     saveGameData();
@@ -5048,105 +5036,8 @@
             }
 
             showBoosterOffer() {
-                // Проверяем, есть ли у игрока бустеры для продолжения игры
-                const usefulBoosters = [];
-                if (this.boosters.has('refresh')) usefulBoosters.push('refresh');
-                if (this.boosters.has('horizontal_blast')) usefulBoosters.push('horizontal_blast');
-                if (this.boosters.has('vertical_blast')) usefulBoosters.push('vertical_blast');
-                if (this.boosters.has('area_blast_3x3')) usefulBoosters.push('area_blast_3x3');
-                if (this.boosters.has('full_field_blast')) usefulBoosters.push('full_field_blast');
-                
-                if (usefulBoosters.length > 0) {
-                    // Сохраняем список доступных бустеров для последующего использования
-                    this.availableGameOverBoosters = usefulBoosters;
-                    showOverlay('boosterOfferOverlay');
-                } else {
-                    this.gameOver();
-                }
-            }
-
-            populateBoosterOptions(availableBoosters) {
-                const container = document.getElementById('availableBoosters');
-                container.innerHTML = '';
-                
-                const boosterNames = {
-                    'refresh': 'Обновить фигуры',
-                    'horizontal_blast': 'Горизонтальный взрыв',
-                    'vertical_blast': 'Вертикальный взрыв',
-                    'area_blast_3x3': 'Взрыв области 3×3',
-                    'full_field_blast': 'Полный взрыв поля'
-                };
-                
-                availableBoosters.forEach(boosterType => {
-                    const button = document.createElement('button');
-                    button.className = 'simple-button restart-btn';
-                    button.style.margin = '0';
-                    button.style.width = '100%';
-                    button.style.padding = '12px 20px';
-                    button.textContent = `${boosterNames[boosterType]} (${this.boosters.inventory[boosterType]})`;
-                    button.onclick = () => this.useSpecificBooster(boosterType);
-                    container.appendChild(button);
-                });
-            }
-
-            useSpecificBooster(boosterType) {
-                if (!this.boosters.has(boosterType)) return;
-                
-                closeOverlay('boosterSelectionOverlay');
-                
-                if (boosterType === 'refresh') {
-                    this.boosters.use(boosterType);
-                    this.generateShapes();
-                    if (typeof showNotification === 'function') {
-                        showNotification('Фигуры обновлены! 🔄');
-                    }
-                } else {
-                    // Для других бустеров активируем их автоматически
-                    let row = Math.floor(this.gridSize / 2);
-                    let col = Math.floor(this.gridSize / 2);
-                    
-                    // Ищем лучшую позицию для использования бустера
-                    if (boosterType === 'horizontal_blast') {
-                        // Ищем ряд с наибольшим количеством блоков
-                        let maxBlocks = 0;
-                        for (let r = 0; r < this.gridSize; r++) {
-                            let blocks = 0;
-                            for (let c = 0; c < this.gridSize; c++) {
-                                if (this.grid[r][c] !== null) blocks++;
-                            }
-                            if (blocks > maxBlocks) {
-                                maxBlocks = blocks;
-                                row = r;
-                            }
-                        }
-                    } else if (boosterType === 'vertical_blast') {
-                        // Ищем колонку с наибольшим количеством блоков
-                        let maxBlocks = 0;
-                        for (let c = 0; c < this.gridSize; c++) {
-                            let blocks = 0;
-                            for (let r = 0; r < this.gridSize; r++) {
-                                if (this.grid[r][c] !== null) blocks++;
-                            }
-                            if (blocks > maxBlocks) {
-                                maxBlocks = blocks;
-                                col = c;
-                            }
-                        }
-                    }
-                    
-                    this.activateBooster(boosterType, row, col);
-                }
-                
-                if (typeof updateGameUI === 'function') {
-                    updateGameUI();
-                }
-                
-                // Проверяем снова через небольшую задержку
-                setTimeout(() => {
-                    if (this.checkGameOver()) {
-                        this.gameOver();
-                    }
-                }, 200);
+                // Просто показываем уведомление о нехватке ходов
+                showOverlay('boosterOfferOverlay');
             }
 
             async gameOver() {
